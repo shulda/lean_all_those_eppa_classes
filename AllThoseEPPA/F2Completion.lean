@@ -186,6 +186,24 @@ theorem totalParity_evenCompletion_of_exists_outside
   rw [hsourcesum, houtsum]
   cases hsp : sourceParity D xs c <;> rfl
 
+/-- If every tuple value lies in `D`, completion does not add a parity
+coordinate and total parity is exactly the prescribed source parity. -/
+theorem totalParity_evenCompletion_of_forall_mem
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (c : α → Bool) (h : ∀ i, xs i ∈ D) :
+    totalParity xs (evenCompletion D xs c) =
+      sourceParity D xs c := by
+  classical
+  have hsrc :
+      sourceRepresentatives D xs = representatives xs := by
+    ext i
+    simp [sourceRepresentatives, h]
+  unfold totalParity sourceParity
+  rw [hsrc]
+  apply Finset.sum_congr rfl
+  intro i hi
+  exact evenCompletion_of_mem D xs c (h i)
+
 /-- The parity completion is linear in the prescribed correction vector. -/
 theorem evenCompletion_add
     (D : Set α) {n : ℕ} (xs : Fin n → α)

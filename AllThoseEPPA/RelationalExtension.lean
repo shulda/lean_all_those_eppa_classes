@@ -160,5 +160,98 @@ theorem sourceParity_eq_false_of_first_not_mem
   · exact (hfirst (hbase ▸ hi')).elim
   · exact sourceCorrection_eq_false_of_ne_first act A p R xs hbase
 
+/-- If the first base lies in the source, the forced parity is just the
+single correction bit on that base. -/
+theorem sourceParity_eq_sourceCorrection_first_of_mem
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α)
+    (hfirst : xs (Language.firstIndex R) ∈ p.source) :
+    sourceParity act A p R xs =
+      sourceCorrection act A p R xs (xs (Language.firstIndex R)) := by
+  classical
+  let i₀ : Fin n := Language.firstIndex R
+  have hi₀rep : i₀ ∈ F2Completion.representatives xs := by
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_⟩
+    intro j hj
+    have hj0 : j.val < 0 := by
+      simpa [i₀, Language.firstIndex] using hj
+    exact (Nat.not_lt_zero _ hj0).elim
+  have hi₀src :
+      i₀ ∈ F2Completion.sourceRepresentatives p.source xs := by
+    apply Finset.mem_filter.mpr
+    exact ⟨hi₀rep, hfirst⟩
+  unfold sourceParity F2Completion.sourceParity
+  apply Finset.sum_eq_single i₀
+  · intro j hj hji
+    have hjrep : j ∈ F2Completion.representatives xs :=
+      (Finset.mem_filter.mp hj).1
+    have hbase : xs j ≠ xs i₀ := by
+      intro hb
+      exact hji (F2Completion.representatives_injOn xs hjrep hi₀rep hb)
+    have hz :=
+      sourceCorrection_eq_false_of_ne_first act A p R xs
+        (by simpa [i₀] using hbase)
+    simpa [Bool.zero_eq_false] using hz
+  · intro hi
+    exact (hi hi₀src).elim
+
+/-- If every entry of the tuple belongs to the source, the forced correction
+already has even parity. -/
+theorem sourceParity_eq_false_of_forall_mem
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α)
+    (hxs : ∀ i, xs i ∈ p.source) :
+    sourceParity act A p R xs = false := by
+  classical
+  let i₀ : Fin n := Language.firstIndex R
+  rw [sourceParity_eq_sourceCorrection_first_of_mem act A p R xs
+    (hxs i₀)]
+  rw [sourceCorrection_of_mem act A p R xs (hxs i₀)]
+  have hσ :
+      baseExtension act A p ∘ xs =
+        p.toPartialEquiv ∘ xs := by
+    funext i
+    simp [Function.comp_apply, baseExtension_apply_of_mem act A p (hxs i)]
+  have hrel := partialAutomorphism_rel_iff act A p R xs hxs
+  simp [genericValuation, hσ, hrel, i₀, Bool.zero_eq_false]
+
+/-- The completed flip correction `F_R(xs)`, viewed as a function of the
+base vertex rather than of a tuple index. Equal base vertices therefore get
+the same bit definitionally. -/
+noncomputable def flipCorrection
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α)
+    (x : α) : Bool :=
+  F2Completion.evenCompletion p.source xs
+    (sourceCorrection act A p R xs) x
+
+@[simp] theorem flipCorrection_of_mem
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α)
+    {x : α} (hx : x ∈ p.source) :
+    flipCorrection act A p R xs x =
+      sourceCorrection act A p R xs x :=
+  F2Completion.evenCompletion_of_mem p.source xs
+    (sourceCorrection act A p R xs) hx
+
+/-- The completed flip vector has even total parity on the distinct base
+vertices of every tuple. -/
+theorem flipCorrection_totalParity
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) :
+    F2Completion.totalParity xs (flipCorrection act A p R xs) = false := by
+  classical
+  by_cases h : ∃ i, xs i ∉ p.source
+  · exact F2Completion.totalParity_evenCompletion_of_exists_outside
+      p.source xs (sourceCorrection act A p R xs) h
+  · have hall : ∀ i, xs i ∈ p.source := by
+      intro i
+      by_contra hi
+      exact h ⟨i, hi⟩
+    rw [F2Completion.totalParity_evenCompletion_of_forall_mem
+      p.source xs (sourceCorrection act A p R xs) hall]
+    exact sourceParity_eq_false_of_forall_mem act A p R xs hall
+
 end Relational
 end AllThoseEPPA

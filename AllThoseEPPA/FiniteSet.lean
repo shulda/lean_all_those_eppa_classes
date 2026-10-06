@@ -36,18 +36,18 @@ noncomputable def orderedComplementOrderIso (p : PartialEquiv α α) :
 matching the complementary elements in increasing order. -/
 noncomputable def orderedExtension (p : PartialEquiv α α) : Equiv.Perm α := by
   classical
-  exact Equiv.subtypeCongr p.toEquiv p.orderedComplementOrderIso.toEquiv
+  exact Equiv.subtypeCongr p.toEquiv orderedComplementOrderIso p.toEquiv
 
 theorem orderedExtension_apply_of_mem (p : PartialEquiv α α) {x : α}
     (hx : x ∈ p.source) :
-    p.orderedExtension x = p x := by
+    orderedExtension p x = p x := by
   classical
   simp [orderedExtension, Equiv.subtypeCongr, hx]
 
 theorem orderedExtension_apply_of_not_mem (p : PartialEquiv α α) {x : α}
     (hx : x ∉ p.source) :
-    p.orderedExtension x =
-      p.orderedComplementOrderIso ⟨x, hx⟩ := by
+    orderedExtension p x =
+      orderedComplementOrderIso p ⟨x, hx⟩ := by
   classical
   simp [orderedExtension, Equiv.subtypeCongr, hx]
 

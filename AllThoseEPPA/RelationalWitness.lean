@@ -1,5 +1,6 @@
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Finset.Card
 import AllThoseEPPA.EPPA
 
@@ -84,7 +85,7 @@ noncomputable instance witnessVertexFintype
   let Code :=
     α × ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool)
   haveI : Fintype Code := by
-    infer_instance
+    exact Prod.instFintype
   exact Fintype.ofInjective
     (fun v : WitnessVertex L α => (v.base, v.valuation))
     (by

@@ -118,9 +118,10 @@ noncomputable def genericEmbedding (G : SimpleGraph α) :
     intro x y h
     exact congrArg WitnessVertex.base h
   map_rel_iff := by
-    intro n R x
+    intro n R
     cases R with
     | edge =>
+      intro x
       simpa [toStructure, action, Language.Action.onRel,
         Language.Action.trivial, Function.comp_apply] using
         (witnessGraph_adj_genericVertex_iff G (x 0) (x 1))

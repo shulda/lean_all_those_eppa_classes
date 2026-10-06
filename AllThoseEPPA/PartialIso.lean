@@ -133,7 +133,7 @@ def Equivalent {A : Structure L V} {B : Structure L W}
 theorem equivalent_refl {A : Structure L V}
     (f : PartialIsomorphism act A A) :
     Equivalent f f :=
-  ⟨rfl, Setoid.refl _⟩
+  ⟨rfl, ⟨rfl, fun _ _ => rfl⟩⟩
 
 /-- A coherent triple of partial automorphisms, as in the paper: the target of
 the first is the source of the second, and the third represents their

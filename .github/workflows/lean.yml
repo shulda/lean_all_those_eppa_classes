@@ -49,7 +49,7 @@ jobs:
             Mathlib.Data.Fintype.Sort \
             Mathlib.Logic.Equiv.Fintype \
             Mathlib.Logic.Equiv.PartialEquiv \
-            Mathlib.GroupTheory.Perm.Basic
+            Mathlib.GroupTheory.Perm.Basic \
             Mathlib.Combinatorics.SimpleGraph.Basic
 
       - name: Build and audit Lean project

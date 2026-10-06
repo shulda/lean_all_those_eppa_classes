@@ -151,10 +151,6 @@ noncomputable def genericVertex (x : α) : WitnessVertex L α where
   rfl
 
 
-@[simp] theorem bases_genericVertex {n : ℕ} (xs : Fin n → α) :
-    WitnessVertex.bases (fun i => genericVertex A (xs i)) = xs := by
-  funext i
-  rfl
 
 theorem genericTupleCompatible {n : ℕ} (xs : Fin n → α) :
     WitnessVertex.TupleCompatible (fun i => genericVertex A (xs i)) := by

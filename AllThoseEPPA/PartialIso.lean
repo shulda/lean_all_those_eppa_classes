@@ -119,10 +119,28 @@ def comp (g : PartialIsomorphism act B C)
     rw [g.map_func (act.onFunc f.lang F) (f.toPartialEquiv ∘ x) hxg]
     simp [Language.Action.onFunc_mul, Function.comp_assoc]
 
-/-- A coherent triple of partial automorphisms, as in the paper. -/
+/-- Two partial isomorphisms represent the same mathematical partial
+map.  The language components agree, and the vertex partial equivalences have
+the same source and agree there.  We deliberately use mathlib's
+`PartialEquiv.EqOnSource`: ordinary Lean equality of `PartialEquiv` would
+also compare irrelevant values of its auxiliary total functions outside the
+source. -/
+def Equivalent {A : Structure L V} {B : Structure L W}
+    (f g : PartialIsomorphism act A B) : Prop :=
+  f.lang = g.lang ∧
+    PartialEquiv.EqOnSource f.toPartialEquiv g.toPartialEquiv
+
+theorem equivalent_refl {A : Structure L V}
+    (f : PartialIsomorphism act A A) :
+    Equivalent f f :=
+  ⟨rfl, Setoid.refl _⟩
+
+/-- A coherent triple of partial automorphisms, as in the paper: the target of
+the first is the source of the second, and the third represents their
+composition as a partial map. -/
 def CoherentTriple {A : Structure L V}
     (f g h : PartialIsomorphism act A A) : Prop :=
-  ∃ htg : f.target = g.source, h = g.comp f htg
+  ∃ htg : f.target = g.source, Equivalent h (g.comp f htg)
 
 /-- Two partial automorphisms form a coherent pair if they occur as the first
 two members of a coherent triple. -/

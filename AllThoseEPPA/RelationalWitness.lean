@@ -1,4 +1,5 @@
 import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Finset.Card
 import AllThoseEPPA.EPPA
 
@@ -63,6 +64,30 @@ noncomputable def RelationHolds {n : ℕ} (R : L.RelSymbol n)
   TupleCompatible xs ∧ (activeIndices R xs).card % 2 = 1
 
 end WitnessVertex
+
+/-- For a finite base set and a finite total set of relation symbols, there are
+only finitely many valuation vertices.  This is the finiteness part of the
+witness construction in Proposition `prop:relstructures`. -/
+instance witnessVertexFinite
+    {α : Type v} [Finite α] [Finite L.AnyRelSymbol] :
+    Finite (WitnessVertex L α) := by
+  let Code :=
+    α × ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool)
+  haveI : Finite Code := by
+    infer_instance
+  exact Finite.of_injective
+    (fun v : WitnessVertex L α => (v.base, v.valuation))
+    (by
+      intro a b h
+      apply WitnessVertex.ext
+      · exact congrArg Prod.fst h
+      · exact congrArg Prod.snd h)
+
+/-- A concrete `Fintype` instance for finite relational witnesses. -/
+noncomputable instance witnessVertexFintype
+    {α : Type v} [Fintype α] [Finite L.AnyRelSymbol] :
+    Fintype (WitnessVertex L α) :=
+  Fintype.ofFinite _
 
 variable [L.IsRelational]
 

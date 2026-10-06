@@ -2,6 +2,7 @@ import Mathlib.Algebra.Ring.BooleanRing
 import Mathlib.Data.Fin.Tuple.Basic
 import AllThoseEPPA.RelationalWitness
 import AllThoseEPPA.FiniteSet
+import AllThoseEPPA.F2Completion
 
 /-!
 # Extending partial automorphisms in the relational valuation witness
@@ -113,37 +114,30 @@ theorem sourceCorrection_eq_false_of_ne_first
         genericValuation A (p x)
           ⟨n, act.onRel p.lang R⟩
           (baseExtension act A p ∘ xs) = false := by
-      simp only [genericValuation]
+      unfold genericValuation
       apply Bool.decide_false
       rintro ⟨_, hp⟩
+      have hp' :
+          p x =
+            baseExtension act A p (xs (Language.firstIndex R)) := by
+        simpa [Function.comp_apply] using hp
       have hσx :
           baseExtension act A p x =
             baseExtension act A p (xs (Language.firstIndex R)) := by
-        simpa [Function.comp_apply, baseExtension_apply_of_mem act A p hx]
-          using hp
+        rw [baseExtension_apply_of_mem act A p hx]
+        exact hp'
       exact hxfirst ((baseExtension act A p).injective hσx)
-    simp [hold, hnew]
+    rw [hold, hnew]
+    exact Bool.zero_eq_false
   · exact sourceCorrection_of_not_mem act A p R xs hx
 
-/-- The first-occurrence predicate for a base tuple. -/
-def IsFirstValue {n : ℕ} (xs : Fin n → α) (i : Fin n) : Prop :=
-  ∀ j, j < i → xs j ≠ xs i
-
-/-- Indices representing the distinct source vertices occurring in `xs`. -/
-noncomputable def sourceRepresentatives
-    (p : RelPartialAutomorphism act A)
-    {n : ℕ} (xs : Fin n → α) : Finset (Fin n) := by
-  classical
-  exact Finset.univ.filter fun i =>
-    IsFirstValue xs i ∧ xs i ∈ p.source
-
-/-- Sum in `𝔽₂` of the case-(1) corrections over distinct source vertices. -/
+/-- Sum in `𝔽₂` of the case-(1) corrections over distinct source vertices.
+This is the forced vector fed into the generic parity-completion operator. -/
 noncomputable def sourceParity
     (p : RelPartialAutomorphism act A)
-    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) : Bool := by
-  classical
-  exact ∑ i ∈ sourceRepresentatives act A p xs,
-    sourceCorrection act A p R xs (xs i)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) : Bool :=
+  F2Completion.sourceParity p.source xs
+    (sourceCorrection act A p R xs)
 
 /-- If the first base is not in the source, every case-(1) correction is zero. -/
 theorem sourceParity_eq_false_of_first_not_mem
@@ -152,11 +146,13 @@ theorem sourceParity_eq_false_of_first_not_mem
     (hfirst : xs (Language.firstIndex R) ∉ p.source) :
     sourceParity act A p R xs = false := by
   classical
-  unfold sourceParity
+  unfold sourceParity F2Completion.sourceParity
   apply Finset.sum_eq_zero
   intro i hi
-  have hi' := (Finset.mem_filter.mp
-    (show i ∈ sourceRepresentatives act A p xs from hi)).2.2
+  have hi' :
+      xs i ∈ p.source := by
+    exact (Finset.mem_filter.mp
+      (show i ∈ F2Completion.sourceRepresentatives p.source xs from hi)).2
   by_cases hbase : xs i = xs (Language.firstIndex R)
   · exact (hfirst (hbase ▸ hi')).elim
   · exact sourceCorrection_eq_false_of_ne_first act A p R xs hbase

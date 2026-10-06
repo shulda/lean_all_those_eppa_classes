@@ -1,4 +1,6 @@
 import Mathlib.Algebra.Ring.BooleanRing
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fin.Tuple.Basic
 
 /-!
@@ -17,9 +19,11 @@ field.
 namespace AllThoseEPPA
 namespace F2Completion
 
+open scoped BigOperators
+
 universe u
 
-variable {α : Type u}
+variable {α : Type u} [DecidableEq α]
 
 /-- Index `i` is the first occurrence of the value `xs i`. -/
 def IsFirstValue {n : ℕ} (xs : Fin n → α) (i : Fin n) : Prop :=
@@ -111,9 +115,10 @@ theorem evenCompletion_add
   · simp [evenCompletion, hx]
   · by_cases h : ∃ i, xs i ∉ D
     · by_cases heq : x = xs (firstOutsideIndex D xs h)
-      · simp [evenCompletion, hx, h, heq, sourceParity_add]
-      · simp [evenCompletion, hx, h, heq]
-    · simp [evenCompletion, hx, h]
+      · simp [evenCompletion, hx, h, heq, sourceParity_add,
+          firstOutsideIndex_not_mem D xs h]
+      · simp [evenCompletion, hx, h, heq, Bool.zero_eq_false]
+    · simp [evenCompletion, hx, h, Bool.zero_eq_false]
 
 end F2Completion
 end AllThoseEPPA

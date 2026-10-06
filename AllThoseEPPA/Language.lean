@@ -84,6 +84,14 @@ def Action.onFunc {L : Language.{u}} {Γ : Type v} [Group Γ]
     A.onRel (g * h) R = A.onRel g (A.onRel h R) := by
   simp [Action.onRel]
 
+/-- Relabelling a relation symbol does not change the distinguished first
+coordinate of its tuple.  The two `Fin n` terms differ only in proof fields. -/
+@[simp] theorem Action.firstIndex_onRel {L : Language.{u}} {Γ : Type v} [Group Γ]
+    (A : L.Action Γ) {n : ℕ} (g : Γ) (R : L.RelSymbol n) :
+    firstIndex (A.onRel g R) = firstIndex R := by
+  apply Fin.ext
+  rfl
+
 @[simp] theorem Action.onFunc_mul {L : Language.{u}} {Γ : Type v} [Group Γ]
     (A : L.Action Γ) {n : ℕ} (g h : Γ) (F : L.FuncSymbol n) :
     A.onFunc (g * h) F = A.onFunc g (A.onFunc h F) := by

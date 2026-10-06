@@ -91,7 +91,7 @@ theorem orderedExtension_trans' (p q : PartialEquiv α α)
     rw [Equiv.trans_apply, orderedExtension_apply_of_not_mem p hx,
       orderedExtension_apply_of_not_mem q hy]
     have happ := congrArg (fun e' => (e' ⟨x, hx⟩ : α)) he
-    simpa [e, bridge, Set.orderIsoOfEq_apply] using happ
+    simpa [e, bridge, Set.orderIsoOfEq_apply] using happ.symm
 
 end PartialEquiv
 end AllThoseEPPA

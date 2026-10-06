@@ -131,6 +131,56 @@ def id (A : Structure L V) : Embedding act A A where
     ext y
     simp [imageSet]
 
+/-- Composition of embeddings. -/
+def comp {X : Type*} {C : Structure L X}
+    (g : Embedding act B C) (f : Embedding act A B) :
+    Embedding act A C where
+  lang := g.lang * f.lang
+  toFun := g.toFun ∘ f.toFun
+  injective := g.injective.comp f.injective
+  map_rel_iff := by
+    intro n R x
+    have hg := g.map_rel_iff (act.onRel f.lang R) (f.toFun ∘ x)
+    have hf := f.map_rel_iff R x
+    simpa [Language.Action.onRel_mul, Function.comp_assoc] using hg.trans hf
+  map_func := by
+    intro n F x
+    ext y
+    constructor
+    · rintro ⟨a, ha, rfl⟩
+      have hfa : f a ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ x) := by
+        have h : f a ∈ imageSet f.toFun (A.func F x) := ⟨a, ha, rfl⟩
+        rw [f.map_func F x] at h
+        exact h
+      have hga :
+          g (f a) ∈
+            C.func (act.onFunc g.lang (act.onFunc f.lang F))
+              (g.toFun ∘ (f.toFun ∘ x)) := by
+        have h :
+            g (f a) ∈
+              imageSet g.toFun
+                (B.func (act.onFunc f.lang F) (f.toFun ∘ x)) :=
+          ⟨f a, hfa, rfl⟩
+        rw [g.map_func (act.onFunc f.lang F) (f.toFun ∘ x)] at h
+        exact h
+      simpa [Language.Action.onFunc_mul, Function.comp_assoc] using hga
+    · intro hy
+      have hy' :
+          y ∈
+            C.func (act.onFunc g.lang (act.onFunc f.lang F))
+              (g.toFun ∘ (f.toFun ∘ x)) := by
+        simpa [Language.Action.onFunc_mul, Function.comp_assoc] using hy
+      rw [← g.map_func (act.onFunc f.lang F) (f.toFun ∘ x)] at hy'
+      rcases hy' with ⟨b, hb, rfl⟩
+      rw [← f.map_func F x] at hb
+      rcases hb with ⟨a, ha, rfl⟩
+      exact ⟨a, ha, rfl⟩
+
+@[simp] theorem comp_apply {X : Type*} {C : Structure L X}
+    (g : Embedding act B C) (f : Embedding act A B) (x : V) :
+    g.comp f x = g (f x) :=
+  rfl
+
 end Embedding
 
 end Structure

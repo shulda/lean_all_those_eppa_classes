@@ -104,6 +104,80 @@ theorem sourceParity_add
   classical
   simp [sourceParity, Finset.sum_add_distrib]
 
+
+/-- Distinct tuple values have unique representative indices. -/
+theorem representatives_injOn {n : ℕ} (xs : Fin n → α) :
+    Set.InjOn xs (↑(representatives xs) : Set (Fin n)) := by
+  classical
+  intro i hi j hj hij
+  have hfirst_i : IsFirstValue xs i :=
+    (Finset.mem_filter.mp hi).2
+  have hfirst_j : IsFirstValue xs j :=
+    (Finset.mem_filter.mp hj).2
+  rcases lt_trichotomy i j with hijlt | hEq | hjilt
+  · exact (hfirst_j i hijlt hij).elim
+  · exact hEq
+  · exact (hfirst_i j hjilt hij.symm).elim
+
+/-- The least outside index is the representative of its base value. -/
+theorem firstOutsideIndex_mem_representatives
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (h : ∃ i, xs i ∉ D) :
+    firstOutsideIndex D xs h ∈ representatives xs := by
+  classical
+  apply Finset.mem_filter.mpr
+  refine ⟨Finset.mem_univ _, ?_⟩
+  intro j hj hbase
+  have hjout : xs j ∉ D := by
+    simpa [hbase] using firstOutsideIndex_not_mem D xs h
+  exact (Fin.find_min h hj) hjout
+
+/-- XOR over the distinct values occurring in a tuple. -/
+noncomputable def totalParity {n : ℕ}
+    (xs : Fin n → α) (c : α → Bool) : Bool := by
+  classical
+  exact ∑ i ∈ representatives xs, c (xs i)
+
+/-- If the tuple contains a value outside `D`, parity completion lands in
+the even-parity hyperplane: the total XOR over distinct tuple values is zero. -/
+theorem totalParity_evenCompletion_of_exists_outside
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (c : α → Bool) (h : ∃ i, xs i ∉ D) :
+    totalParity xs (evenCompletion D xs c) = false := by
+  classical
+  let i₀ : Fin n := firstOutsideIndex D xs h
+  have hi₀rep : i₀ ∈ representatives xs := by
+    exact firstOutsideIndex_mem_representatives D xs h
+  have hi₀out : xs i₀ ∉ D := by
+    exact firstOutsideIndex_not_mem D xs h
+  have houtsum :
+      (∑ i ∈ (representatives xs).filter (fun i => xs i ∉ D),
+          evenCompletion D xs c (xs i)) =
+        sourceParity D xs c := by
+    apply Finset.sum_eq_single i₀
+    · exact Finset.mem_filter.mpr ⟨hi₀rep, hi₀out⟩
+    · intro j hj hji
+      have hjrep : j ∈ representatives xs := (Finset.mem_filter.mp hj).1
+      have hjout : xs j ∉ D := (Finset.mem_filter.mp hj).2
+      have hbase : xs j ≠ xs i₀ := by
+        intro hb
+        exact hji (representatives_injOn xs hjrep hi₀rep hb)
+      rw [evenCompletion_of_not_mem D xs c hjout h]
+      simp [i₀, hbase, Bool.zero_eq_false]
+    · intro hi
+      exact (hi (Finset.mem_filter.mpr ⟨hi₀rep, hi₀out⟩)).elim
+  have hsourcesum :
+      (∑ i ∈ (representatives xs).filter (fun i => xs i ∈ D),
+          evenCompletion D xs c (xs i)) =
+        sourceParity D xs c := by
+    simp [sourceParity, sourceRepresentatives, evenCompletion]
+  unfold totalParity
+  rw [← Finset.sum_filter_add_sum_filter_not
+      (representatives xs) (fun i => xs i ∈ D)
+      (fun i => evenCompletion D xs c (xs i))]
+  rw [hsourcesum, houtsum]
+  simp [Bool.zero_eq_false]
+
 /-- The parity completion is linear in the prescribed correction vector. -/
 theorem evenCompletion_add
     (D : Set α) {n : ℕ} (xs : Fin n → α)

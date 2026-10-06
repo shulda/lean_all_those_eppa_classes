@@ -74,25 +74,22 @@ noncomputable instance witnessVertexFintype
     Fintype (WitnessVertex L α) := by
   classical
   letI : Fintype L.AnyRelSymbol := Fintype.ofFinite _
-  letI (R : L.AnyRelSymbol) : Fintype (Fin R.1 → α) := by
-    exact Pi.instFintype
-  letI (R : L.AnyRelSymbol) :
-      Fintype ((Fin R.1 → α) → Bool) := by
-    exact Pi.instFintype
-  letI :
-      Fintype ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool) := by
-    exact Pi.instFintype
-  let Code :=
-    α × ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool)
-  haveI : Fintype Code := by
-    exact Prod.instFintype
+  let ValuationPoint := Σ R : L.AnyRelSymbol, (Fin R.1 → α)
+  letI : Fintype ValuationPoint := by
+    infer_instance
+  let Code := α × (ValuationPoint → Bool)
+  letI : Fintype Code := by
+    infer_instance
   exact Fintype.ofInjective
-    (fun v : WitnessVertex L α => (v.base, v.valuation))
+    (fun v : WitnessVertex L α =>
+      (v.base, fun q : ValuationPoint => v.valuation q.1 q.2))
     (by
       intro a b h
       apply WitnessVertex.ext
       · exact congrArg Prod.fst h
-      · exact congrArg Prod.snd h)
+      · funext R xs
+        have hv := congrArg Prod.snd h
+        exact congrFun hv ⟨R, xs⟩)
 
 variable [L.IsRelational]
 

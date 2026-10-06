@@ -134,6 +134,113 @@ theorem flipBit_symm
       · simp [flipBit, hxy, hyx, hx, hy]
       · simp [flipBit, hxy, hyx, hx, hy]
 
+
+private theorem xor_cancel_right (a f : Bool) :
+    Bool.xor (Bool.xor a f) f = a := by
+  cases a <;> cases f <;> rfl
+
+private theorem xor_self_left (a b : Bool) :
+    Bool.xor a (Bool.xor a b) = b := by
+  cases a <;> cases b <;> rfl
+
+private theorem xor_ne_xor_right_iff (a b f : Bool) :
+    (Bool.xor a f ≠ Bool.xor b f) ↔ (a ≠ b) := by
+  cases a <;> cases b <;> cases f <;> decide
+
+/-- The action of the graph extension on one witness vertex. -/
+noncomputable def extendVertex
+    (p : GraphPartialAutomorphism G) (v : WitnessVertex α) :
+    WitnessVertex α := by
+  classical
+  let σ := baseExtension G p
+  refine
+    { base := σ v.base
+      valuation := fun z =>
+        Bool.xor (v.valuation (σ.symm z))
+          (flipBit G p v.base (σ.symm z))
+      self_false := ?_ }
+  simp [σ, v.self_false]
+
+@[simp] theorem extendVertex_base
+    (p : GraphPartialAutomorphism G) (v : WitnessVertex α) :
+    (extendVertex G p v).base = baseExtension G p v.base :=
+  rfl
+
+@[simp] theorem extendVertex_valuation_on_baseExtension
+    (p : GraphPartialAutomorphism G) (v : WitnessVertex α) (y : α) :
+    (extendVertex G p v).valuation (baseExtension G p y) =
+      Bool.xor (v.valuation y) (flipBit G p v.base y) := by
+  simp [extendVertex]
+
+/-- Explicit inverse to `extendVertex`. -/
+noncomputable def unextendVertex
+    (p : GraphPartialAutomorphism G) (v : WitnessVertex α) :
+    WitnessVertex α := by
+  classical
+  let σ := baseExtension G p
+  refine
+    { base := σ.symm v.base
+      valuation := fun y =>
+        Bool.xor (v.valuation (σ y))
+          (flipBit G p (σ.symm v.base) y)
+      self_false := ?_ }
+  simp [σ, v.self_false]
+
+/-- The vertex map `(x,χ) ↦ (hatφ(x), f_x(χ))` is a permutation of the
+witness vertices. -/
+noncomputable def vertexExtensionEquiv
+    (p : GraphPartialAutomorphism G) :
+    WitnessVertex α ≃ WitnessVertex α where
+  toFun := extendVertex G p
+  invFun := unextendVertex G p
+  left_inv := by
+    intro v
+    apply WitnessVertex.ext
+    · simp [extendVertex, unextendVertex]
+    · funext y
+      simp [extendVertex, unextendVertex, xor_cancel_right]
+  right_inv := by
+    intro v
+    apply WitnessVertex.ext
+    · simp [extendVertex, unextendVertex]
+    · funext z
+      simp [extendVertex, unextendVertex, xor_cancel_right]
+
+@[simp] theorem vertexExtensionEquiv_apply
+    (p : GraphPartialAutomorphism G) (v : WitnessVertex α) :
+    vertexExtensionEquiv G p v = extendVertex G p v :=
+  rfl
+
+/-- Flipping the same unordered pair at both ends preserves the witness
+adjacency relation. -/
+theorem extendVertex_adj_iff
+    (p : GraphPartialAutomorphism G) (v w : WitnessVertex α) :
+    (WitnessVertex.witnessGraph α).Adj
+        (extendVertex G p v) (extendVertex G p w) ↔
+      (WitnessVertex.witnessGraph α).Adj v w := by
+  classical
+  rw [WitnessVertex.witnessGraph_adj, WitnessVertex.witnessGraph_adj]
+  have hflip := flipBit_symm G p w.base v.base
+  simp [extendVertex, hflip, xor_ne_xor_right_iff]
+
+/-- On a vertex of the generic copy belonging to the source of `p`, the
+witness permutation agrees with `p`. -/
+theorem extendVertex_genericVertex_of_mem
+    (p : GraphPartialAutomorphism G) {x : α} (hx : x ∈ p.source) :
+    extendVertex G p (genericVertex G x) = genericVertex G (p x) := by
+  classical
+  apply WitnessVertex.ext
+  · exact baseExtension_apply_of_mem G p hx
+  · funext z
+    obtain ⟨y, rfl⟩ := (baseExtension G p).surjective z
+    rw [extendVertex_valuation_on_baseExtension]
+    by_cases hxy : x = y
+    · subst y
+      simp [genericVertex, baseExtension_apply_of_mem G p hx]
+    · simp [genericVertex, flipBit, hxy, hx, correctionBit,
+        xor_self_left]
+
+
 end ExtensionCore
 
 end Graph

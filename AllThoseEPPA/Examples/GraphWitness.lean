@@ -20,7 +20,7 @@ universe u
 
 The condition `χ x = false` is the Lean encoding of the paper's convention
 that `χ` is only defined away from `x`. -/
-structure WitnessVertex (α : Type u) where
+@[ext] structure WitnessVertex (α : Type u) where
   base : α
   valuation : α → Bool
   self_false : valuation base = false

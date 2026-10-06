@@ -11,3 +11,4 @@ import AllThoseEPPA.Examples.GraphExtension
 import AllThoseEPPA.Basic
 
 import AllThoseEPPA.RelationalWitness
+import AllThoseEPPA.RelationalExtension

@@ -25,7 +25,7 @@ green.
 | EPPA / coherent EPPA witness API | `AllThoseEPPA/EPPA.lean` | API formalized | Extension is stated along an explicit embedding ψ. |
 | Proposition `prop:setcoherence`: finite sets have coherent EPPA | `AllThoseEPPA.finiteSetsHaveCoherentEPPA` | **Formalized** | The canonical extension matches unused points in increasing order; the order is chosen internally for an arbitrary finite type. |
 | Lemma `lem:graphs:auto` / finite graphs have EPPA | `AllThoseEPPA/Examples/GraphWitness.lean`, `AllThoseEPPA/Examples/GraphExtension.lean`; `AllThoseEPPA.Graph.finiteGraphsHaveEPPA` | **Formalized** | Explicit valuation witness, generic embedding, flip consistency, witness automorphism and extension are checked. |\n| Lemma `lem:graphs:coherence` and Proposition `prop:graphs` | — | Intentionally skipped | The graph section has served its purpose as an API warm-up; coherence is deferred unless later work needs it. |
-| Section `sec:relstructures`: general finite relational construction | `AllThoseEPPA/RelationalWitness.lean` | **Current target** | Valuation witness and generic embedding are now being checked before formalizing extension/coherence. |
+| Section `sec:relstructures`: general finite relational construction | `AllThoseEPPA/RelationalWitness.lean`, `AllThoseEPPA/RelationalExtension.lean` | **Current target** | Finite valuation witness and generic embedding are green; extension is now formalized via the 𝔽₂/affine flip viewpoint. |
 | Unary functions | — | Planned | |
 | Irreducible-structure faithfulness | — | Planned | Regression target: finite 3-uniform hypergraphs. |
 | Restricted / locally tree-like construction | — | Planned | Regression target: finite integer-valued metric spaces with distances `{0,...,D}`. |

@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Group.Hom.Defs
-import Mathlib.Logic.Equiv.Defs
+import Mathlib.GroupTheory.Perm.Basic
 
 /-!
 # Languages and language actions

@@ -27,22 +27,16 @@ jobs:
           path: ~/.elan/toolchains
           key: lean-toolchain-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}
 
-      - name: Cache Lake workspace
-        uses: actions/cache@v5
-        with:
-          path: .lake
-          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-${{ github.sha }}
-          restore-keys: |
-            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
-
       - name: Install elan
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      # As in Jan Hubička's partite-construction workflow, fetch only the
-      # Mathlib cache roots that this project currently imports instead of the
-      # complete Mathlib cache.
+      # Keep the useful parts of Jan Hubička's cache strategy: the Lean
+      # toolchain is cached above and compiled Mathlib artifacts are fetched
+      # selectively below.  We intentionally do not cache the complete .lake
+      # workspace: measured archives were about 2.58 GB per commit and their
+      # restore/save time dominated this small project's CI.
       - name: Download Mathlib cache
         run: |
           lake exe cache get \

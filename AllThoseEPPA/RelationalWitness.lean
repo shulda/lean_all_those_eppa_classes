@@ -73,6 +73,14 @@ noncomputable instance witnessVertexFintype
     Fintype (WitnessVertex L α) := by
   classical
   letI : Fintype L.AnyRelSymbol := Fintype.ofFinite _
+  letI (R : L.AnyRelSymbol) : Fintype (Fin R.1 → α) := by
+    exact Pi.instFintype
+  letI (R : L.AnyRelSymbol) :
+      Fintype ((Fin R.1 → α) → Bool) := by
+    exact Pi.instFintype
+  letI :
+      Fintype ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool) := by
+    exact Pi.instFintype
   let Code :=
     α × ((R : L.AnyRelSymbol) → (Fin R.1 → α) → Bool)
   haveI : Fintype Code := by

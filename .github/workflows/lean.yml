@@ -40,6 +40,8 @@ jobs:
       - name: Download Mathlib cache
         run: |
           lake exe cache get \
+            Mathlib.Algebra.Ring.BooleanRing \
+            Mathlib.Data.Fin.Tuple.Basic \
             Mathlib.Data.Fintype.Sort \
             Mathlib.Data.Fintype.Pi \
             Mathlib.Data.Fintype.Sigma \

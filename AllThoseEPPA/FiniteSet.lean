@@ -97,7 +97,6 @@ theorem orderedExtension_trans' (p q : PartialEquiv α α)
         (orderedComplementOrderIso q
           ⟨(orderedComplementOrderIso p ⟨x, hx⟩ : α), hy⟩ : α)
     congr 1
-    apply Subtype.ext
 
 end PartialEquiv
 end AllThoseEPPA

@@ -24,7 +24,7 @@ green.
 | Partial isomorphisms and coherent triples | `AllThoseEPPA/PartialIso.lean` | API formalized | Equality of mathematical partial maps uses `PartialEquiv.EqOnSource`, not raw Lean equality outside the domain. |
 | EPPA / coherent EPPA witness API | `AllThoseEPPA/EPPA.lean` | API formalized | Extension is stated along an explicit embedding ψ. |
 | Proposition `prop:setcoherence`: finite sets have coherent EPPA | `AllThoseEPPA.finiteSetsHaveCoherentEPPA` | **Formalized** | The canonical extension matches unused points in increasing order; the order is chosen internally for an arbitrary finite type. |
-| Section 3: graph warm-up | — | Planned | Next nontrivial construction/regression target. |
+| Section 3: graph warm-up | `AllThoseEPPA/Examples/GraphWitness.lean` | In progress | Graph language specialization is green; valuation witness and generic embedding are being checked next. |
 | General relational construction | — | Planned | Leads to the unrestricted relational theorem. |
 | Unary functions | — | Planned | |
 | Irreducible-structure faithfulness | — | Planned | Regression target: finite 3-uniform hypergraphs. |

@@ -125,6 +125,12 @@ noncomputable def genericVertex (x : α) : WitnessVertex L α where
   funext i
   rfl
 
+
+@[simp] theorem bases_genericVertex {n : ℕ} (xs : Fin n → α) :
+    WitnessVertex.bases (fun i => genericVertex A (xs i)) = xs := by
+  funext i
+  rfl
+
 theorem genericTupleCompatible {n : ℕ} (xs : Fin n → α) :
     WitnessVertex.TupleCompatible (fun i => genericVertex A (xs i)) := by
   intro i j h
@@ -157,7 +163,7 @@ private theorem generic_activeIndices_eq_singleton {n : ℕ}
       have hv :=
         (genericValuation_eq_true_iff A (xs i) ⟨n, R⟩
           (WitnessVertex.bases (fun j => genericVertex A (xs j)))).1 hval
-      simpa [WitnessVertex.bases, i0] using hv.2
+      simpa [i0] using hv.2
     apply Fin.ext
     change i.val = 0
     apply Nat.eq_zero_of_not_pos

@@ -90,9 +90,10 @@ def comp (g : PartialIsomorphism act B C)
     have hxf : ∀ i, x i ∈ f.toPartialEquiv.source := by
       intro i
       simpa [PartialEquiv.trans'] using hx i
+    have h' : f.toPartialEquiv.target = g.toPartialEquiv.source := h
     have hxg : ∀ i, f.toPartialEquiv (x i) ∈ g.toPartialEquiv.source := by
       intro i
-      rw [← h]
+      rw [← h']
       exact f.toPartialEquiv.map_source (hxf i)
     have hg :=
       g.map_rel_iff (act.onRel f.lang R) (f.toPartialEquiv ∘ x) hxg
@@ -104,9 +105,10 @@ def comp (g : PartialIsomorphism act B C)
     have hxf : ∀ i, x i ∈ f.toPartialEquiv.source := by
       intro i
       simpa [PartialEquiv.trans'] using hx i
+    have h' : f.toPartialEquiv.target = g.toPartialEquiv.source := h
     have hxg : ∀ i, f.toPartialEquiv (x i) ∈ g.toPartialEquiv.source := by
       intro i
-      rw [← h]
+      rw [← h']
       exact f.toPartialEquiv.map_source (hxf i)
     change
       imageSet (g.toPartialEquiv ∘ f.toPartialEquiv) (A.func F x) =

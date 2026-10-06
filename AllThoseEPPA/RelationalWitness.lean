@@ -1,3 +1,4 @@
+import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Finset.Card
 import AllThoseEPPA.EPPA
 
@@ -59,7 +60,7 @@ noncomputable def activeIndices {n : ℕ} (R : L.RelSymbol n)
 /-- Interpretation of a relation symbol in the valuation witness. -/
 noncomputable def RelationHolds {n : ℕ} (R : L.RelSymbol n)
     (xs : Fin n → WitnessVertex L α) : Prop :=
-  TupleCompatible xs ∧ Odd (activeIndices R xs).card
+  TupleCompatible xs ∧ (activeIndices R xs).card % 2 = 1
 
 end WitnessVertex
 
@@ -103,7 +104,8 @@ noncomputable def genericVertex (x : α) : WitnessVertex L α where
   off_support_false := by
     intro R xs hmiss
     classical
-    rw [Bool.decide_false_iff]
+    unfold genericValuation
+    apply Bool.decide_false
     intro h
     exact hmiss (Language.firstIndex R.2) h.2.symm
 
@@ -120,9 +122,9 @@ noncomputable def genericVertex (x : α) : WitnessVertex L α where
 theorem genericTupleCompatible {n : ℕ} (xs : Fin n → α) :
     WitnessVertex.TupleCompatible (fun i => genericVertex A (xs i)) := by
   intro i j h
-  change xs i = xs j at h
-  cases h
-  rfl
+  have hij : xs i = xs j := by
+    simpa [genericVertex] using h
+  exact congrArg (genericVertex A) hij
 
 private theorem generic_activeIndices_eq_empty {n : ℕ}
     (R : L.RelSymbol n) (xs : Fin n → α)
@@ -184,12 +186,12 @@ theorem witness_rel_generic_iff {n : ℕ}
     by_contra hA
     have hempty := generic_activeIndices_eq_empty A R xs hA
     rw [hempty] at hodd
-    simp [Odd] at hodd
+    simp at hodd
   · intro hA
     refine ⟨genericTupleCompatible A xs, ?_⟩
     have hsingle := generic_activeIndices_eq_singleton A R xs hA
     rw [hsingle]
-    simp [Odd]
+    simp
 
 /-- The paper's generic embedding `ψ : A → B`. -/
 noncomputable def genericEmbedding :

@@ -7,4 +7,5 @@ import AllThoseEPPA.EPPA
 import AllThoseEPPA.FiniteSet
 import AllThoseEPPA.Examples.Graph
 import AllThoseEPPA.Examples.GraphWitness
+import AllThoseEPPA.Examples.GraphExtension
 import AllThoseEPPA.Basic

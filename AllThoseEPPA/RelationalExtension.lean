@@ -114,13 +114,16 @@ theorem sourceCorrection_eq_false_of_ne_first
         genericValuation A (p x)
           ⟨n, act.onRel p.lang R⟩
           (baseExtension act A p ∘ xs) = false := by
-      unfold genericValuation
-      apply Bool.decide_false
-      rintro ⟨_, hp⟩
+      apply Bool.eq_false_of_not_eq_true
+      intro hv
+      have hv' :=
+        (genericValuation_eq_true_iff A (p x)
+          ⟨n, act.onRel p.lang R⟩
+          (baseExtension act A p ∘ xs)).1 hv
       have hp' :
           p x =
             baseExtension act A p (xs (Language.firstIndex R)) := by
-        simpa [Function.comp_apply] using hp
+        simpa [Function.comp_apply] using hv'.2
       have hσx :
           baseExtension act A p x =
             baseExtension act A p (xs (Language.firstIndex R)) := by

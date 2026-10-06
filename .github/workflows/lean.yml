@@ -41,6 +41,7 @@ jobs:
         run: |
           lake exe cache get \
             Mathlib.Algebra.Ring.BooleanRing \
+            Mathlib.Algebra.BigOperators.Group.Finset.Basic \
             Mathlib.Data.Fin.Tuple.Basic \
             Mathlib.Data.Fintype.Sort \
             Mathlib.Data.Fintype.Pi \

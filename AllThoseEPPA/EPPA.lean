@@ -98,6 +98,9 @@ structure CoherentExtension {A : Structure L V} {B : Structure L W}
     (ψ : Embedding act A B) where
   extension : PartialAutomorphism act A → Automorphism act B
   extension_spec : ∀ p, ExtendsAlong act ψ p (extension p)
+  respects_equivalent :
+    ∀ p q : PartialAutomorphism act A,
+      PartialIsomorphism.Equivalent p q → extension p = extension q
   coherent :
     ∀ f g h : PartialAutomorphism act A,
       PartialIsomorphism.CoherentTriple f g h →

@@ -32,6 +32,13 @@ structure Action (L : Language.{u}) (Γ : Type v) [Group Γ] where
   rel : (n : ℕ) → Γ →* Equiv.Perm (L.RelSymbol n)
   func : (n : ℕ) → Γ →* Equiv.Perm (L.FuncSymbol n)
 
+
+/-- The trivial action of any group on a language. -/
+def Action.trivial (L : Language.{u}) (Γ : Type v) [Group Γ] :
+    L.Action Γ where
+  rel _ := 1
+  func _ := 1
+
 /-- Relabel a relation symbol by a group element. -/
 def Action.onRel {L : Language.{u}} {Γ : Type v} [Group Γ]
     (A : L.Action Γ) {n : ℕ} (g : Γ) (R : L.RelSymbol n) :

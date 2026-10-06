@@ -5,4 +5,5 @@ import AllThoseEPPA.Substructure
 import AllThoseEPPA.PartialIso
 import AllThoseEPPA.EPPA
 import AllThoseEPPA.FiniteSet
+import AllThoseEPPA.Examples.Graph
 import AllThoseEPPA.Basic

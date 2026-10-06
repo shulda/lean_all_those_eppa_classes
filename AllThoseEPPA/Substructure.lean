@@ -50,5 +50,10 @@ def inclusion (act : L.Action Γ) (A : Structure L V)
         hS F (Subtype.val ∘ x) (fun i => (x i).2) hy'
       exact ⟨⟨y, hyS⟩, hy', rfl⟩
 
+/-- The whole vertex set is closed. -/
+theorem isClosed_univ (A : Structure L V) : A.IsClosed Set.univ := by
+  intro n F x hx
+  exact Set.subset_univ _
+
 end Structure
 end AllThoseEPPA

@@ -130,6 +130,22 @@ def CoherentPair {A : Structure L V}
     (f g : PartialIsomorphism act A A) : Prop :=
   ∃ h, CoherentTriple f g h
 
+
+/-- Identity partial isomorphism on a closed substructure. -/
+def reflOn (A : Structure L V) (S : Set V) (hS : A.IsClosed S) :
+    PartialIsomorphism act A A where
+  lang := 1
+  toPartialEquiv := PartialEquiv.ofSet S
+  source_closed := hS
+  target_closed := hS
+  map_rel_iff := by
+    intro n R x hx
+    simp
+  map_func := by
+    intro n F x hx
+    ext y
+    simp [imageSet]
+
 end PartialIsomorphism
 end Structure
 end AllThoseEPPA

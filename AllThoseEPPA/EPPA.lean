@@ -91,13 +91,13 @@ def ExtendsAlong {A : Structure L V} {B : Structure L W}
 def IsEPPAWitness {A : Structure L V} {B : Structure L W}
     (ψ : Embedding act A B) : Prop :=
   ∀ p : PartialAutomorphism act A,
-    ∃ g : Automorphism act B, ExtendsAlong ψ p g
+    ∃ g : Automorphism act B, ExtendsAlong act ψ p g
 
 /-- A coherent simultaneous choice of extensions of all partial automorphisms. -/
 structure CoherentExtension {A : Structure L V} {B : Structure L W}
     (ψ : Embedding act A B) where
   extension : PartialAutomorphism act A → Automorphism act B
-  extends : ∀ p, ExtendsAlong ψ p (extension p)
+  extension_spec : ∀ p, ExtendsAlong act ψ p (extension p)
   coherent :
     ∀ f g h : PartialAutomorphism act A,
       PartialIsomorphism.CoherentTriple f g h →
@@ -113,7 +113,7 @@ theorem CoherentExtension.isEPPAWitness
     {ψ : Embedding act A B} (e : CoherentExtension act ψ) :
     IsEPPAWitness act ψ := by
   intro p
-  exact ⟨e.extension p, e.extends p⟩
+  exact ⟨e.extension p, e.extension_spec p⟩
 
 end Structure
 end AllThoseEPPA

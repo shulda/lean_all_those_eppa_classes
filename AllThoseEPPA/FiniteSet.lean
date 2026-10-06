@@ -51,5 +51,47 @@ theorem orderedExtension_apply_of_not_mem (p : PartialEquiv α α) {x : α}
   classical
   simp [orderedExtension, Equiv.subtypeCongr, hx]
 
+
+/-- The order-preserving extension is coherent under composition whenever the
+range of the first partial equivalence is exactly the domain of the second. -/
+theorem orderedExtension_trans' (p q : PartialEquiv α α)
+    (h : p.target = q.source) :
+    orderedExtension (p.trans' q h) =
+      (orderedExtension p).trans (orderedExtension q) := by
+  classical
+  ext x
+  by_cases hx : x ∈ p.source
+  · have hqx : p x ∈ q.source := by
+      rw [← h]
+      exact p.map_source hx
+    rw [orderedExtension_apply_of_mem (p.trans' q h) hx]
+    rw [Equiv.trans_apply, orderedExtension_apply_of_mem p hx,
+      orderedExtension_apply_of_mem q hqx]
+    rfl
+  · have hcomp :
+        {x : α | x ∉ p.target} = {x : α | x ∉ q.source} := by
+      ext y
+      simp [h]
+    let bridge :
+        {x : α // x ∉ p.target} ≃o {x : α // x ∉ q.source} :=
+      Set.orderIsoOfEq _ _ hcomp
+    let e :
+        {x : α // x ∉ p.source} ≃o {x : α // x ∉ q.target} :=
+      (orderedComplementOrderIso p).trans
+        (bridge.trans (orderedComplementOrderIso q))
+    have he :
+        e = orderedComplementOrderIso (p.trans' q h) :=
+      Subsingleton.elim _ _
+    have hy :
+        ((orderedComplementOrderIso p ⟨x, hx⟩ : {y : α // y ∉ p.target}) : α)
+          ∉ q.source := by
+      rw [← h]
+      exact (orderedComplementOrderIso p ⟨x, hx⟩).property
+    rw [orderedExtension_apply_of_not_mem (p.trans' q h) hx]
+    rw [Equiv.trans_apply, orderedExtension_apply_of_not_mem p hx,
+      orderedExtension_apply_of_not_mem q hy]
+    have happ := congrArg (fun e' => (e' ⟨x, hx⟩ : α)) he
+    simpa [e, bridge, Set.orderIsoOfEq_apply] using happ
+
 end PartialEquiv
 end AllThoseEPPA

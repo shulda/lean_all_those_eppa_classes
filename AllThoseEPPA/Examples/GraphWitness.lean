@@ -36,12 +36,12 @@ def witnessGraph (α : Type u) : SimpleGraph (WitnessVertex α) where
   Adj v w :=
     v.base ≠ w.base ∧
       v.valuation w.base ≠ w.valuation v.base
-  symm := by
+  symm := ⟨by
     intro v w h
-    exact ⟨h.1.symm, h.2.symm⟩
-  loopless := by
+    exact ⟨h.1.symm, h.2.symm⟩⟩
+  loopless := ⟨by
     intro v h
-    exact h.1 rfl
+    exact h.1 rfl⟩
 
 @[simp] theorem witnessGraph_adj (v w : WitnessVertex α) :
     (witnessGraph α).Adj v w ↔
@@ -58,15 +58,17 @@ variable {α : Type u} [LinearOrder α]
 /-- The asymmetric adjacency row used for the generic copy of `G`.
 
 It is true at `y` exactly when `y < x` and `{x,y}` is an edge. -/
-def genericValuation (G : SimpleGraph α) (x y : α) : Bool :=
-  decide (y < x ∧ G.Adj x y)
+noncomputable def genericValuation (G : SimpleGraph α) (x y : α) : Bool := by
+  classical
+  exact decide (y < x ∧ G.Adj x y)
 
 @[simp] theorem genericValuation_self (G : SimpleGraph α) (x : α) :
     genericValuation G x x = false := by
+  classical
   simp [genericValuation]
 
 /-- The generic-copy vertex corresponding to `x`. -/
-def genericVertex (G : SimpleGraph α) (x : α) : WitnessVertex α where
+noncomputable def genericVertex (G : SimpleGraph α) (x : α) : WitnessVertex α where
   base := x
   valuation := genericValuation G x
   self_false := genericValuation_self G x
@@ -81,18 +83,33 @@ theorem witnessGraph_adj_genericVertex_iff (G : SimpleGraph α) (x y : α) :
     (WitnessVertex.witnessGraph α).Adj
         (genericVertex G x) (genericVertex G y) ↔
       G.Adj x y := by
+  classical
   rcases lt_trichotomy x y with hxy | rfl | hyx
-  · have hnyx : ¬ y < x := (asymm hxy)
-    simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
-      hxy, hnyx, G.adj_comm]
+  · have hnyx : ¬ y < x := asymm hxy
+    by_cases hG : G.Adj x y
+    · have hGyx : G.Adj y x := hG.symm
+      simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
+        hxy, hnyx, hG, hGyx, ne_of_lt hxy]
+    · have hnGyx : ¬ G.Adj y x := by
+        intro h
+        exact hG h.symm
+      simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
+        hxy, hnyx, hG, hnGyx, ne_of_lt hxy]
   · simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation]
-  · have hnxy : ¬ x < y := (asymm hyx)
-    simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
-      hyx, hnxy, G.adj_comm]
+  · have hnxy : ¬ x < y := asymm hyx
+    by_cases hG : G.Adj x y
+    · have hGyx : G.Adj y x := hG.symm
+      simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
+        hyx, hnxy, hG, hGyx, (ne_of_lt hyx).symm]
+    · have hnGyx : ¬ G.Adj y x := by
+        intro h
+        exact hG h.symm
+      simp [WitnessVertex.witnessGraph_adj, genericVertex, genericValuation,
+        hyx, hnxy, hG, hnGyx, (ne_of_lt hyx).symm]
 
 /-- The paper's map `ψ : A → B`, as an embedding in the general
 `Γ_L`-structure API. -/
-def genericEmbedding (G : SimpleGraph α) :
+noncomputable def genericEmbedding (G : SimpleGraph α) :
     Structure.Embedding action (toStructure G)
       (toStructure (WitnessVertex.witnessGraph α)) where
   lang := 1
@@ -104,7 +121,8 @@ def genericEmbedding (G : SimpleGraph α) :
     intro n R x
     cases R with
     | edge =>
-      simpa using
+      simpa [toStructure, action, Language.Action.onRel,
+        Language.Action.trivial, Function.comp_apply] using
         (witnessGraph_adj_genericVertex_iff G (x 0) (x 1))
   map_func := by
     intro n F x

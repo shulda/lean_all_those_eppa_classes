@@ -22,6 +22,8 @@ symbols equipped with an arity function. -/
 structure Language where
   RelSymbol : ℕ → Type u
   FuncSymbol : ℕ → Type u
+  /-- Relation symbols have positive arity, exactly as in the paper. -/
+  relArity_pos : ∀ {n : ℕ}, RelSymbol n → 0 < n
 
 namespace Language
 

@@ -23,6 +23,10 @@ abbrev FuncSymbol (_ : ℕ) : Type := Empty
 def language : Language where
   RelSymbol := RelSymbol
   FuncSymbol := FuncSymbol
+  relArity_pos := by
+    intro n R
+    cases R
+    decide
 
 /-- Graphs use the trivial language-permutation group. -/
 def action : language.Action PUnit :=

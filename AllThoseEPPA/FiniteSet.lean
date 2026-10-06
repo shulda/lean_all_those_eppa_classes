@@ -42,7 +42,8 @@ theorem orderedExtension_apply_of_mem (p : PartialEquiv α α) {x : α}
     (hx : x ∈ p.source) :
     orderedExtension p x = p x := by
   classical
-  simp [orderedExtension, Equiv.subtypeCongr, hx]
+  change (p.toEquiv ⟨x, hx⟩ : α) = p x
+  rfl
 
 theorem orderedExtension_apply_of_not_mem (p : PartialEquiv α α) {x : α}
     (hx : x ∉ p.source) :

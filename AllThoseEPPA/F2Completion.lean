@@ -150,12 +150,16 @@ theorem totalParity_evenCompletion_of_exists_outside
     exact firstOutsideIndex_mem_representatives D xs h
   have hi₀out : xs i₀ ∉ D := by
     exact firstOutsideIndex_not_mem D xs h
+  have hcenter :
+      evenCompletion D xs c (xs i₀) = sourceParity D xs c := by
+    rw [evenCompletion_of_not_mem D xs c hi₀out h]
+    simp [i₀]
   have houtsum :
       (∑ i ∈ (representatives xs).filter (fun i => xs i ∉ D),
           evenCompletion D xs c (xs i)) =
         sourceParity D xs c := by
+    rw [← hcenter]
     apply Finset.sum_eq_single i₀
-    · exact Finset.mem_filter.mpr ⟨hi₀rep, hi₀out⟩
     · intro j hj hji
       have hjrep : j ∈ representatives xs := (Finset.mem_filter.mp hj).1
       have hjout : xs j ∉ D := (Finset.mem_filter.mp hj).2
@@ -170,13 +174,17 @@ theorem totalParity_evenCompletion_of_exists_outside
       (∑ i ∈ (representatives xs).filter (fun i => xs i ∈ D),
           evenCompletion D xs c (xs i)) =
         sourceParity D xs c := by
-    simp [sourceParity, sourceRepresentatives, evenCompletion]
+    unfold sourceParity sourceRepresentatives
+    apply Finset.sum_congr rfl
+    intro i hi
+    have hiD : xs i ∈ D := (Finset.mem_filter.mp hi).2
+    exact evenCompletion_of_mem D xs c hiD
   unfold totalParity
   rw [← Finset.sum_filter_add_sum_filter_not
       (representatives xs) (fun i => xs i ∈ D)
       (fun i => evenCompletion D xs c (xs i))]
   rw [hsourcesum, houtsum]
-  simp [Bool.zero_eq_false]
+  cases hsp : sourceParity D xs c <;> rfl
 
 /-- The parity completion is linear in the prescribed correction vector. -/
 theorem evenCompletion_add

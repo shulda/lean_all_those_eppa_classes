@@ -35,7 +35,11 @@ theorem partialAutomorphism_adj_iff
     exact ⟨hx, hy⟩
   have h := p.map_rel_iff RelSymbol.edge ![x, y] htuple
   have hpLang : p.lang = 1 := Subsingleton.elim _ _
-  simpa [toStructure, hpLang, Function.comp_apply] using h
+  have hAction : action.onRel p.lang RelSymbol.edge = RelSymbol.edge := by
+    rw [hpLang]
+    exact Language.Action.onRel_one action RelSymbol.edge
+  rw [hAction] at h
+  simpa [toStructure, Function.comp_apply] using h
 
 /-- The coherent order-preserving extension of the underlying partial
 permutation of base vertices. -/
@@ -70,8 +74,9 @@ theorem correctionBit_symm_of_mem
     (p : GraphPartialAutomorphism G) {x y : α}
     (hxy : x ≠ y) (hx : x ∈ p.source) (hy : y ∈ p.source) :
     correctionBit G p x y = correctionBit G p y x := by
-  have hpne : p x ≠ p y :=
-    p.toPartialEquiv.injOn hx hy hxy
+  have hpne : p x ≠ p y := by
+    intro hp
+    exact hxy (p.toPartialEquiv.injOn hx hy hp)
   have hsource :
       (genericValuation G x y ≠ genericValuation G y x) ↔
         G.Adj x y := by
@@ -99,11 +104,13 @@ If neither endpoint belongs to the domain there is no flip.  If at least one
 does, the first available endpoint determines the correction; the previous
 lemma shows that this is independent of the choice when both are available. -/
 noncomputable def flipBit
-    (p : GraphPartialAutomorphism G) (x y : α) : Bool :=
-  if hxy : x = y then false
-  else if hx : x ∈ p.source then correctionBit G p x y
-  else if hy : y ∈ p.source then correctionBit G p y x
-  else false
+    (p : GraphPartialAutomorphism G) (x y : α) : Bool := by
+  classical
+  exact
+    if hxy : x = y then false
+    else if hx : x ∈ p.source then correctionBit G p x y
+    else if hy : y ∈ p.source then correctionBit G p y x
+    else false
 
 @[simp] theorem flipBit_self
     (p : GraphPartialAutomorphism G) (x : α) :
@@ -117,7 +124,7 @@ theorem flipBit_symm
   by_cases hxy : x = y
   · subst y
     simp
-  · have hyx : y ≠ x := hxy.symm
+  · have hyx : y ≠ x := Ne.symm hxy
     by_cases hx : x ∈ p.source
     · by_cases hy : y ∈ p.source
       · simp [flipBit, hxy, hyx, hx, hy,

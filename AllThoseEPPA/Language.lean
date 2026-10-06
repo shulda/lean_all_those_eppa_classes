@@ -27,6 +27,22 @@ structure Language where
 
 namespace Language
 
+/-- A language is relational when it has no function symbols. -/
+class IsRelational (L : Language.{u}) : Prop where
+  func_isEmpty : ∀ n : ℕ, IsEmpty (L.FuncSymbol n)
+
+instance {L : Language.{u}} [L.IsRelational] {n : ℕ} :
+    IsEmpty (L.FuncSymbol n) :=
+  IsRelational.func_isEmpty n
+
+/-- A relation symbol bundled together with its arity. -/
+abbrev AnyRelSymbol (L : Language.{u}) := Σ n, L.RelSymbol n
+
+/-- The first coordinate of a relation tuple.  This is always defined because
+relation symbols in the paper have positive arity. -/
+def firstIndex {L : Language.{u}} {n : ℕ} (R : L.RelSymbol n) : Fin n :=
+  ⟨0, L.relArity_pos R⟩
+
 /-- An action of a group Γ on the symbols of a language, preserving symbol type
 and arity.  Each arity is acted on separately, so arity preservation is
 definitionally visible to Lean. -/

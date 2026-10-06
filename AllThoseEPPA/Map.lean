@@ -69,7 +69,7 @@ def id (A : Structure L V) : Homomorphism act A A where
   map_func := by
     intro n F x
     intro y hy
-    exact ⟨y, hy, rfl⟩
+    simpa [imageSet] using hy
 
 /-- Composition of homomorphisms.  The language component is composed in the
 same order as in the paper: the language part of g ∘ f is g_L f_L. -/

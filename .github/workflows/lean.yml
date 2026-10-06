@@ -48,6 +48,7 @@ jobs:
           lake exe cache get \
             Mathlib.Data.Fintype.Sort \
             Mathlib.Data.Fintype.Pi \
+            Mathlib.Data.Fintype.Sigma \
             Mathlib.Logic.Equiv.Fintype \
             Mathlib.Logic.Equiv.PartialEquiv \
             Mathlib.GroupTheory.Perm.Basic \

@@ -1,5 +1,6 @@
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Finset.Card
 import AllThoseEPPA.EPPA

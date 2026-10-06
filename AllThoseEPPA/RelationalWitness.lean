@@ -119,6 +119,12 @@ noncomputable def genericVertex (x : α) : WitnessVertex L α where
       genericValuation A x R xs :=
   rfl
 
+
+@[simp] theorem bases_genericVertex {n : ℕ} (xs : Fin n → α) :
+    WitnessVertex.bases (fun i => genericVertex A (xs i)) = xs := by
+  funext i
+  rfl
+
 theorem genericTupleCompatible {n : ℕ} (xs : Fin n → α) :
     WitnessVertex.TupleCompatible (fun i => genericVertex A (xs i)) := by
   intro i j h
@@ -132,7 +138,8 @@ private theorem generic_activeIndices_eq_empty {n : ℕ}
     WitnessVertex.activeIndices R (fun i => genericVertex A (xs i)) = ∅ := by
   classical
   ext i
-  simp [WitnessVertex.activeIndices, genericValuation, hA]
+  simp [WitnessVertex.activeIndices, genericValuation,
+    bases_genericVertex, hA]
 
 private theorem generic_activeIndices_eq_singleton {n : ℕ}
     (R : L.RelSymbol n) (xs : Fin n → α)
@@ -170,8 +177,8 @@ private theorem generic_activeIndices_eq_singleton {n : ℕ}
     · apply (genericValuation_eq_true_iff A (xs i0) ⟨n, R⟩
         (WitnessVertex.bases (fun j => genericVertex A (xs j)))).2
       constructor
-      · simpa [WitnessVertex.bases] using hA
-      · simp [WitnessVertex.bases, i0]
+      · simpa using hA
+      · simp [i0]
 
 /-- The generic tuple is in the witness relation exactly when the original
 tuple is in the corresponding relation of `A`. -/

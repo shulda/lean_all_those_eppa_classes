@@ -174,8 +174,8 @@ theorem sourceParity_eq_sourceCorrection_first_of_mem
     apply Finset.mem_filter.mpr
     refine ⟨Finset.mem_univ _, ?_⟩
     intro j hj
-    have hj0 : j.val < 0 := by
-      simpa [i₀, Language.firstIndex] using hj
+    have hj0 : j.val < i₀.val := hj
+    change j.val < 0 at hj0
     exact (Nat.not_lt_zero _ hj0).elim
   have hi₀src :
       i₀ ∈ F2Completion.sourceRepresentatives p.source xs := by
@@ -214,7 +214,11 @@ theorem sourceParity_eq_false_of_forall_mem
     funext i
     simp [Function.comp_apply, baseExtension_apply_of_mem act A p (hxs i)]
   have hrel := partialAutomorphism_rel_iff act A p R xs hxs
-  simp [genericValuation, hσ, hrel, i₀, Bool.zero_eq_false]
+  have hfirstσ :
+      p (xs i₀) = baseExtension act A p (xs i₀) := by
+    symm
+    exact baseExtension_apply_of_mem act A p (hxs i₀)
+  simp [genericValuation, hσ, hrel, i₀, hfirstσ, Bool.zero_eq_false]
 
 /-- The completed flip correction `F_R(xs)`, viewed as a function of the
 base vertex rather than of a tuple index. Equal base vertices therefore get
@@ -242,6 +246,7 @@ theorem flipCorrection_totalParity
     {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) :
     F2Completion.totalParity xs (flipCorrection act A p R xs) = false := by
   classical
+  unfold flipCorrection
   by_cases h : ∃ i, xs i ∉ p.source
   · exact F2Completion.totalParity_evenCompletion_of_exists_outside
       p.source xs (sourceCorrection act A p R xs) h

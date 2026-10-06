@@ -5,6 +5,7 @@ import AllThoseEPPA.Substructure
 import AllThoseEPPA.PartialIso
 import AllThoseEPPA.EPPA
 import AllThoseEPPA.FiniteSet
+import AllThoseEPPA.F2Completion
 import AllThoseEPPA.Examples.Graph
 import AllThoseEPPA.Examples.GraphWitness
 import AllThoseEPPA.Examples.GraphExtension

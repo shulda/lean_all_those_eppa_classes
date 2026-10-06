@@ -9,6 +9,8 @@ The authoritative paper source is maintained separately in the private
 Overleaf mirror.  This public repository contains the Lean formalization and
 its audit/status material.
 
+For the live paper-to-Lean dependency/status map, see [FORMALIZATION.md](FORMALIZATION.md).
+
 ## Scope and priorities
 
 The primary target is the general EPPA machinery:

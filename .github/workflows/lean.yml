@@ -35,13 +35,29 @@ jobs:
           restore-keys: |
             lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
 
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # As in Jan Hubička's partite-construction workflow, fetch only the
+      # Mathlib cache roots that this project currently imports instead of the
+      # complete Mathlib cache.
+      - name: Download Mathlib cache
+        run: |
+          lake exe cache get \
+            Mathlib.Data.Fintype.Sort \
+            Mathlib.Logic.Equiv.Fintype \
+            Mathlib.Logic.Equiv.PartialEquiv \
+            Mathlib.GroupTheory.Perm.Basic
+
       - name: Build and audit Lean project
         uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1.6.1
         with:
           auto-config: false
           build: true
           use-github-cache: false
-          use-mathlib-cache: true
+          use-mathlib-cache: false
           axiom-audit: true
           axiom-audit-root: AllThoseEPPA
           axiom-audit-allow: propext,Classical.choice,Quot.sound

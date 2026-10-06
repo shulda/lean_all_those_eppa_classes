@@ -30,5 +30,15 @@ def imageSet (f : V → W) (S : Set V) : Set W :=
     y ∈ imageSet f S ↔ ∃ x ∈ S, f x = y :=
   Iff.rfl
 
+/-- Images under a composite map can be taken in two stages. -/
+theorem imageSet_comp {X : Type*} (g : W → X) (f : V → W) (S : Set V) :
+    imageSet (g ∘ f) S = imageSet g (imageSet f S) := by
+  ext x
+  constructor
+  · rintro ⟨a, ha, rfl⟩
+    exact ⟨f a, ⟨a, ha, rfl⟩, rfl⟩
+  · rintro ⟨b, ⟨a, ha, rfl⟩, rfl⟩
+    exact ⟨a, ha, rfl⟩
+
 end Structure
 end AllThoseEPPA

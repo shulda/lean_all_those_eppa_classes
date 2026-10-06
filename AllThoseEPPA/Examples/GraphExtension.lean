@@ -241,7 +241,72 @@ theorem extendVertex_genericVertex_of_mem
         xor_self_left]
 
 
+/-- The witness-vertex permutation as an automorphism in the common
+`Γ_L`-structure API. -/
+noncomputable def witnessAutomorphism
+    (p : GraphPartialAutomorphism G) :
+    Structure.Automorphism action
+      (toStructure (WitnessVertex.witnessGraph α)) where
+  toPartialIsomorphism :=
+    { lang := 1
+      toPartialEquiv := (vertexExtensionEquiv G p).toPartialEquiv
+      source_closed :=
+        Structure.isClosed_univ
+          (toStructure (WitnessVertex.witnessGraph α))
+      target_closed :=
+        Structure.isClosed_univ
+          (toStructure (WitnessVertex.witnessGraph α))
+      map_rel_iff := by
+        intro n R x hx
+        rw [Language.Action.onRel_one action R]
+        cases R with
+        | edge =>
+          simpa [toStructure, Function.comp_apply] using
+            (extendVertex_adj_iff G p (x 0) (x 1))
+      map_func := by
+        intro n F x hx
+        exact Empty.elim F }
+  source_eq_univ := rfl
+  target_eq_univ := rfl
+
+/-- The constructed witness automorphism extends the given partial
+automorphism along the generic embedding. -/
+theorem witnessAutomorphism_extends
+    (p : GraphPartialAutomorphism G) :
+    Structure.ExtendsAlong action (genericEmbedding G) p
+      (witnessAutomorphism G p) := by
+  constructor
+  · exact Subsingleton.elim _ _
+  · intro x hx
+    change
+      extendVertex G p (genericVertex G x) =
+        genericVertex G (p x)
+    exact extendVertex_genericVertex_of_mem G p hx
+
+/-- The valuation graph is an EPPA-witness for the generic copy of `G`. -/
+theorem graphWitness_isEPPAWitness :
+    Structure.IsEPPAWitness action (genericEmbedding G) := by
+  intro p
+  exact ⟨witnessAutomorphism G p, witnessAutomorphism_extends G p⟩
+
 end ExtensionCore
+
+/-- **Finite graphs have EPPA (explicit valuation witness).**
+
+For an arbitrary finite graph, the graph on valuation vertices from Section 3
+contains a copy of the graph and is an EPPA-witness for that copy.  The linear
+order used for the generic embedding and for coherent extension of the base
+partial permutation is chosen internally and is not part of the statement. -/
+theorem finiteGraphsHaveEPPA {α : Type u} [Fintype α]
+    (G : SimpleGraph α) :
+    ∃ ψ : Structure.Embedding action (toStructure G)
+        (toStructure (WitnessVertex.witnessGraph α)),
+      Structure.IsEPPAWitness action ψ := by
+  classical
+  letI : LinearOrder α :=
+    LinearOrder.lift' (Fintype.equivFin α) (Fintype.equivFin α).injective
+  exact ⟨genericEmbedding G, graphWitness_isEPPAWitness G⟩
+
 
 end Graph
 end AllThoseEPPA

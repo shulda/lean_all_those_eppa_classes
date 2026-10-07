@@ -231,16 +231,14 @@ noncomputable def projectionInducedEmbedding
                 (fun i => (xs i).1)) :=
         ⟨z.1, hzB, rfl⟩
       rw [hfun'] at himg
-      change
-        z.1.base ∈ B₀.func F
-          (fun i => (xs i).1.base)
-      exact himg
+      simpa [Structure.induce, Function.comp_def] using himg
     · intro hy
-      change
-        y.1 ∈ B₀.func F
-          (fun i => (xs i).1.base) at hy
-      rw [← hfun'] at hy
-      rcases hy with ⟨z, hz, hzy⟩
+      have hy' :
+          y.1 ∈ B₀.func F
+            (fun i => (xs i).1.base) := by
+        simpa [Structure.induce, Function.comp_def] using hy
+      rw [← hfun'] at hy'
+      rcases hy' with ⟨z, hz, hzy⟩
       have hzS : z ∈ S :=
         hS F (fun i => (xs i).1)
           (fun i => (xs i).2) hz

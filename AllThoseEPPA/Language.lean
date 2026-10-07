@@ -46,11 +46,11 @@ class HasUnaryFunctions (L : Language.{u}) : Prop where
 all function symbols. -/
 def relationalReduct (L : Language.{u}) : Language.{u} where
   RelSymbol := L.RelSymbol
-  FuncSymbol := fun _ => Empty
+  FuncSymbol := fun _ => PEmpty.{u + 1}
   relArity_pos := L.relArity_pos
 
 instance (L : Language.{u}) : L.relationalReduct.IsRelational where
-  func_isEmpty := fun _ => inferInstance
+  func_isEmpty := fun _ => ⟨PEmpty.elim⟩
 
 /-- A relation symbol bundled together with its arity. -/
 abbrev AnyRelSymbol (L : Language.{u}) := Σ n, L.RelSymbol n

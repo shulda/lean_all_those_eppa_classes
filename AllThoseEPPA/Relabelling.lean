@@ -24,11 +24,7 @@ variable {L : Language.{u}} {Γ : Type v} [Group Γ]
 def Action.relationalReduct (act : L.Action Γ) :
     L.relationalReduct.Action Γ where
   rel := act.rel
-  func n := by
-    exact
-      { toFun := fun g => 1
-        map_one' := rfl
-        map_mul' := by intro g h; rfl }
+  func _ := 1
 
 @[simp] theorem Action.relationalReduct_onRel
     (act : L.Action Γ) {n : ℕ} (g : Γ) (R : L.RelSymbol n) :

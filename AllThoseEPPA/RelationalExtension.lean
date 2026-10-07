@@ -407,9 +407,6 @@ theorem flipCorrection_comp
         (sourceCorrection act A q (act.onRel p.lang R)
           (baseExtension act A p ∘ xs)) x]
 
-/-- The completed flip vector has even total parity on the distinct base
-vertices of every tuple. -/
-
 /-- Completed flip corrections are invariant under extensional equality of the
 underlying partial automorphism. -/
 theorem flipCorrection_eq_of_equivalent
@@ -428,6 +425,8 @@ theorem flipCorrection_eq_of_equivalent
     exact sourceCorrection_eq_of_equivalent act A hpq R xs y
   rw [hs, hc]
 
+/-- The completed flip vector has even total parity on the distinct base
+vertices of every tuple. -/
 theorem flipCorrection_totalParity
     (p : RelPartialAutomorphism act A)
     {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) :
@@ -814,7 +813,8 @@ theorem witnessVertexEquiv_eq_of_equivalent
     {p q : RelPartialAutomorphism act A}
     (hpq : Structure.PartialIsomorphism.Equivalent p q) :
     witnessVertexEquiv act A p = witnessVertexEquiv act A q := by
-  ext v
+  apply Equiv.ext
+  intro v
   exact extendWitnessVertex_eq_of_equivalent act A hpq v
 
 

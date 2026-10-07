@@ -1,3 +1,4 @@
+import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Structure
 
 /-!
@@ -77,7 +78,7 @@ def relationalReduct (A : Structure L V) :
   rel := A.rel
   func := by
     intro n F xs
-    exact Empty.elim F
+    exact PEmpty.elim F
 
 @[simp] theorem relationalReduct_rel (A : Structure L V)
     {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → V) :
@@ -109,6 +110,7 @@ theorem HasFiniteRelabelOrbit.relationalReduct
         (relationalReduct_relabel act g A).symm⟩
     · rintro ⟨C, ⟨g, rfl⟩, rfl⟩
       exact ⟨g, relationalReduct_relabel act g A⟩
+  unfold HasFiniteRelabelOrbit
   rw [himage]
   exact hA.image f
 

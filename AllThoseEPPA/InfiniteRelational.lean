@@ -31,7 +31,7 @@ variable (act : L.Action Γ) (A : Structure L α)
 
 /-- A relation symbol together with a surjective coordinate map onto an
 `n`-element injective support. -/
-structure ProfileEntry (L : Language.{u}) (n : ℕ) where
+@[ext] structure ProfileEntry (L : Language.{u}) (n : ℕ) where
   arity : ℕ
   symbol : L.RelSymbol arity
   coord : Fin arity → Fin n
@@ -408,52 +408,18 @@ def encodeEmbedding
 
 
 
-/-- Relabelling both structures in the same way preserves equality of tuple
-profiles. -/
-theorem profile_relabel_congr
-    {β γ : Type*} (g : Γ)
-    (B : Structure L β) (C : Structure L γ)
-    {n : ℕ} (xs : Fin n → β) (ys : Fin n → γ)
-    (h : profile B xs = profile C ys) :
-    profile (B.relabel act g) xs =
-      profile (C.relabel act g) ys := by
-  ext e
-  let e' : ProfileEntry L n :=
-    { arity := e.arity
-      symbol := act.onRel g⁻¹ e.symbol
-      coord := e.coord
-      coord_surjective := e.coord_surjective }
-  have he := Set.ext_iff.mp h e'
-  change
-    B.rel (act.onRel g⁻¹ e.symbol) (xs ∘ e.coord) ↔
-      C.rel (act.onRel g⁻¹ e.symbol) (ys ∘ e.coord)
-  exact he
-
-/-- Relabelling by the same group element reflects equality of profiles as
-well as preserving it. -/
-theorem profile_relabel_eq_iff
-    {β γ : Type*} (g : Γ)
-    (B : Structure L β) (C : Structure L γ)
-    {n : ℕ} (xs : Fin n → β) (ys : Fin n → γ) :
-    profile (B.relabel act g) xs =
-        profile (C.relabel act g) ys ↔
-      profile B xs = profile C ys := by
-  constructor
-  · intro h
-    have h' := profile_relabel_congr act g⁻¹
-      (B.relabel act g) (C.relabel act g) xs ys h
-    simpa [Structure.relabel_mul] using h'
-  · exact profile_relabel_congr act g B C xs ys
-
-/-- A partial automorphism transforms tuple profiles exactly by relabelling the
-language. -/
+/-- A partial automorphism transforms tuple profiles exactly by the
+corresponding action on profile entries. -/
 theorem profile_partialAutomorphism
     (p : Structure.PartialAutomorphism act A)
     {n : ℕ} (xs : Fin n → α)
     (hxs : ∀ i, xs i ∈ p.source) :
     profile A (p.toPartialEquiv ∘ xs) =
-      profile (A.relabel act p.lang) xs := by
+      relabelProfile act p.lang (profile A xs) := by
   ext e
+  change
+    A.rel e.symbol ((p.toPartialEquiv ∘ xs) ∘ e.coord) ↔
+      A.rel (act.onRel p.lang⁻¹ e.symbol) (xs ∘ e.coord)
   have hdom :
       ∀ i, (xs ∘ e.coord) i ∈ p.source := by
     intro i
@@ -461,18 +427,16 @@ theorem profile_partialAutomorphism
   have hp :=
     p.map_rel_iff (act.onRel p.lang⁻¹ e.symbol)
       (xs ∘ e.coord) hdom
-  simpa [profile, Function.comp_assoc, ← Language.Action.onRel_mul] using hp
+  have hs :
+      act.onRel p.lang (act.onRel p.lang⁻¹ e.symbol) = e.symbol := by
+    rw [← Language.Action.onRel_mul]
+    simp
+  rw [hs] at hp
+  simpa [Function.comp_assoc] using hp
 
-/-- The finite pattern structure `T(A)`: an injective tuple realizes a
-pattern symbol precisely when its full relational profile is the profile
-named by that symbol. -/
-def patternStructure :
-    Structure (patternLanguage act A) α where
-  rel P xs :=
-    Function.Injective xs ∧ profile A xs = patternProfile act A P
-  func := by
-    intro n F xs
-    exact PEmpty.elim F
+/-- The finite pattern structure `T(A)` from the paper. -/
+abbrev patternStructure :=
+  encodeStructure act A A
 
 /-- Profile equality in a pattern relation is preserved and reflected by a
 partial automorphism of the original structure. -/
@@ -484,12 +448,8 @@ theorem patternProfile_map_iff
         patternProfile act A (patternPerm act A p.lang P) ↔
       profile A xs = patternProfile act A P := by
   rw [profile_partialAutomorphism act A p xs hxs]
-  change
-    profile (A.relabel act p.lang) xs =
-        profile (P.1.1.1.relabel act p.lang) P.1.2.1 ↔
-      profile A xs = profile P.1.1.1 P.1.2.1
-  exact profile_relabel_eq_iff act p.lang
-    A P.1.1.1 xs P.1.2.1
+  rw [patternProfile_patternPerm_relabelProfile act A p.lang P]
+  exact (relabelProfile_injective act p.lang).eq_iff
 
 /-- Every partial automorphism of `A` induces, with exactly the same language
 component and vertex partial equivalence, a partial automorphism of `T(A)`. -/

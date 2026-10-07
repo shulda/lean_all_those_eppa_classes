@@ -641,6 +641,155 @@ noncomputable def restrict {x : β}
 
 end ValuationSignature
 
+
+section Transport
+
+/-- The underlying vertex permutation of a total automorphism. -/
+noncomputable def automorphismEquiv
+    {M : Structure L.relationalReduct β}
+    (h : Structure.Automorphism act.relationalReduct M) :
+    β ≃ β where
+  toFun := h
+  invFun := h.toPartialIsomorphism.toPartialEquiv.symm
+  left_inv := by
+    intro x
+    have hx : x ∈ h.toPartialIsomorphism.source := by
+      rw [h.source_eq_univ]
+      exact Set.mem_univ x
+    exact h.toPartialIsomorphism.left_inv hx
+  right_inv := by
+    intro x
+    have hx : x ∈ h.toPartialIsomorphism.target := by
+      rw [h.target_eq_univ]
+      exact Set.mem_univ x
+    exact h.toPartialIsomorphism.right_inv hx
+
+@[simp] theorem automorphismEquiv_apply
+    {M : Structure L.relationalReduct β}
+    (h : Structure.Automorphism act.relationalReduct M) (x : β) :
+    automorphismEquiv act h x = h x :=
+  rfl
+
+/-- Relabelling a valuation's orbit structure does not change the underlying
+set of its one-point closure; this map only changes the subtype proof. -/
+def relabelClosureToOriginal
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : (orbitRelabel act A g C).1.closureAtSet y) :
+    C.1.closureAtSet y :=
+  ⟨z.1, by
+    change z.1 ∈ (C.1.relabel act g).closureAtSet y at z.2
+    rw [closureAtSet_relabel act g C.1 y] at z.2
+    exact z.2⟩
+
+@[simp] theorem relabelClosureToOriginal_val
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : (orbitRelabel act A g C).1.closureAtSet y) :
+    (relabelClosureToOriginal act A g C y z).1 = z.1 :=
+  rfl
+
+/-- Transport an abstract finite valuation presentation along a total
+automorphism of the relational base witness.  The language component is
+absorbed by relabelling the abstract orbit structure. -/
+noncomputable def Valuation.transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (v : Valuation act A B₀ x) :
+    Valuation act A B₀ (h x) where
+  orbit := orbitRelabel act A h.lang v.orbit
+  center := v.center
+  toFun := fun z =>
+    h (v.toFun
+      (relabelClosureToOriginal act A h.lang v.orbit v.center z))
+  injective := by
+    intro z z' hzz
+    have hh :
+        v.toFun
+            (relabelClosureToOriginal act A h.lang v.orbit v.center z) =
+          v.toFun
+            (relabelClosureToOriginal act A h.lang v.orbit v.center z') := by
+      exact (automorphismEquiv act h).injective hzz
+    have hz :
+        relabelClosureToOriginal act A h.lang v.orbit v.center z =
+          relabelClosureToOriginal act A h.lang v.orbit v.center z' :=
+      v.injective hh
+    apply Subtype.ext
+    exact congrArg Subtype.val hz
+  map_rel_iff := by
+    intro n R xs
+    let oldxs : Fin n → v.orbit.1.closureAtSet v.center :=
+      fun i =>
+        relabelClosureToOriginal act A h.lang v.orbit v.center (xs i)
+    let S : L.RelSymbol n := act.onRel h.lang⁻¹ R
+    have hall :
+        ∀ i,
+          v.toFun (oldxs i) ∈ h.toPartialIsomorphism.source := by
+      intro i
+      rw [h.source_eq_univ]
+      exact Set.mem_univ _
+    have hh :=
+      h.toPartialIsomorphism.map_rel_iff S
+        (fun i => v.toFun (oldxs i)) hall
+    have hsym : act.onRel h.lang S = R := by
+      simp [S, ← Language.Action.onRel_mul]
+    rw [hsym] at hh
+    have hv := v.map_rel_iff S oldxs
+    change
+      B₀.rel R
+          (fun i =>
+            h (v.toFun
+              (relabelClosureToOriginal act A h.lang
+                v.orbit v.center (xs i)))) ↔
+        (v.orbit.1.relabel act h.lang).rel R
+          (Subtype.val ∘ xs)
+    have hchain :
+        B₀.rel R (fun i => h (v.toFun (oldxs i))) ↔
+          v.orbit.1.rel S (Subtype.val ∘ oldxs) :=
+      hh.trans hv
+    simpa [oldxs, S, Structure.relabel_rel, Function.comp_def] using hchain
+  center_eq := by
+    change
+      h
+          (v.toFun
+            (relabelClosureToOriginal act A h.lang v.orbit v.center
+              ⟨v.center,
+                (orbitRelabel act A h.lang v.orbit).1.mem_closureAtSet
+                  v.center⟩)) =
+        h x
+    congr 1
+    rw [v.center_eq]
+
+/-- Physical transport of a valuation signature.  It is literal conjugation:
+move the support by the base permutation and transport each unary function
+graph, while relabelling the function symbol by the language component. -/
+noncomputable def ValuationSignature.transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : ValuationSignature (L := L) x) :
+    ValuationSignature (L := L) (h x) := by
+  classical
+  let e := automorphismEquiv act h
+  refine
+    { support := h '' s.support
+      center_mem := ⟨x, s.center_mem, rfl⟩
+      func := fun F a =>
+        h '' s.func (act.onFunc h.lang⁻¹ F) (e.symm a)
+      func_supported := ?_ }
+  intro n F a ha b hb
+  rcases ha with ⟨d, hd, hda⟩
+  have hpre : e.symm a = d := by
+    apply e.injective
+    simpa [e, hda]
+  rcases hb with ⟨c, hc, hcb⟩
+  refine ⟨c, ?_, hcb⟩
+  apply s.func_supported (act.onFunc h.lang⁻¹ F) hd
+  simpa [hpre] using hc
+
+@[simp] theorem ValuationSignature.transport_support
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : ValuationSignature (L := L) x) :
+    (s.transport act B₀ h).support = h '' s.support :=
+  rfl
+
+end Transport
+
 end PhysicalValuations
 
 end UnaryFunctions

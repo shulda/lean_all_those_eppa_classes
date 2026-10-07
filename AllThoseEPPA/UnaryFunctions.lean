@@ -749,7 +749,7 @@ noncomputable def Valuation.transport
               (relabelClosureToOriginal act A h.lang
                 v.orbit v.center (xs i)))) ↔
         (v.orbit.1.relabel act h.lang).rel R
-          (Subtype.val ∘ xs)
+          (fun i => (xs i).1)
     have hchain :
         B₀.rel R (fun i => h (v.toFun (oldxs i))) ↔
           v.orbit.1.rel S (Subtype.val ∘ oldxs) :=

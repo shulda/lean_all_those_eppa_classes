@@ -377,5 +377,85 @@ noncomputable def canonicalVertex (a : α) :
     canonicalValuationStructure act A B₀ ψ
       (ψ a) ⟨a, rfl⟩⟩
 
+
+/-- The canonical valuation function depends only on the base vertex, not on
+the proof that the vertex lies in the distinguished copy. -/
+theorem canonicalValuationFunction_proof_irrel
+    {x : β} (hx hy : x ∈ Set.range ψ) :
+    canonicalValuationFunction act A B₀ ψ x hx =
+      canonicalValuationFunction act A B₀ ψ x hy := by
+  have h : hx = hy := Subsingleton.elim _ _
+  subst hy
+  rfl
+
+/-- Restricting a canonical valuation structure gives the canonical
+valuation structure at the new centre. -/
+theorem canonicalValuationStructure_restrict
+    {x y : β}
+    (hx : x ∈ Set.range ψ)
+    (hy : y ∈ B₀.closureAtSet x)
+    (hyA : y ∈ Set.range ψ) :
+    (canonicalValuationStructure act A B₀ ψ x hx).restrict
+        act A B₀ ψ y hy =
+      canonicalValuationStructure act A B₀ ψ y hyA := by
+  apply Subtype.ext
+  funext z
+  apply canonicalValuationFunction_proof_irrel act A B₀ ψ
+
+section UnaryProjection
+
+variable [L.HasUnaryFunctions]
+
+/-- Projection of the faithful witness to the given base witness. -/
+noncomputable def projection :
+    Structure.Homomorphism act
+      (witnessStructure act A B₀ ψ) B₀ where
+  lang := 1
+  toFun := WitnessVertex.base
+  map_rel := by
+    intro n R xs hrel
+    simpa using hrel.1
+  map_func := by
+    intro n F xs
+    have hxs :
+        xs = fun _ => xs (UnaryFunctions.unaryIndex F) :=
+      UnaryFunctions.unaryTuple_eq_constant F xs
+    rw [hxs]
+    intro y hy
+    rcases hy with ⟨z, hz, rfl⟩
+    change
+      z ∈
+        (witnessStructure act A B₀ ψ).func F
+          (fun _ => xs (UnaryFunctions.unaryIndex F)) at hz
+    rcases hz with ⟨b, hb, rfl⟩
+    simpa using hb
+
+/-- Projection is literally the first coordinate. -/
+@[simp] theorem projection_apply
+    (w : WitnessVertex act A B₀ ψ) :
+    projection act A B₀ ψ w = w.base :=
+  rfl
+
+end UnaryProjection
+
+/-- Every family of canonical witness vertices is generic. -/
+theorem canonicalFamilyGeneric
+    {ι : Type*} (as : ι → α) :
+    WitnessFamilyGeneric act A B₀ ψ
+      (fun i => canonicalVertex act A B₀ ψ (as i)) := by
+  intro i j y z
+  let hri :
+      y.1 ∈ Set.range ψ :=
+    closureAtSet_subset_embedding_range act A B₀ ψ
+      (show ψ (as i) ∈ Set.range ψ from ⟨as i, rfl⟩) y.2
+  let hrj :
+      z.1 ∈ Set.range ψ :=
+    closureAtSet_subset_embedding_range act A B₀ ψ
+      (show ψ (as j) ∈ Set.range ψ from ⟨as j, rfl⟩) z.2
+  simpa [WitnessVertex.pointAt, valuationPointAt,
+    WitnessVertex.valuation, canonicalVertex,
+    canonicalValuationStructure] using
+    (canonical_areGeneric act A B₀ ψ hri hrj)
+
 end Faithful
 end AllThoseEPPA

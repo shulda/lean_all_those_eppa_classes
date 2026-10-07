@@ -1277,9 +1277,6 @@ theorem genericPhysicalValuation_mem_func_at_image_iff
           ⟨y, Valuation.func_mem_closure_of_mem
             act A B₀ v z F hy⟩
   rw [Valuation.mem_physicalFunc_at_image_iff]
-  constructor <;> rintro ⟨y, hy, hby⟩
-  · exact ⟨y, hy, hby⟩
-  · exact ⟨y, hy, hby⟩
 
 /-- Vertex map of the generic copy of `A` in the physical witness. -/
 def genericPhysicalVertex (x : α) :

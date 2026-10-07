@@ -416,5 +416,67 @@ theorem physicalWitnessAutomorphism_comp
           (PhysicalWitnessVertex.transport act A B₀ g w)
     exact (PhysicalWitnessVertex.transport_comp act A B₀ h g w).symm
 
+
+/-- A coherent extension system on the relational base witness lifts
+canonically to the presentation-independent unary-function witness. -/
+noncomputable def liftCoherentExtension
+    (hA : A.HasFiniteRelabelOrbit act)
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (E : Structure.CoherentExtension act.relationalReduct ψ₀) :
+    Structure.CoherentExtension act
+      (genericPhysicalEmbedding act A B₀ ψ₀) where
+  extension := fun p =>
+    physicalWitnessAutomorphism act A B₀ hA
+      (E.extension (reductPartialAutomorphism act A p))
+  extension_spec := by
+    intro p
+    exact
+      physicalWitnessAutomorphism_extends_generic
+        act A B₀ hA ψ₀ p
+          (E.extension (reductPartialAutomorphism act A p))
+          (E.extension_spec (reductPartialAutomorphism act A p))
+  respects_equivalent := by
+    intro p q hpq
+    have hred :
+        Structure.PartialIsomorphism.Equivalent
+          (reductPartialAutomorphism act A p)
+          (reductPartialAutomorphism act A q) :=
+      reductPartialAutomorphism_equivalent act A hpq
+    have heq :=
+      E.respects_equivalent
+        (reductPartialAutomorphism act A p)
+        (reductPartialAutomorphism act A q) hred
+    exact
+      congrArg
+        (physicalWitnessAutomorphism act A B₀ hA) heq
+  coherent := by
+    intro p q r hcoh
+    have hred :
+        Structure.PartialIsomorphism.CoherentTriple
+          (reductPartialAutomorphism act A p)
+          (reductPartialAutomorphism act A q)
+          (reductPartialAutomorphism act A r) :=
+      reductPartialAutomorphism_coherentTriple act A hcoh
+    have hc :=
+      E.coherent
+        (reductPartialAutomorphism act A p)
+        (reductPartialAutomorphism act A q)
+        (reductPartialAutomorphism act A r) hred
+    calc
+      physicalWitnessAutomorphism act A B₀ hA
+          (E.extension (reductPartialAutomorphism act A r)) =
+          physicalWitnessAutomorphism act A B₀ hA
+            ((E.extension (reductPartialAutomorphism act A q)).comp
+              (E.extension (reductPartialAutomorphism act A p))) :=
+        congrArg
+          (physicalWitnessAutomorphism act A B₀ hA) hc
+      _ =
+          (physicalWitnessAutomorphism act A B₀ hA
+            (E.extension (reductPartialAutomorphism act A q))).comp
+          (physicalWitnessAutomorphism act A B₀ hA
+            (E.extension (reductPartialAutomorphism act A p))) :=
+        physicalWitnessAutomorphism_comp act A B₀ hA _ _
+
 end UnaryFunctions
 end AllThoseEPPA

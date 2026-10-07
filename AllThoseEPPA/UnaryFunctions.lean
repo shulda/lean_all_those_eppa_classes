@@ -317,8 +317,10 @@ theorem unaryTuple_eq_constant {X : Type*} {n : ℕ}
 
 @[simp] theorem unaryIndex_onFunc
     (g : Γ) {n : ℕ} (F : L.FuncSymbol n) :
-    unaryIndex (act.onFunc g F) = unaryIndex F :=
-  Subsingleton.elim _ _
+    unaryIndex (act.onFunc g F) = unaryIndex F := by
+  have hn : n = 1 := Language.HasUnaryFunctions.arity_eq_one F
+  subst n
+  exact Subsingleton.elim _ _
 
 /-- Vertices of the unary-function witness are the paper's pairs `(x,V)`. -/
 abbrev WitnessVertex :=
@@ -1083,7 +1085,7 @@ def genericOrbit : Orbit act A :=
 copy of `A`. -/
 def genericValuation (x : α) :
     Valuation act A B₀ (ψ₀ x) where
-  orbit := genericOrbit act A ψ₀
+  orbit := genericOrbit act A B₀ ψ₀
   center := x
   toFun := fun z => ψ₀ z.1
   injective := by
@@ -1129,7 +1131,7 @@ theorem genericValuation_restrict
     (x y : α)
     (hy :
       y ∈
-        (genericOrbit act A ψ₀).1.closureAtSet x) :
+        (genericOrbit act A B₀ ψ₀).1.closureAtSet x) :
     Valuation.restrict act A B₀
         (genericValuation act A B₀ ψ₀ x) y hy =
       genericValuation act A B₀ ψ₀ y := by
@@ -1158,18 +1160,12 @@ theorem genericPhysicalValuation_center_func
   constructor
   · rintro ⟨y, hy, hby⟩
     refine ⟨y, ?_, hby.symm⟩
-    change
-      y ∈ (A.relabel act ψ₀.lang).func
-        (act.onFunc ψ₀.lang F) (fun _ => x) at hy
-    simpa [Structure.relabel_func,
-      ← Language.Action.onFunc_mul] using hy
+    simpa [v, z, genericValuation, genericOrbit,
+      Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
   · rintro ⟨y, hy, rfl⟩
     refine ⟨y, ?_, rfl⟩
-    change
-      y ∈ (A.relabel act ψ₀.lang).func
-        (act.onFunc ψ₀.lang F) (fun _ => x)
-    simpa [Structure.relabel_func,
-      ← Language.Action.onFunc_mul] using hy
+    simpa [v, z, genericValuation, genericOrbit,
+      Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
 
 /-- Physical restriction of a generic valuation agrees with the generic
 valuation at the new centre. -/
@@ -1177,7 +1173,7 @@ theorem genericPhysicalValuation_restrict
     (x y : α)
     (hy :
       y ∈
-        (genericOrbit act A ψ₀).1.closureAtSet x)
+        (genericOrbit act A B₀ ψ₀).1.closureAtSet x)
     (hyphys :
       ψ₀ y ∈
         (genericPhysicalValuation act A B₀ ψ₀ x).1.support) :
@@ -1418,16 +1414,27 @@ theorem ValuationSignature.transport_injective
     exact (Set.image_injective.mpr
       (automorphismEquiv act h).injective) hs
   · funext n F a
+    let e := automorphismEquiv act h
     have hf :=
       congrArg
         (fun q : ValuationSignature (L := L) (h x) =>
           q.func (act.onFunc h.lang F) (h a)) hst
-    have himage :
-        h '' s.func F a = h '' t.func F a := by
-      simpa [ValuationSignature.transport_func,
-        ← Language.Action.onFunc_mul] using hf
+    change
+      h '' s.func
+          (act.onFunc h.lang⁻¹ (act.onFunc h.lang F))
+          (e.symm (h a)) =
+        h '' t.func
+          (act.onFunc h.lang⁻¹ (act.onFunc h.lang F))
+          (e.symm (h a)) at hf
+    have hsym :
+        act.onFunc h.lang⁻¹ (act.onFunc h.lang F) = F := by
+      rw [← Language.Action.onFunc_mul]
+      simp
+    have hpre : e.symm (h a) = a :=
+      e.symm_apply_apply a
+    rw [hsym, hpre] at hf
     exact (Set.image_injective.mpr
-      (automorphismEquiv act h).injective) himage
+      (automorphismEquiv act h).injective) hf
 
 /-- Abstract transport moves the physical support exactly by the underlying
 base automorphism. -/
@@ -1690,10 +1697,12 @@ theorem ValuationSignature.transport_restrict
         ⟨y, hy, rfl⟩ := by
   let e := automorphismEquiv act h
   apply ValuationSignature.ext
-  · rw [ValuationSignature.transport_support,
-      ValuationSignature.restrict_support,
-      ValuationSignature.restrict_support,
-      ValuationSignature.transport_closureAtSet]
+  · change
+      h '' s.closureAtSet y =
+        (s.transport act B₀ h).closureAtSet (h y)
+    exact
+      (ValuationSignature.transport_closureAtSet
+        act B₀ h s y).symm
   · funext n F a
     by_cases ha :
         a ∈ (s.transport act B₀ h).closureAtSet (h y)
@@ -1828,6 +1837,7 @@ theorem physicalFunctionValueVertex_transport
       physicalFunctionValueVertex act A B₀
         (PhysicalWitnessVertex.transport act A B₀ h w)
         (act.onFunc h.lang F) (h y) hy' := by
+  rw [physicalWitnessEquiv_apply]
   apply Sigma.ext rfl
   apply heq_of_eq
   change
@@ -1878,9 +1888,9 @@ theorem physicalWitnessFunction_transport
         act A B₀ (act.onFunc h.lang F)
         (physicalWitnessEquiv act A B₀ hA h ∘ ws) _).2
     refine ⟨h y, ?_, ?_⟩
-    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
         using hyT
-    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
         using
           (physicalFunctionValueVertex_transport
             act A B₀ hA h w F y hy hyT)
@@ -1893,7 +1903,7 @@ theorem physicalWitnessFunction_transport
     have hyT :
         y' ∈ wt.valuation.1.func
           (act.onFunc h.lang F) (h w.base) := by
-      simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+      simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
         using hy'
     rw [PhysicalWitnessVertex.transport_center_func] at hyT
     rcases hyT with ⟨y, hy, hyy'⟩
@@ -1910,7 +1920,7 @@ theorem physicalWitnessFunction_transport
         (mem_physicalWitnessStructure_func_iff
           act A B₀ F ws _).2
       exact ⟨y, hy, by rfl⟩
-    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
         using
           (physicalFunctionValueVertex_transport
             act A B₀ hA h w F y hy hyT')
@@ -1934,11 +1944,15 @@ theorem physicalWitnessRelation_transport_iff
     h.toPartialIsomorphism.map_rel_iff R
       (fun i => (ws i).base) hall
   change
+    B₀.rel (act.relationalReduct.onRel h.lang R)
+        (h.toPartialIsomorphism.toPartialEquiv ∘
+          fun i => (ws i).base) ↔
+      B₀.rel R (fun i => (ws i).base) at hh
+  change
     B₀.rel (act.onRel h.lang R)
         (fun i => h (ws i).base) ↔
       B₀.rel R (fun i => (ws i).base)
-  simpa [Function.comp_def, physicalWitnessEquiv_apply,
-    PhysicalWitnessVertex.transport, PhysicalWitnessVertex.base] using hh
+  simpa [Function.comp_def] using hh
 
 /-- A base automorphism lifts to an automorphism of the physical unary
 witness. -/

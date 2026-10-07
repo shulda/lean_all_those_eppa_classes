@@ -893,13 +893,15 @@ theorem Valuation.physicalFunc_transport
     let z₀ : v.orbit.1.closureAtSet v.center :=
       relabelClosureToOriginal act A h.lang v.orbit v.center z
     have hza₀ : v.toFun z₀ = e.symm a := by
-      apply e.injective
-      change h (v.toFun z₀) = h (e.symm a)
-      rw [e.apply_symm_apply]
-      exact hza
+      change e (v.toFun z₀) = a at hza
+      have hz := congrArg e.symm hza
+      simpa using hz
     have hy₀ :
         y ∈ v.orbit.1.func (act.onFunc h.lang⁻¹ F)
           (fun _ => z₀.1) := by
+      change
+        y ∈ (v.orbit.1.relabel act h.lang).func F
+          (fun _ => z.1) at hy
       simpa [z₀, Structure.relabel_func] using hy
     have hycl :
         y ∈ v.orbit.1.closureAtSet v.center :=

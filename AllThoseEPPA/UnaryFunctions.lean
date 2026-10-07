@@ -437,5 +437,100 @@ theorem witnessVertex_finite
 
 end Witness
 
+
+section PhysicalValuations
+
+variable {β : Type z} [Finite β]
+variable (B₀ : Structure L.relationalReduct β)
+
+/-- The physical information in a valuation structure after its abstract
+closure coordinates have been embedded into the relational base witness.
+
+Relations need not be stored: on the support they are forced by `B₀`.
+For unary functions we record, for every supported base vertex, the physical
+set of function values in `β`.  This deliberately forgets the auxiliary
+orbit/coordinate presentation used only to prove finiteness. -/
+@[ext] structure ValuationSignature (x : β) where
+  support : Set β
+  center_mem : x ∈ support
+  func : {n : ℕ} → L.FuncSymbol n → β → Set β
+  func_supported :
+    ∀ {n : ℕ} (F : L.FuncSymbol n) {a : β},
+      a ∈ support → func F a ⊆ support
+
+/-- A function value at an arbitrary point of an abstract valuation closure
+still lies in that closure. -/
+theorem Valuation.func_mem_closure_of_mem {x : β}
+    (v : Valuation act A B₀ x)
+    (a : v.orbit.1.closureAtSet v.center)
+    {n : ℕ} (F : L.FuncSymbol n)
+    {y : α}
+    (hy : y ∈ v.orbit.1.func F (fun _ => a.1)) :
+    y ∈ v.orbit.1.closureAtSet v.center := by
+  change y ∈ v.orbit.1.closureSet {v.center}
+  exact
+    (v.orbit.1.isClosed_closureSet ({v.center} : Set α))
+      F (fun _ => a.1) (fun _ => a.2) hy
+
+/-- The physical `F`-values represented by an abstract valuation code at a
+base vertex `a ∈ β`.  The existential presentation makes the definition
+independent of choosing an inverse to the embedding `v.toFun`. -/
+def Valuation.physicalFunc {x : β}
+    (v : Valuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n) (a : β) : Set β :=
+  {b | ∃ (z : v.orbit.1.closureAtSet v.center),
+      v.toFun z = a ∧
+        ∃ (y : α)
+          (hy : y ∈ v.orbit.1.func F (fun _ => z.1)),
+          b =
+            v.toFun
+              ⟨y, Valuation.func_mem_closure_of_mem
+                act A B₀ v z F hy⟩}
+
+/-- Forget the abstract orbit coordinates of a valuation code, retaining only
+the actual support and unary-function structure carried inside `B₀`. -/
+def Valuation.physicalSignature {x : β}
+    (v : Valuation act A B₀ x) :
+    ValuationSignature act A B₀ x where
+  support := Set.range v.toFun
+  center_mem := by
+    refine ⟨⟨v.center, v.orbit.1.mem_closureAtSet v.center⟩, ?_⟩
+    exact v.center_eq
+  func := fun F a => v.physicalFunc F a
+  func_supported := by
+    intro n F a ha b hb
+    rcases hb with ⟨z, hza, y, hy, hby⟩
+    refine ⟨
+      ⟨y, Valuation.func_mem_closure_of_mem act A B₀ v z F hy⟩,
+      ?_⟩
+    exact hby.symm
+
+/-- A physical valuation is a signature realised by at least one finite
+abstract valuation code.  Presentation choices are therefore quotiented out
+by ordinary equality of their physical signatures. -/
+abbrev PhysicalValuation (x : β) :=
+  {s : ValuationSignature act A B₀ x //
+    s ∈ Set.range (Valuation.physicalSignature act A B₀)}
+
+/-- Every physical valuation has a finite presentation set, because it is the
+range of the already finite abstract valuation-code type. -/
+noncomputable def physicalValuationFintype
+    (hA : A.HasFiniteRelabelOrbit act) (x : β) :
+    Fintype (PhysicalValuation act A B₀ x) := by
+  letI : Finite (Valuation act A B₀ x) :=
+    Valuation.finite act A B₀ hA x
+  exact Set.Finite.fintype (Set.finite_range _)
+
+/-- In particular, the physical valuation fibre over each base point is
+finite. -/
+theorem physicalValuation_finite
+    (hA : A.HasFiniteRelabelOrbit act) (x : β) :
+    Finite (PhysicalValuation act A B₀ x) := by
+  letI : Fintype (PhysicalValuation act A B₀ x) :=
+    physicalValuationFintype act A B₀ hA x
+  infer_instance
+
+end PhysicalValuations
+
 end UnaryFunctions
 end AllThoseEPPA

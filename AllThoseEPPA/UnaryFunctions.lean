@@ -677,9 +677,10 @@ def relabelClosureToOriginal
     (z : (orbitRelabel act A g C).1.closureAtSet y) :
     C.1.closureAtSet y :=
   ⟨z.1, by
-    change z.1 ∈ (C.1.relabel act g).closureAtSet y at z.2
-    rw [closureAtSet_relabel act g C.1 y] at z.2
-    exact z.2⟩
+    have hz := z.2
+    change z.1 ∈ (C.1.relabel act g).closureAtSet y at hz
+    rw [closureAtSet_relabel act g C.1 y] at hz
+    exact hz⟩
 
 @[simp] theorem relabelClosureToOriginal_val
     (g : Γ) (C : Orbit act A) (y : α)
@@ -712,7 +713,9 @@ noncomputable def Valuation.transport
           relabelClosureToOriginal act A h.lang v.orbit v.center z' :=
       v.injective hh
     apply Subtype.ext
-    exact congrArg Subtype.val hz
+    simpa using
+      congrArg
+        (fun t : v.orbit.1.closureAtSet v.center => t.1) hz
   map_rel_iff := by
     intro n R xs
     let oldxs : Fin n → v.orbit.1.closureAtSet v.center :=
@@ -728,7 +731,9 @@ noncomputable def Valuation.transport
     have hh :=
       h.toPartialIsomorphism.map_rel_iff S
         (fun i => v.toFun (oldxs i)) hall
-    have hsym : act.onRel h.lang S = R := by
+    have hsym :
+        act.relationalReduct.onRel h.lang S = R := by
+      change act.onRel h.lang S = R
       simp [S, ← Language.Action.onRel_mul]
     rw [hsym] at hh
     have hv := v.map_rel_iff S oldxs
@@ -755,7 +760,15 @@ noncomputable def Valuation.transport
                   v.center⟩)) =
         h x
     congr 1
-    rw [v.center_eq]
+    have hz :
+        relabelClosureToOriginal act A h.lang v.orbit v.center
+            ⟨v.center,
+              (orbitRelabel act A h.lang v.orbit).1.mem_closureAtSet
+                v.center⟩ =
+          ⟨v.center, v.orbit.1.mem_closureAtSet v.center⟩ := by
+      apply Subtype.ext
+      rfl
+    rw [hz, v.center_eq]
 
 /-- Physical transport of a valuation signature.  It is literal conjugation:
 move the support by the base permutation and transport each unary function

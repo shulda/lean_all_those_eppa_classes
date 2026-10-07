@@ -1653,6 +1653,32 @@ noncomputable def physicalWitnessEquiv
       PhysicalWitnessVertex.transport act A B₀ h w :=
   rfl
 
+
+/-- The lifted witness permutation preserves and reflects every relation. -/
+theorem physicalWitnessRelation_transport_iff
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {n : ℕ} (R : L.RelSymbol n)
+    (ws : Fin n → PhysicalWitnessVertex act A B₀) :
+    (physicalWitnessStructure act A B₀).rel
+        (act.onRel h.lang R)
+        (physicalWitnessEquiv act A B₀ hA h ∘ ws) ↔
+      (physicalWitnessStructure act A B₀).rel R ws := by
+  have hall :
+      ∀ i, (ws i).base ∈ h.toPartialIsomorphism.source := by
+    intro i
+    rw [h.source_eq_univ]
+    exact Set.mem_univ _
+  have hh :=
+    h.toPartialIsomorphism.map_rel_iff R
+      (fun i => (ws i).base) hall
+  change
+    B₀.rel (act.onRel h.lang R)
+        (fun i => h (ws i).base) ↔
+      B₀.rel R (fun i => (ws i).base)
+  simpa [Function.comp_def, physicalWitnessEquiv_apply,
+    PhysicalWitnessVertex.transport, PhysicalWitnessVertex.base] using hh
+
 end Transport
 
 end PhysicalValuations

@@ -902,7 +902,13 @@ theorem Valuation.physicalFunc_transport
       change
         y ∈ (v.orbit.1.relabel act h.lang).func F
           (fun _ => z.1) at hy
-      simpa [z₀, Structure.relabel_func] using hy
+      have htuple :
+          (fun _ : Fin n => z₀.1) =
+            (fun _ : Fin n => z.1) := by
+        funext i
+        rfl
+      rw [htuple]
+      simpa [Structure.relabel_func] using hy
     have hycl :
         y ∈ v.orbit.1.closureAtSet v.center :=
       Valuation.func_mem_closure_of_mem act A B₀ v z₀

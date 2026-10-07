@@ -682,5 +682,67 @@ theorem witnessRelation_extend_iff
     relationHolds_iff_tupleValuationParity]
   rw [tupleCompatible_extend_iff, tupleValuationParity_extend]
 
+
+
+/-- The affine witness-vertex permutation as an automorphism in the common
+`Γ_L`-structure API. -/
+noncomputable def witnessAutomorphism
+    (p : RelPartialAutomorphism act A) :
+    Structure.Automorphism act (witnessStructure (L := L) α) where
+  toPartialIsomorphism :=
+    { lang := p.lang
+      toPartialEquiv := (witnessVertexEquiv act A p).toPartialEquiv
+      source_closed :=
+        Structure.isClosed_univ (witnessStructure (L := L) α)
+      target_closed :=
+        Structure.isClosed_univ (witnessStructure (L := L) α)
+      map_rel_iff := by
+        intro n R vs hvs
+        simpa [Function.comp_apply] using
+          (witnessRelation_extend_iff act A p R vs)
+      map_func := by
+        intro n F vs hvs
+        exact isEmptyElim F }
+  source_eq_univ := rfl
+  target_eq_univ := rfl
+
+/-- The affine witness automorphism extends the original partial automorphism
+along the generic copy. -/
+theorem witnessAutomorphism_extends
+    (p : RelPartialAutomorphism act A) :
+    Structure.ExtendsAlong act (genericEmbedding act A) p
+      (witnessAutomorphism act A p) := by
+  constructor
+  · change p.lang * 1 = 1 * p.lang
+    simp
+  · intro x hx
+    change
+      extendWitnessVertex act A p (genericVertex A x) =
+        genericVertex A (p x)
+    exact extendWitnessVertex_generic_of_mem act A p hx
+
+/-- The finite relational valuation witness is a plain EPPA-witness. -/
+theorem relationalWitness_isEPPAWitness :
+    Structure.IsEPPAWitness act (genericEmbedding act A) := by
+  intro p
+  exact ⟨witnessAutomorphism act A p,
+    witnessAutomorphism_extends act A p⟩
+
+/-- **Finite relational structures have EPPA (affine valuation witness).**
+
+This is the plain-EPPA part of Proposition `prop:relstructures`.  The
+coherence of the simultaneous extension map is formalized separately. -/
+theorem finiteRelationalStructuresHaveEPPA
+    {β : Type v} [Fintype β] [Finite L.AnyRelSymbol]
+    (B : Structure L β) :
+    ∃ ψ : Structure.Embedding act B
+        (witnessStructure (L := L) β),
+      Structure.IsEPPAWitness act ψ := by
+  classical
+  letI : LinearOrder β :=
+    LinearOrder.lift' (Fintype.equivFin β) (Fintype.equivFin β).injective
+  exact ⟨genericEmbedding act B,
+    relationalWitness_isEPPAWitness act B⟩
+
 end Relational
 end AllThoseEPPA

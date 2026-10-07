@@ -1188,6 +1188,120 @@ theorem genericPhysicalValuation_restrict
   rw [genericValuation_restrict act A B₀ ψ₀ x y hy] at hphys
   exact hphys.symm
 
+
+/-- A unary function value in the generic physical valuation gives exactly
+the generic witness vertex of the corresponding original point. -/
+theorem genericPhysicalFunctionValueVertex
+    (x y : α) {n : ℕ} (F : L.FuncSymbol n)
+    (hy : y ∈ A.func F (fun _ => x))
+    (hyphys :
+      ψ₀ y ∈
+        (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+          (act.onFunc ψ₀.lang F) (ψ₀ x)) :
+    physicalFunctionValueVertex act A B₀
+        (genericPhysicalVertex act A B₀ ψ₀ x)
+        (act.onFunc ψ₀.lang F) (ψ₀ y) hyphys =
+      genericPhysicalVertex act A B₀ ψ₀ y := by
+  have hyclA : y ∈ A.closureAtSet x := by
+    change y ∈ A.closureSet {x}
+    exact
+      (A.isClosed_closureSet ({x} : Set α))
+        F (fun _ => x)
+        (fun _ => A.mem_closureAtSet x) hy
+  have hycl :
+      y ∈ (genericOrbit act A B₀ ψ₀).1.closureAtSet x := by
+    change y ∈ (A.relabel act ψ₀.lang).closureAtSet x
+    rw [closureAtSet_relabel act ψ₀.lang A x]
+    exact hyclA
+  have hsupport :
+      ψ₀ y ∈
+        (genericPhysicalValuation act A B₀ ψ₀ x).1.support :=
+    PhysicalWitnessVertex.funcValue_mem_support
+      act A B₀ (genericPhysicalVertex act A B₀ ψ₀ x)
+      (act.onFunc ψ₀.lang F) hyphys
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
+  exact heq_of_eq
+    (genericPhysicalValuation_restrict
+      act A B₀ ψ₀ x y hycl hsupport)
+
+/-- The generic physical vertices form an embedded copy of the original
+unary-function structure. -/
+noncomputable def genericPhysicalEmbedding :
+    Structure.Embedding act A
+      (physicalWitnessStructure act A B₀) where
+  lang := ψ₀.lang
+  toFun := genericPhysicalVertex act A B₀ ψ₀
+  injective := by
+    intro x y hxy
+    apply ψ₀.injective
+    exact congrArg Sigma.fst hxy
+  map_rel_iff := by
+    intro n R xs
+    have h := ψ₀.map_rel_iff R xs
+    change
+      B₀.rel (act.onRel ψ₀.lang R)
+          (fun i => ψ₀ (xs i)) ↔
+        A.rel R xs
+    simpa [Function.comp_def] using h
+  map_func := by
+    intro n F xs
+    let x := xs (unaryIndex F)
+    have hxs : xs = fun _ => x :=
+      unaryTuple_eq_constant F xs
+    rw [hxs]
+    ext z
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      have hyphys :
+          ψ₀ y ∈
+            (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+              (act.onFunc ψ₀.lang F) (ψ₀ x) := by
+        rw [genericPhysicalValuation_center_func]
+        exact ⟨y, hy, rfl⟩
+      apply
+        (mem_physicalWitnessStructure_func_iff
+          act A B₀ (act.onFunc ψ₀.lang F)
+          (genericPhysicalVertex act A B₀ ψ₀ ∘
+            fun _ => x) _).2
+      refine ⟨ψ₀ y, ?_, ?_⟩
+      · have hidx :
+            unaryIndex (act.onFunc ψ₀.lang F) = unaryIndex F :=
+          unaryIndex_onFunc (act := act) ψ₀.lang F
+        rw [hidx]
+        simpa [Function.comp_def] using hyphys
+      · exact
+          (genericPhysicalFunctionValueVertex
+            act A B₀ ψ₀ x y F hy hyphys).symm
+    · intro hz
+      rcases
+          (mem_physicalWitnessStructure_func_iff
+            act A B₀ (act.onFunc ψ₀.lang F)
+            (genericPhysicalVertex act A B₀ ψ₀ ∘
+              fun _ => x) z).1 hz with
+        ⟨b, hb, rfl⟩
+      have hidx :
+          unaryIndex (act.onFunc ψ₀.lang F) = unaryIndex F :=
+        unaryIndex_onFunc (act := act) ψ₀.lang F
+      rw [hidx] at hb
+      have hb' :
+          b ∈
+            (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+              (act.onFunc ψ₀.lang F) (ψ₀ x) := by
+        simpa [Function.comp_def] using hb
+      rw [genericPhysicalValuation_center_func] at hb'
+      rcases hb' with ⟨y, hy, rfl⟩
+      have hyphys :
+          ψ₀ y ∈
+            (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+              (act.onFunc ψ₀.lang F) (ψ₀ x) := by
+        rw [genericPhysicalValuation_center_func]
+        exact ⟨y, hy, rfl⟩
+      refine ⟨y, hy, ?_⟩
+      exact
+        (genericPhysicalFunctionValueVertex
+          act A B₀ ψ₀ x y F hy hyphys).symm
+
 end GenericCopy
 
 section Transport

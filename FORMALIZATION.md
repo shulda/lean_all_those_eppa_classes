@@ -27,8 +27,9 @@ green.
 | Lemma `lem:graphs:auto` / finite graphs have EPPA | `AllThoseEPPA/Examples/GraphWitness.lean`, `AllThoseEPPA/Examples/GraphExtension.lean`; `AllThoseEPPA.Graph.finiteGraphsHaveEPPA` | **Formalized** | Explicit valuation witness, generic embedding, flip consistency, witness automorphism and extension are checked. |
 | Lemma `lem:graphs:coherence` and Proposition `prop:graphs` | — | Intentionally skipped | The graph section has served its purpose as an API warm-up; coherence is deferred unless later work needs it. |
 | Proposition `prop:relstructures`: finite relational structures have coherent EPPA | `AllThoseEPPA/RelationalWitness.lean`, `AllThoseEPPA/F2Completion.lean`, `AllThoseEPPA/RelationalExtension.lean`; `AllThoseEPPA.Relational.finiteRelationalStructuresHaveCoherentEPPA` | **Formalized** | The full affine/𝔽₂ valuation construction is checked, including extensionality of partial maps and coherent composition. |
-| Proposition `prop:infinite_languages`: finite relabelling orbit in an arbitrary relational language | `AllThoseEPPA/Relabelling.lean`, `AllThoseEPPA/InfiniteRelational.lean`; `AllThoseEPPA.InfiniteRelational.finiteOrbitRelationalStructuresHaveCoherentEPPA` | **Formalized** | Uses an equivalent direct finite profile language with the original group Γ, rather than adjoining all paper symbols and then invoking `lem:redundant_groups`. The finite witness and coherent transfer through `T` and `U` are checked. |\n| Unary functions / Proposition `prop:eppafunctions` | — | **Current target** | The required infinite-language relational proposition is now green. |
-| Irreducible-structure faithfulness | — | Planned | Regression target: finite 3-uniform hypergraphs. |
+| Proposition `prop:infinite_languages`: finite relabelling orbit in an arbitrary relational language | `AllThoseEPPA/Relabelling.lean`, `AllThoseEPPA/InfiniteRelational.lean`; `AllThoseEPPA.InfiniteRelational.finiteOrbitRelationalStructuresHaveCoherentEPPA` | **Formalized** | Uses an equivalent direct finite profile language with the original group Γ, rather than adjoining all paper symbols and then invoking `lem:redundant_groups`. The finite witness and coherent transfer through `T` and `U` are checked. |
+| Unary functions / Proposition `prop:eppafunctions` | `AllThoseEPPA/UnaryFunctions.lean`, `AllThoseEPPA/UnaryFunctionsCoherence.lean`; `AllThoseEPPA.UnaryFunctions.finiteOrbitUnaryStructuresHaveCoherentEPPA` | **Formalized** | Uses finite abstract valuation presentations only to prove realizability and finiteness, then quotients to presentation-independent physical valuation signatures. The finite witness, generic embedding, lifted automorphisms, extension square and coherent composition are checked. |
+| Irreducible-structure faithfulness / Proposition `prop:faithful` | — | **Current target** | Next layer over an arbitrary finite (coherent) EPPA witness; regression target: finite 3-uniform hypergraphs. |
 | Restricted / locally tree-like construction | — | Planned | Regression target: finite integer-valued metric spaces with distances `{0,...,D}`. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
@@ -52,3 +53,17 @@ The proof still formalizes the substantive `T/U` mechanism: profile encoding
 is functorial on embeddings, decoding is functorial on embeddings,
 `U(T(A)) = A` at the relational level, partial automorphisms lift to `T(A)`,
 and coherent automorphism extensions decode back to the original language.
+
+
+### Unary-function proof note
+
+The Lean proof of Proposition `prop:eppafunctions` separates finite
+presentation data from the mathematical valuation carried by a witness
+vertex.  An abstract valuation presentation consists of a relabelled copy of
+a one-point closure together with its embedding into the relational base
+witness.  Its `ValuationSignature` records only the resulting support and
+unary-function graph inside the base witness.  The final witness uses realised
+physical signatures, so transport by a base automorphism is independent of
+the chosen presentation.  Restriction to one-point closures and transport
+commute, which makes both extension of the generic copy and coherent
+composition functorial.

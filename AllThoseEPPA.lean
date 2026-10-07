@@ -14,3 +14,5 @@ import AllThoseEPPA.Basic
 
 import AllThoseEPPA.RelationalWitness
 import AllThoseEPPA.RelationalExtension
+
+import AllThoseEPPA.InfiniteRelational

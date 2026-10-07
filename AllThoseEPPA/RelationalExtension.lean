@@ -539,6 +539,48 @@ theorem extendWitnessVertex_valuation_relabel
 
 /-- On the generic copy and on the source of the partial automorphism, the
 affine valuation transport agrees with the given partial automorphism. -/
+
+/-- Affine witness-vertex extensions respect composition. -/
+theorem extendWitnessVertex_comp
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source)
+    (v : WitnessVertex L α) :
+    extendWitnessVertex act A (q.comp p htg) v =
+      extendWitnessVertex act A q (extendWitnessVertex act A p v) := by
+  classical
+  apply WitnessVertex.ext
+  · simp only [extendWitnessVertex_base]
+    rw [baseExtension_comp act A p q htg]
+    rfl
+  · funext S zs
+    let r : RelPartialAutomorphism act A := q.comp p htg
+    let R : L.RelSymbol S.1 := preRel act A r S.2
+    let xs : Fin S.1 → α := preTuple act A r zs
+    have hR : act.onRel r.lang R = S.2 := by
+      simpa [R] using relabel_preRel act A r S.2
+    have hzs : baseExtension act A r ∘ xs = zs := by
+      simpa [xs] using baseExtension_preTuple act A r zs
+    have hLang :
+        act.onRel r.lang R =
+          act.onRel q.lang (act.onRel p.lang R) := by
+      simp [r, Structure.PartialIsomorphism.comp,
+        Language.Action.onRel_mul]
+    have hBase :
+        baseExtension act A r ∘ xs =
+          baseExtension act A q ∘
+            (baseExtension act A p ∘ xs) := by
+      simp [r, baseExtension_comp, Function.comp_assoc]
+    rw [← hR, ← hzs]
+    rw [extendWitnessVertex_valuation_relabel act A r v R xs]
+    rw [hLang, hBase]
+    rw [extendWitnessVertex_valuation_relabel act A q
+      (extendWitnessVertex act A p v)
+      (act.onRel p.lang R) (baseExtension act A p ∘ xs)]
+    rw [extendWitnessVertex_valuation_relabel act A p v R xs]
+    rw [show r = q.comp p htg by rfl]
+    rw [flipCorrection_comp act A p q htg R xs v.base]
+    simp [add_assoc]
+
 theorem extendWitnessVertex_generic_of_mem
     (p : RelPartialAutomorphism act A)
     {x : α} (hx : x ∈ p.source) :

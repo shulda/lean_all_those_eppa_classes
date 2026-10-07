@@ -124,7 +124,7 @@ theorem relabelProfile_injective
 
 /-- The profile named by a pattern symbol transforms equivariantly under the
 pattern-language action. -/
-@[simp] theorem patternProfile_patternPerm
+@[simp] theorem patternProfile_patternPerm_relabelProfile
     (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
     patternProfile act A (patternPerm act A g P) =
       relabelProfile act g (patternProfile act A P) := by
@@ -403,12 +403,12 @@ def encodeEmbedding
       refine ⟨hxs, ?_⟩
       apply relabelProfile_injective act f.lang
       rw [← profile_embedding act f xs]
-      rw [← patternProfile_patternPerm act A f.lang P]
+      rw [← patternProfile_patternPerm_relabelProfile act A f.lang P]
       exact hprofile
     · rintro ⟨hinj, hprofile⟩
       refine ⟨f.injective.comp hinj, ?_⟩
       rw [profile_embedding act f xs]
-      rw [patternProfile_patternPerm act A f.lang P]
+      rw [patternProfile_patternPerm_relabelProfile act A f.lang P]
       exact congrArg (relabelProfile act f.lang) hprofile
   map_func := by
     intro n F xs

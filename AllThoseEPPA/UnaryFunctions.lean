@@ -904,6 +904,72 @@ theorem Valuation.physicalFunc_restrict_of_not_mem
     simpa using hb
 
 
+
+/-- Forgetting an abstract restriction is exactly restriction of the physical
+signature.  This combines the support and function calculations above. -/
+theorem Valuation.physicalSignature_restrict
+    {x : β} (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center) :
+    Valuation.physicalSignature act A B₀
+        (Valuation.restrict act A B₀ v y hy) =
+      (Valuation.physicalSignature act A B₀ v).restrict
+        (v.toFun ⟨y, hy⟩)
+        (Valuation.physicalPoint_mem_support
+          act A B₀ v ⟨y, hy⟩) := by
+  apply ValuationSignature.ext
+  · exact Valuation.physicalSignature_restrict_support
+      act A B₀ v y hy
+  · funext n F a
+    by_cases ha :
+        a ∈
+          (Valuation.physicalSignature act A B₀ v).closureAtSet
+            (v.toFun ⟨y, hy⟩)
+    · rw [ValuationSignature.restrict_func_of_mem
+        (Valuation.physicalSignature act A B₀ v)
+        (v.toFun ⟨y, hy⟩)
+        (Valuation.physicalPoint_mem_support
+          act A B₀ v ⟨y, hy⟩) F ha]
+      exact Valuation.physicalFunc_restrict_of_mem
+        act A B₀ v y hy F a ha
+    · rw [ValuationSignature.restrict_func_of_not_mem
+        (Valuation.physicalSignature act A B₀ v)
+        (v.toFun ⟨y, hy⟩)
+        (Valuation.physicalPoint_mem_support
+          act A B₀ v ⟨y, hy⟩) F ha]
+      exact Valuation.physicalFunc_restrict_of_not_mem
+        act A B₀ v y hy F a ha
+
+/-- Restriction is well-defined on physical valuations, independently of the
+abstract presentation chosen to witness realizability. -/
+noncomputable def PhysicalValuation.restrict
+    {x : β} (s : PhysicalValuation act A B₀ x)
+    (y : β) (hy : y ∈ s.1.support) :
+    PhysicalValuation act A B₀ y := by
+  refine ⟨s.1.restrict y hy, ?_⟩
+  rcases s.2 with ⟨v, hv⟩
+  have hyv :
+      y ∈ (Valuation.physicalSignature act A B₀ v).support := by
+    rw [hv]
+    exact hy
+  rcases hyv with ⟨z, hz⟩
+  refine
+    ⟨Valuation.restrict act A B₀ v z.1 z.2, ?_⟩
+  have hphys :=
+    Valuation.physicalSignature_restrict
+      act A B₀ v z.1 z.2
+  rw [hz] at hphys
+  have hsig :
+      Valuation.physicalSignature act A B₀ v = s.1 :=
+    hv
+  simpa [hsig] using hphys
+
+@[simp] theorem PhysicalValuation.restrict_val
+    {x : β} (s : PhysicalValuation act A B₀ x)
+    (y : β) (hy : y ∈ s.1.support) :
+    (PhysicalValuation.restrict act A B₀ s y hy).1 =
+      s.1.restrict y hy :=
+  rfl
+
 section Transport
 
 /-- The underlying vertex permutation of a total automorphism. -/

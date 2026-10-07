@@ -164,6 +164,114 @@ theorem reductPartialAutomorphism_coherentTriple
   exact ⟨htg, hr⟩
 
 
+
+/-- The one-point closure of a source vertex stays inside the source of a
+partial automorphism. -/
+theorem partialAutomorphism_closureAtSet_subset_source
+    (p : Structure.PartialAutomorphism act A)
+    {x : α} (hx : x ∈ p.source) :
+    A.closureAtSet x ⊆ p.source := by
+  apply A.closureSet_minimal p.source_closed
+  intro y hy
+  have hyx : y = x := by
+    simpa using hy
+  subst y
+  exact hx
+
+/-- A partial automorphism maps the one-point closure of every source vertex
+onto the one-point closure of its image. -/
+theorem partialAutomorphism_image_closureAtSet
+    (p : Structure.PartialAutomorphism act A)
+    {x : α} (hx : x ∈ p.source) :
+    p.toPartialEquiv '' A.closureAtSet x =
+      A.closureAtSet (p x) := by
+  have hclsrc :
+      A.closureAtSet x ⊆ p.source :=
+    partialAutomorphism_closureAtSet_subset_source act A p hx
+
+  have hforward :
+      p.toPartialEquiv '' A.closureAtSet x ⊆
+        A.closureAtSet (p x) := by
+    let T : Set α :=
+      {y | y ∈ p.source ∧ p y ∈ A.closureAtSet (p x)}
+    have hTclosed : A.IsClosed T := by
+      intro n F xs hxs y hy
+      have hxsrc : ∀ i, xs i ∈ p.source :=
+        fun i => (hxs i).1
+      have hysrc : y ∈ p.source :=
+        p.source_closed F xs hxsrc hy
+      refine ⟨hysrc, ?_⟩
+      have hp_y :
+          p y ∈
+            A.func (act.onFunc p.lang F)
+              (p.toPartialEquiv ∘ xs) := by
+        have hmap := p.map_func F xs hxsrc
+        rw [← hmap]
+        exact ⟨y, hy, rfl⟩
+      exact
+        (A.isClosed_closureSet ({p x} : Set α))
+          (act.onFunc p.lang F)
+          (p.toPartialEquiv ∘ xs)
+          (fun i => (hxs i).2) hp_y
+    have hxT : x ∈ T :=
+      ⟨hx, A.mem_closureAtSet (p x)⟩
+    have hclT : A.closureAtSet x ⊆ T := by
+      apply A.closureSet_minimal hTclosed
+      intro y hy
+      have hyx : y = x := by
+        simpa using hy
+      subst y
+      exact hxT
+    rintro z ⟨y, hy, rfl⟩
+    exact (hclT hy).2
+
+  have hbackward :
+      A.closureAtSet (p x) ⊆
+        p.toPartialEquiv '' A.closureAtSet x := by
+    let S : Set α :=
+      p.toPartialEquiv '' A.closureAtSet x
+    have hSclosed : A.IsClosed S := by
+      intro n F zs hzs y hy
+      have hzrep :
+          ∀ i, ∃ a : α,
+            a ∈ A.closureAtSet x ∧ p a = zs i := by
+        intro i
+        rcases hzs i with ⟨a, ha, hpa⟩
+        exact ⟨a, ha, hpa⟩
+      choose xs hxs_cl hxs_eq using hzrep
+      have hxsrc : ∀ i, xs i ∈ p.source :=
+        fun i => hclsrc (hxs_cl i)
+      let F₀ : L.FuncSymbol n := act.onFunc p.lang⁻¹ F
+      have hsym :
+          act.onFunc p.lang F₀ = F := by
+        simp [F₀, ← Language.Action.onFunc_mul]
+      have htuple :
+          p.toPartialEquiv ∘ xs = zs := by
+        funext i
+        exact hxs_eq i
+      have hmap := p.map_func F₀ xs hxsrc
+      have hy' :
+          y ∈
+            A.func (act.onFunc p.lang F₀)
+              (p.toPartialEquiv ∘ xs) := by
+        rw [hsym, htuple]
+        exact hy
+      rw [← hmap] at hy'
+      rcases hy' with ⟨a, ha, hpa⟩
+      have hacl :
+          a ∈ A.closureAtSet x :=
+        (A.isClosed_closureSet ({x} : Set α))
+          F₀ xs hxs_cl ha
+      exact ⟨a, hacl, hpa⟩
+    apply A.closureSet_minimal hSclosed
+    intro y hy
+    have hyx : y = p x := by
+      simpa using hy
+    subst y
+    exact ⟨x, A.mem_closureAtSet x, rfl⟩
+
+  exact Set.Subset.antisymm hforward hbackward
+
 section Valuations
 
 variable {β : Type z} [Finite β]

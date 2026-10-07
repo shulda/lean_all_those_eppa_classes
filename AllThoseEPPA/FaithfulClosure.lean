@@ -30,8 +30,11 @@ theorem ValuationStructure.restrict_self
   change
     V.1 (closureInclusion B₀ (B₀.mem_closureAtSet x) t) =
       V.1 t
-  apply congrArg V.1
-  apply Subtype.ext
+  have ht :
+      closureInclusion B₀ (B₀.mem_closureAtSet x) t = t := by
+    apply Subtype.ext
+    rfl
+  cases ht
   rfl
 
 /-- Restriction to nested one-point closures is transitive. -/
@@ -53,8 +56,13 @@ theorem ValuationStructure.restrict_trans
       V.1
         (closureInclusion B₀
           (B₀.closureAtSet_subset_of_mem hy hz) t)
-  apply congrArg V.1
-  apply Subtype.ext
+  have ht :
+      closureInclusion B₀ hy (closureInclusion B₀ hz t) =
+        closureInclusion B₀
+          (B₀.closureAtSet_subset_of_mem hy hz) t := by
+    apply Subtype.ext
+    rfl
+  cases ht
   rfl
 
 /-- The witness vertex obtained by restricting a valuation structure to a
@@ -130,20 +138,31 @@ theorem descendants_isClosed
       {v | IsDescendant act A B₀ ψ w v} := by
   intro n F xs hxs z hz
   let i := UnaryFunctions.unaryIndex F
-  let u := xs i
-  have huDesc : IsDescendant act A B₀ ψ w u := by
-    exact hxs i
+  have huDesc : IsDescendant act A B₀ ψ w (xs i) :=
+    hxs i
   rcases huDesc with ⟨y, hy, huy⟩
-  have hconst : xs = fun _ => u := by
-    simpa [u, i] using
-      (UnaryFunctions.unaryTuple_eq_constant F xs)
+  have hconst :
+      xs = fun _ => restrictionVertex act A B₀ ψ w y hy := by
+    calc
+      xs = fun _ => xs i := by
+        simpa [i] using
+          (UnaryFunctions.unaryTuple_eq_constant F xs)
+      _ = fun _ => restrictionVertex act A B₀ ψ w y hy := by
+        funext j
+        exact huy
   rw [hconst] at hz
+  change
+    ∃ (t : β)
+      (ht : t ∈ B₀.func F
+        (fun _ =>
+          (restrictionVertex act A B₀ ψ w y hy).base)),
+      z =
+        functionValueVertex act A B₀ ψ
+          (restrictionVertex act A B₀ ψ w y hy) F t ht at hz
   rcases hz with ⟨t, ht, hzt⟩
   subst z
-  subst u
-  have ht' :
-      t ∈ B₀.func F (fun _ => y) := by
-    simpa [restrictionVertex, WitnessVertex.base] using ht
+  have ht' : t ∈ B₀.func F (fun _ => y) := by
+    simpa using ht
   let htcl : t ∈ B₀.closureAtSet w.base :=
     B₀.closureAtSet_subset_of_mem hy
       (func_mem_closureAtSet B₀ F ht')
@@ -205,7 +224,10 @@ theorem restrictionVertex_mem_closureAtSet
       zs (UnaryFunctions.unaryIndex F)
     have hzB :
         z.1 ∈ B₀.func F (fun _ => u.1) := by
-      simpa [u, Function.comp_def] using hz
+      change
+        z.1 ∈ B₀.func F
+          (Subtype.val ∘ (fun _ => u)) at hz
+      simpa [Function.comp_def] using hz
     have hval :=
       functionValueVertex_restrictionVertex
         act A B₀ ψ w u.2 F hzB

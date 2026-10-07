@@ -700,6 +700,84 @@ theorem Valuation.imageClosure_isClosed
   rw [hbt]
 
 
+/-- One-point closure in the physical signature is exactly the embedded image
+of the corresponding abstract one-point closure. -/
+theorem Valuation.physicalSignature_closureAt_image
+    {x : β} (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center) :
+    (Valuation.physicalSignature act A B₀ v).closureAtSet
+        (v.toFun ⟨y, hy⟩) =
+      Valuation.imageClosure act A B₀ v y hy := by
+  let s := Valuation.physicalSignature act A B₀ v
+  let y₀ : v.orbit.1.closureAtSet v.center := ⟨y, hy⟩
+  apply Set.Subset.antisymm
+  · apply
+      (s.closureSet_minimal
+        (Valuation.imageClosure_isClosed act A B₀ v y hy))
+    intro b hb
+    have hby : b = v.toFun y₀ := by
+      simpa [y₀] using hb
+    subst b
+    refine
+      ⟨⟨y, v.orbit.1.mem_closureAtSet y⟩, ?_⟩
+    apply congrArg v.toFun
+    apply Subtype.ext
+  · rintro b ⟨z, rfl⟩
+    let T : Set α :=
+      {a | ∃ ha : a ∈ v.orbit.1.closureAtSet v.center,
+          v.toFun ⟨a, ha⟩ ∈ s.closureAtSet (v.toFun y₀)}
+    have hTclosed : v.orbit.1.IsClosed T := by
+      intro n F xs hxs t ht
+      rcases hxs (unaryIndex F) with ⟨ha, himg⟩
+      have htuple := unaryTuple_eq_constant F xs
+      rw [htuple] at ht
+      have htcenter : t ∈ v.orbit.1.closureAtSet v.center := by
+        change t ∈ v.orbit.1.closureSet {v.center}
+        exact
+          (v.orbit.1.isClosed_closureSet ({v.center} : Set α))
+            F (fun _ => xs (unaryIndex F)) (fun _ => ha) ht
+      have hphys :
+          v.toFun ⟨t, htcenter⟩ ∈
+            s.func F (v.toFun ⟨xs (unaryIndex F), ha⟩) := by
+        change
+          v.toFun ⟨t, htcenter⟩ ∈
+            Valuation.physicalFunc act A B₀ v F
+              (v.toFun ⟨xs (unaryIndex F), ha⟩)
+        apply
+          (Valuation.mem_physicalFunc_at_image_iff
+            act A B₀ v ⟨xs (unaryIndex F), ha⟩ F
+              (v.toFun ⟨t, htcenter⟩)).2
+        refine ⟨t, ht, ?_⟩
+        apply congrArg v.toFun
+        apply Subtype.ext
+      have hout :
+          v.toFun ⟨t, htcenter⟩ ∈
+            s.closureAtSet (v.toFun y₀) :=
+        (s.isClosed_closureSet {v.toFun y₀}) F himg hphys
+      exact ⟨htcenter, hout⟩
+    have hyT : y ∈ T := by
+      refine ⟨hy, ?_⟩
+      exact s.mem_closureAtSet (v.toFun y₀)
+    have hzT : z.1 ∈ T := by
+      apply
+        v.orbit.1.closureSet_minimal hTclosed
+          (show ({y} : Set α) ⊆ T from ?_)
+      · intro a ha
+        have hay : a = y := by
+          simpa using ha
+        subst a
+        exact hyT
+      · exact z.2
+    rcases hzT with ⟨hzcenter, hzimage⟩
+    have hzsub :
+        (⟨z.1, hzcenter⟩ :
+          v.orbit.1.closureAtSet v.center) =
+        ⟨z.1,
+          v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩ := by
+      apply Subtype.ext
+    simpa [s, y₀, hzsub] using hzimage
+
+
 section Transport
 
 /-- The underlying vertex permutation of a total automorphism. -/

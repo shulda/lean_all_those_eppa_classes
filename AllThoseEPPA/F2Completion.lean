@@ -2,6 +2,7 @@ import Mathlib.Algebra.Ring.BooleanRing
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fin.Tuple.Basic
+import Mathlib.Data.Nat.Bits
 
 /-!
 # Linear completion of partial flip data over 𝔽₂
@@ -219,6 +220,34 @@ theorem evenCompletion_add
           firstOutsideIndex_not_mem D xs h]
       · simp [evenCompletion, hx, h, heq, Bool.zero_eq_false]
     · simp [evenCompletion, hx, h, Bool.zero_eq_false]
+
+
+/-- XOR-summing Boolean values over a finset records the parity of the number
+of entries equal to `true`. -/
+theorem sum_bool_eq_bodd_filter_card
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (f : ι → Bool) :
+    (∑ i ∈ s, f i) =
+      Nat.bodd ((s.filter fun i => f i = true).card) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simp
+  | @insert a s ha ih =>
+      cases hfa : f a <;>
+        simp [ha, hfa, ih, Bool.add_eq_xor]
+
+/-- The XOR-sum is `true` exactly when an odd number of summands are
+`true`. -/
+theorem sum_bool_eq_true_iff_filter_card_mod_two
+    {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (f : ι → Bool) :
+    (∑ i ∈ s, f i) = true ↔
+      (s.filter fun i => f i = true).card % 2 = 1 := by
+  rw [sum_bool_eq_bodd_filter_card s f]
+  rw [Nat.mod_two_of_bodd]
+  cases h : Nat.bodd ((s.filter fun i => f i = true).card) <;>
+    simp [h]
 
 end F2Completion
 end AllThoseEPPA

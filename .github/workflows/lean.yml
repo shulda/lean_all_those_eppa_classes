@@ -46,6 +46,7 @@ jobs:
             Mathlib.Data.Fintype.Sort \
             Mathlib.Data.Fintype.Pi \
             Mathlib.Data.Fintype.Sigma \
+            Mathlib.Data.Nat.Bits \
             Mathlib.Logic.Equiv.Fintype \
             Mathlib.Logic.Equiv.PartialEquiv \
             Mathlib.GroupTheory.Perm.Basic \

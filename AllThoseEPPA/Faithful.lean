@@ -52,10 +52,19 @@ namespace BadIrreducible
 base witness. -/
 theorem finite [Finite β] :
     Finite (BadIrreducible act A B₀ ψ) := by
-  apply Finite.of_injective
-    (fun I : BadIrreducible act A B₀ ψ => I.carrier)
-  intro I J h
-  exact BadIrreducible.ext h
+  let U : Set (Set β) := {S | S ⊆ Set.univ}
+  have hU : U.Finite := by
+    dsimp [U]
+    exact (Set.toFinite (Set.univ : Set β)).finite_subsets
+  letI : Finite U := hU
+  exact
+    Finite.of_injective
+      (fun I : BadIrreducible act A B₀ ψ =>
+        (⟨I.carrier, Set.subset_univ _⟩ : U))
+      (by
+        intro I J h
+        apply BadIrreducible.ext
+        exact congrArg Subtype.val h)
 
 /-- Every bad irreducible contains a vertex outside the distinguished copy of
 `A`: otherwise the identity automorphism would already move it into that
@@ -72,7 +81,8 @@ theorem exists_not_mem_range
     exact h ⟨x, hx, hxr⟩
   rcases hrange with ⟨a, ha⟩
   refine ⟨a, ?_⟩
-  simpa [ha]
+  change x = ψ a
+  exact ha.symm
 
 /-- A distinguished omitted vertex of a bad irreducible structure. -/
 noncomputable def hole
@@ -114,6 +124,9 @@ theorem valuationFunction_finite [Finite β] (x : β) :
     Finite (ValuationFunction act A B₀ ψ x) := by
   letI : Finite (BadIrreducible act A B₀ ψ) :=
     BadIrreducible.finite act A B₀ ψ
+  letI : Finite (BadAt act A B₀ ψ x) := inferInstance
+  letI (I : BadAt act A B₀ ψ x) :
+      Finite (BadLabel act A B₀ ψ I.1) := inferInstance
   infer_instance
 
 /-- A base point together with one of its valuation functions. -/
@@ -193,11 +206,14 @@ theorem embedding_range_isClosed
   have htuple : f.toFun ∘ as = xs := by
     funext i
     exact has i
+  let F₀ : L.FuncSymbol n := act.onFunc f.lang⁻¹ F
+  have hsym : act.onFunc f.lang F₀ = F := by
+    simp [F₀, ← Language.Action.onFunc_mul]
   have hy' :
-      y ∈ B₀.func (act.onFunc f.lang F) (f.toFun ∘ as) := by
-    rw [htuple]
+      y ∈ B₀.func (act.onFunc f.lang F₀) (f.toFun ∘ as) := by
+    rw [hsym, htuple]
     exact hy
-  rw [← f.map_func F as] at hy'
+  rw [← f.map_func F₀ as] at hy'
   rcases hy' with ⟨a, ha, hfa⟩
   exact ⟨a, hfa⟩
 
@@ -246,9 +262,11 @@ abbrev ValuationStructure (x : β) :=
 witness is finite. -/
 theorem valuationStructure_finite [Finite β] (x : β) :
     Finite (ValuationStructure act A B₀ ψ x) := by
+  letI : Finite (B₀.closureAtSet x) := inferInstance
   letI (y : B₀.closureAtSet x) :
       Finite (ValuationFunction act A B₀ ψ y.1) :=
     valuationFunction_finite act A B₀ ψ y.1
+  letI : Finite (ValuationAssignment act A B₀ ψ x) := inferInstance
   infer_instance
 
 /-- Inclusion of a smaller one-point closure into a larger one. -/
@@ -264,12 +282,12 @@ def ValuationStructure.restrict
     {x : β} (V : ValuationStructure act A B₀ ψ x)
     (y : β) (hy : y ∈ B₀.closureAtSet x) :
     ValuationStructure act A B₀ ψ y :=
-  ⟨fun z => V.1 (closureInclusion act A B₀ ψ hy z),
+  ⟨fun z => V.1 (closureInclusion B₀ hy z),
     by
       intro z z'
       exact V.2
-        (closureInclusion act A B₀ ψ hy z)
-        (closureInclusion act A B₀ ψ hy z')⟩
+        (closureInclusion B₀ hy z)
+        (closureInclusion B₀ hy z')⟩
 
 /-- Vertices of the faithful witness. -/
 abbrev WitnessVertex :=
@@ -321,7 +339,7 @@ def functionValueVertex
     WitnessVertex act A B₀ ψ :=
   ⟨y,
     w.valuation.restrict act A B₀ ψ y
-      (func_mem_closureAtSet act A B₀ F hy)⟩
+      (func_mem_closureAtSet B₀ F hy)⟩
 
 section UnaryWitness
 
@@ -348,7 +366,7 @@ theorem witnessVertex_finite [Finite β] :
     Finite (WitnessVertex act A B₀ ψ) := by
   letI (x : β) : Finite (ValuationStructure act A B₀ ψ x) :=
     valuationStructure_finite act A B₀ ψ x
-  infer_instance
+  exact Sigma.finite
 
 end UnaryWitness
 
@@ -400,6 +418,9 @@ theorem canonicalValuationStructure_restrict
       canonicalValuationStructure act A B₀ ψ y hyA := by
   apply Subtype.ext
   funext z
+  change
+    canonicalValuationFunction act A B₀ ψ z.1 _ =
+      canonicalValuationFunction act A B₀ ψ z.1 _
   apply canonicalValuationFunction_proof_irrel act A B₀ ψ
 
 section UnaryProjection
@@ -411,7 +432,7 @@ noncomputable def projection :
     Structure.Homomorphism act
       (witnessStructure act A B₀ ψ) B₀ where
   lang := 1
-  toFun := WitnessVertex.base
+  toFun := fun w => WitnessVertex.base act A B₀ ψ w
   map_rel := by
     intro n R xs hrel
     simpa using hrel.1

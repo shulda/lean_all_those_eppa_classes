@@ -66,5 +66,43 @@ theorem ValuationSignature.transport_comp
     · rintro ⟨d, hd, rfl⟩
       exact ⟨g d, ⟨d, hd, rfl⟩, rfl⟩
 
+
+/-- Functoriality descends to realised physical valuations. -/
+theorem PhysicalValuation.transport_comp
+    (h g : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : PhysicalValuation act A B₀ x) :
+    PhysicalValuation.transport act A B₀ h
+        (PhysicalValuation.transport act A B₀ g s) =
+      PhysicalValuation.transport act A B₀ (h.comp g) s := by
+  apply Subtype.ext
+  exact ValuationSignature.transport_comp act B₀ h g s.1
+
+/-- Transport of whole witness vertices is functorial. -/
+theorem PhysicalWitnessVertex.transport_comp
+    (h g : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀) :
+    PhysicalWitnessVertex.transport act A B₀ h
+        (PhysicalWitnessVertex.transport act A B₀ g w) =
+      PhysicalWitnessVertex.transport act A B₀ (h.comp g) w := by
+  apply Sigma.ext rfl
+  exact heq_of_eq
+    (PhysicalValuation.transport_comp act A B₀ h g w.2)
+
+/-- Lifting base automorphisms to the unary witness preserves composition. -/
+theorem physicalWitnessAutomorphism_comp
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h g : Structure.Automorphism act.relationalReduct B₀) :
+    physicalWitnessAutomorphism act A B₀ hA (h.comp g) =
+      (physicalWitnessAutomorphism act A B₀ hA h).comp
+        (physicalWitnessAutomorphism act A B₀ hA g) := by
+  apply Structure.Automorphism.ext_of_lang_apply
+  · rfl
+  · intro w
+    change
+      PhysicalWitnessVertex.transport act A B₀ (h.comp g) w =
+        PhysicalWitnessVertex.transport act A B₀ h
+          (PhysicalWitnessVertex.transport act A B₀ g w)
+    exact (PhysicalWitnessVertex.transport_comp act A B₀ h g w).symm
+
 end UnaryFunctions
 end AllThoseEPPA

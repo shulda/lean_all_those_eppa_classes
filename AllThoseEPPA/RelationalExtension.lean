@@ -259,5 +259,32 @@ theorem flipCorrection_totalParity
       p.source xs (sourceCorrection act A p R xs) hall]
     exact sourceParity_eq_false_of_forall_mem act A p R xs hall
 
+
+/-- The completed correction is zero at a base vertex which does not occur in
+the tuple.  This is the support property needed to transport valuation
+functions. -/
+theorem flipCorrection_eq_false_of_not_mem_range
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) {x : α}
+    (hx : x ∉ Set.range xs) :
+    flipCorrection act A p R xs x = false := by
+  classical
+  unfold flipCorrection
+  by_cases hxsrc : x ∈ p.source
+  · rw [F2Completion.evenCompletion_of_mem
+      p.source xs (sourceCorrection act A p R xs) hxsrc]
+    apply sourceCorrection_eq_false_of_ne_first act A p R xs
+    intro hfirst
+    exact hx ⟨Language.firstIndex R, hfirst.symm⟩
+  · by_cases hout : ∃ i, xs i ∉ p.source
+    · rw [F2Completion.evenCompletion_of_not_mem
+        p.source xs (sourceCorrection act A p R xs) hxsrc hout]
+      have hne :
+          x ≠ xs (F2Completion.firstOutsideIndex p.source xs hout) := by
+        intro hEq
+        exact hx ⟨F2Completion.firstOutsideIndex p.source xs hout, hEq.symm⟩
+      simp [hne, Bool.zero_eq_false]
+    · simp [F2Completion.evenCompletion, hxsrc, hout, Bool.zero_eq_false]
+
 end Relational
 end AllThoseEPPA

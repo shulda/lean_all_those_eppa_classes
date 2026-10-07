@@ -496,7 +496,7 @@ def Valuation.physicalSignature {x : β}
   center_mem := by
     refine ⟨⟨v.center, v.orbit.1.mem_closureAtSet v.center⟩, ?_⟩
     exact v.center_eq
-  func := fun F a => v.physicalFunc F a
+  func := fun F a => Valuation.physicalFunc act A B₀ v F a
   func_supported := by
     intro n F a ha b hb
     rcases hb with ⟨z, hza, y, hy, hby⟩

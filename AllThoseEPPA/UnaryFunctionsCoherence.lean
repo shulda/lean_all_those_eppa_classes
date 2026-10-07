@@ -481,7 +481,7 @@ noncomputable def liftCoherentExtension
 
 /-- The concrete relational base witness used by the unary-function
 construction. -/
-abbrev unaryRelationalBase :=
+noncomputable abbrev unaryRelationalBase :=
   InfiniteRelational.decodeStructure
     act.relationalReduct A.relationalReduct
     (Relational.witnessStructure
@@ -498,12 +498,10 @@ finite relational witness supplied by Proposition `prop:infinite_languages`.
 -/
 theorem finiteOrbitUnaryStructuresHaveCoherentEPPA
     (hA : A.HasFiniteRelabelOrbit act) :
-    let B₀ := unaryRelationalBase act A
-    Finite (PhysicalWitnessVertex act A B₀) ∧
-      ∃ ψ : Structure.Embedding act A
-          (physicalWitnessStructure act A B₀),
-        Structure.IsCoherentEPPAWitness act ψ := by
-  dsimp only
+    ∃ (δ : Type (max u v)) (_ : Finite δ)
+        (B : Structure L δ)
+        (ψ : Structure.Embedding act A B),
+      Structure.IsCoherentEPPAWitness act ψ := by
   have hAred :
       A.relationalReduct.HasFiniteRelabelOrbit
         act.relationalReduct :=
@@ -519,14 +517,16 @@ theorem finiteOrbitUnaryStructuresHaveCoherentEPPA
             act.relationalReduct A.relationalReduct) α) :=
     hfinite
   rcases hψ₀ with ⟨E⟩
+  let B₀ := unaryRelationalBase act A
+  have hwfinite :
+      Finite (PhysicalWitnessVertex act A B₀) :=
+    physicalWitnessVertex_finite act A B₀ hA
   refine
-    ⟨physicalWitnessVertex_finite
-        act A (unaryRelationalBase act A) hA,
-      genericPhysicalEmbedding
-        act A (unaryRelationalBase act A) ψ₀, ?_⟩
+    ⟨PhysicalWitnessVertex act A B₀, hwfinite,
+      physicalWitnessStructure act A B₀,
+      genericPhysicalEmbedding act A B₀ ψ₀, ?_⟩
   exact
-    ⟨liftCoherentExtension
-      act A (unaryRelationalBase act A) hA ψ₀ E⟩
+    ⟨liftCoherentExtension act A B₀ hA ψ₀ E⟩
 
 end UnaryFunctions
 end AllThoseEPPA

@@ -16,3 +16,5 @@ import AllThoseEPPA.RelationalWitness
 import AllThoseEPPA.RelationalExtension
 
 import AllThoseEPPA.InfiniteRelational
+import AllThoseEPPA.UnaryFunctions
+import AllThoseEPPA.UnaryFunctionsCoherence

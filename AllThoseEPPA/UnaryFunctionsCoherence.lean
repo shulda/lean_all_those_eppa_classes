@@ -60,6 +60,159 @@ theorem genericPhysicalValuation_func_image
     refine ⟨y, ?_, hby.symm⟩
     simpa [Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
 
+
+/-- The language equation in an extension square also gives the inverse
+conjugacy relation needed for transporting function symbols. -/
+theorem inverse_language_conjugacy
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (p : Structure.PartialAutomorphism act A)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (hext :
+      Structure.ExtendsAlong act.relationalReduct ψ₀
+        (reductPartialAutomorphism act A p) h) :
+    h.lang⁻¹ = ψ₀.lang * p.lang⁻¹ * ψ₀.lang⁻¹ := by
+  have hinv := congrArg Inv.inv hext.1
+  have hinv' :
+      ψ₀.lang⁻¹ * h.lang⁻¹ =
+        p.lang⁻¹ * ψ₀.lang⁻¹ := by
+    simpa [mul_inv_rev] using hinv
+  calc
+    h.lang⁻¹ =
+        ψ₀.lang * (ψ₀.lang⁻¹ * h.lang⁻¹) := by
+      simp [mul_assoc]
+    _ = ψ₀.lang * (p.lang⁻¹ * ψ₀.lang⁻¹) := by
+      rw [hinv']
+    _ = ψ₀.lang * p.lang⁻¹ * ψ₀.lang⁻¹ := by
+      simp [mul_assoc]
+
+/-- A base extension maps the support of a generic physical valuation exactly
+onto the support of the generic valuation at the image point. -/
+theorem genericPhysicalValuation_transport_support_of_extends
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (p : Structure.PartialAutomorphism act A)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (hext :
+      Structure.ExtendsAlong act.relationalReduct ψ₀
+        (reductPartialAutomorphism act A p) h)
+    {x : α} (hx : x ∈ p.source) :
+    (PhysicalValuation.transport act A B₀ h
+        (genericPhysicalValuation act A B₀ ψ₀ x)).1.support =
+      (genericPhysicalValuation act A B₀ ψ₀ (p x)).1.support := by
+  rw [PhysicalValuation.transport_val,
+    ValuationSignature.transport_support,
+    genericPhysicalValuation_support,
+    genericPhysicalValuation_support]
+  have hclsrc :
+      A.closureAtSet x ⊆ p.source :=
+    partialAutomorphism_closureAtSet_subset_source act A p hx
+  have hclmap :=
+    partialAutomorphism_image_closureAtSet act A p hx
+  ext b
+  constructor
+  · rintro ⟨c, ⟨y, hy, rfl⟩, rfl⟩
+    refine ⟨p y, ?_, ?_⟩
+    · rw [← hclmap]
+      exact ⟨y, hy, rfl⟩
+    · exact (hext.2 y (hclsrc hy)).symm
+  · rintro ⟨z, hz, rfl⟩
+    have hz' : z ∈ p.toPartialEquiv '' A.closureAtSet x := by
+      rw [hclmap]
+      exact hz
+    rcases hz' with ⟨y, hy, rfl⟩
+    refine ⟨ψ₀ y, ⟨y, hy, rfl⟩, ?_⟩
+    exact hext.2 y (hclsrc hy)
+
+/-- At every point of the source one-point closure, transporting the generic
+physical valuation gives exactly the function data of the generic valuation
+at the image point. -/
+theorem genericPhysicalValuation_transport_func_of_extends
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (p : Structure.PartialAutomorphism act A)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (hext :
+      Structure.ExtendsAlong act.relationalReduct ψ₀
+        (reductPartialAutomorphism act A p) h)
+    {x y : α} (hx : x ∈ p.source)
+    (hy : y ∈ A.closureAtSet x)
+    {n : ℕ} (F : L.FuncSymbol n) :
+    (PhysicalValuation.transport act A B₀ h
+        (genericPhysicalValuation act A B₀ ψ₀ x)).1.func
+        F (ψ₀ (p y)) =
+      (genericPhysicalValuation act A B₀ ψ₀ (p x)).1.func
+        F (ψ₀ (p y)) := by
+  let e := automorphismEquiv act h
+  let K : L.FuncSymbol n := act.onFunc ψ₀.lang⁻¹ F
+  let K₀ : L.FuncSymbol n := act.onFunc p.lang⁻¹ K
+  have hclsrc :
+      A.closureAtSet x ⊆ p.source :=
+    partialAutomorphism_closureAtSet_subset_source act A p hx
+  have hysrc : y ∈ p.source := hclsrc hy
+  have hpy : h (ψ₀ y) = ψ₀ (p y) :=
+    hext.2 y hysrc
+  have hpre : e.symm (ψ₀ (p y)) = ψ₀ y := by
+    have hp := congrArg e.symm hpy
+    simpa [e] using hp
+  have hinv :=
+    inverse_language_conjugacy act A B₀ ψ₀ p h hext
+  have hsourceSymbol :
+      act.onFunc h.lang⁻¹ F =
+        act.onFunc ψ₀.lang K₀ := by
+    rw [hinv]
+    change
+      act.onFunc (ψ₀.lang * p.lang⁻¹ * ψ₀.lang⁻¹) F =
+        act.onFunc ψ₀.lang
+          (act.onFunc p.lang⁻¹
+            (act.onFunc ψ₀.lang⁻¹ F))
+    rw [Language.Action.onFunc_mul, Language.Action.onFunc_mul]
+  have hpcl : p y ∈ A.closureAtSet (p x) := by
+    rw [← partialAutomorphism_image_closureAtSet act A p hx]
+    exact ⟨y, hy, rfl⟩
+  have hsrc :=
+    genericPhysicalValuation_func_image
+      act A B₀ ψ₀ x y hy K₀
+  have htgt :=
+    genericPhysicalValuation_func_image
+      act A B₀ ψ₀ (p x) (p y) hpcl K
+  have htgt' :
+      (genericPhysicalValuation act A B₀ ψ₀ (p x)).1.func
+          F (ψ₀ (p y)) =
+        ψ₀ '' A.func K (fun _ => p y) := by
+    simpa [K, ← Language.Action.onFunc_mul] using htgt
+  have hK :
+      act.onFunc p.lang K₀ = K := by
+    simp [K₀, ← Language.Action.onFunc_mul]
+  have hpfunc :
+      Structure.imageSet p.toPartialEquiv
+          (A.func K₀ (fun _ => y)) =
+        A.func K (fun _ => p y) := by
+    have hm := p.map_func K₀ (fun _ => y) (fun _ => hysrc)
+    simpa [hK, Function.comp_def] using hm
+  rw [PhysicalValuation.transport_val,
+    ValuationSignature.transport_func, hpre, hsourceSymbol, hsrc]
+  rw [htgt']
+  ext b
+  constructor
+  · rintro ⟨c, ⟨t, ht, rfl⟩, rfl⟩
+    have htcl : t ∈ A.closureAtSet x :=
+      (A.isClosed_closureSet ({x} : Set α))
+        K₀ (fun _ => y) (fun _ => hy) ht
+    have hpt : p t ∈ A.func K (fun _ => p y) := by
+      rw [← hpfunc]
+      exact ⟨t, ht, rfl⟩
+    refine ⟨p t, hpt, ?_⟩
+    exact (hext.2 t (hclsrc htcl)).symm
+  · rintro ⟨u, hu, rfl⟩
+    rw [← hpfunc] at hu
+    rcases hu with ⟨t, ht, rfl⟩
+    have htcl : t ∈ A.closureAtSet x :=
+      (A.isClosed_closureSet ({x} : Set α))
+        K₀ (fun _ => y) (fun _ => hy) ht
+    refine ⟨ψ₀ t, ⟨t, ht, rfl⟩, ?_⟩
+    exact hext.2 t (hclsrc htcl)
+
 /-- Conjugation of physical signatures is functorial in the base
 automorphism. -/
 theorem ValuationSignature.transport_comp

@@ -833,5 +833,111 @@ theorem decodeAutomorphism_comp
   · intro x
     rfl
 
+
+/-- Decode the embedding of the pattern copy together with the canonical
+identity embedding A → U(T(A)). -/
+noncomputable def decodedWitnessEmbedding
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (ψ : Structure.Embedding (patternAction act A)
+      (patternStructure act A) C) :
+    Structure.Embedding act A (decodeStructure act A C) :=
+  (decodeEmbedding act A ψ).comp (decodePatternStructureEmbedding act A)
+
+@[simp] theorem decodedWitnessEmbedding_apply
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (ψ : Structure.Embedding (patternAction act A)
+      (patternStructure act A) C) (x : α) :
+    decodedWitnessEmbedding act A ψ x = ψ x :=
+  rfl
+
+@[simp] theorem decodedWitnessEmbedding_lang
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (ψ : Structure.Embedding (patternAction act A)
+      (patternStructure act A) C) :
+    (decodedWitnessEmbedding act A ψ).lang = ψ.lang := by
+  simp [decodedWitnessEmbedding, Structure.Embedding.comp]
+
+/-- A coherent extension for T(A) decodes to a coherent extension for A.
+All language and vertex components are preserved literally. -/
+noncomputable def decodeCoherentExtension
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (ψ : Structure.Embedding (patternAction act A)
+      (patternStructure act A) C)
+    (E : Structure.CoherentExtension (patternAction act A) ψ) :
+    Structure.CoherentExtension act (decodedWitnessEmbedding act A ψ) where
+  extension := fun p =>
+    decodeAutomorphism act A
+      (E.extension (liftPartialAutomorphism act A p))
+  extension_spec := by
+    intro p
+    have h := E.extension_spec (liftPartialAutomorphism act A p)
+    constructor
+    · simpa using h.1
+    · intro x hx
+      have hx' : x ∈ (liftPartialAutomorphism act A p).source := hx
+      have hv := h.2 x hx'
+      simpa using hv
+  respects_equivalent := by
+    intro p q hpq
+    have hlift :
+        Structure.PartialIsomorphism.Equivalent
+          (liftPartialAutomorphism act A p)
+          (liftPartialAutomorphism act A q) :=
+      liftPartialAutomorphism_equivalent act A hpq
+    have heq := E.respects_equivalent
+      (liftPartialAutomorphism act A p)
+      (liftPartialAutomorphism act A q) hlift
+    exact congrArg (decodeAutomorphism act A) heq
+  coherent := by
+    intro p q r hcoh
+    have hlift :
+        Structure.PartialIsomorphism.CoherentTriple
+          (liftPartialAutomorphism act A p)
+          (liftPartialAutomorphism act A q)
+          (liftPartialAutomorphism act A r) :=
+      liftPartialAutomorphism_coherentTriple act A hcoh
+    have hc := E.coherent
+      (liftPartialAutomorphism act A p)
+      (liftPartialAutomorphism act A q)
+      (liftPartialAutomorphism act A r) hlift
+    calc
+      decodeAutomorphism act A
+          (E.extension (liftPartialAutomorphism act A r)) =
+          decodeAutomorphism act A
+            ((E.extension (liftPartialAutomorphism act A q)).comp
+              (E.extension (liftPartialAutomorphism act A p))) :=
+        congrArg (decodeAutomorphism act A) hc
+      _ =
+          (decodeAutomorphism act A
+            (E.extension (liftPartialAutomorphism act A q))).comp
+          (decodeAutomorphism act A
+            (E.extension (liftPartialAutomorphism act A p))) :=
+        decodeAutomorphism_comp act A _ _
+
+/-- **Finite-orbit relational structures have finite coherent EPPA.**
+
+This is Proposition `prop:infinite_languages` of the paper, using the finite
+profile language instead of explicitly adjoining and then restricting the
+redundant symbols.  The witness vertex type is explicitly asserted finite. -/
+theorem finiteOrbitRelationalStructuresHaveCoherentEPPA
+    (hA : A.HasFiniteRelabelOrbit act) :
+    Finite
+        (Relational.WitnessVertex (patternLanguage act A) α) ∧
+      ∃ ψ : Structure.Embedding act A
+          (decodeStructure act A
+            (Relational.witnessStructure
+              (L := patternLanguage act A) α)),
+        Structure.IsCoherentEPPAWitness act ψ := by
+  letI : Finite (patternLanguage act A).AnyRelSymbol :=
+    patternAnyRelFinite act A hA
+  have hfinite :
+      Finite (Relational.WitnessVertex (patternLanguage act A) α) := by
+    infer_instance
+  rcases patternStructure_hasCoherentEPPA act A hA with
+    ⟨ψ, hψ⟩
+  rcases hψ with ⟨E⟩
+  refine ⟨hfinite, decodedWitnessEmbedding act A ψ, ?_⟩
+  exact ⟨decodeCoherentExtension act A ψ E⟩
+
 end InfiniteRelational
 end AllThoseEPPA

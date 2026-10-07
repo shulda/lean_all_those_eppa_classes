@@ -4,6 +4,7 @@ import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Relabelling
+import AllThoseEPPA.PartialIso
 
 /-!
 # Compressing an infinite relational language around a finite structure
@@ -412,6 +413,156 @@ def encodeEmbedding
   map_func := by
     intro n F xs
     exact PEmpty.elim F
+
+
+
+/-- Relabelling both structures in the same way preserves equality of tuple
+profiles. -/
+theorem profile_relabel_congr
+    {β γ : Type*} (g : Γ)
+    (B : Structure L β) (C : Structure L γ)
+    {n : ℕ} (xs : Fin n → β) (ys : Fin n → γ)
+    (h : profile B xs = profile C ys) :
+    profile (B.relabel act g) xs =
+      profile (C.relabel act g) ys := by
+  ext e
+  let e' : ProfileEntry L n :=
+    { arity := e.arity
+      symbol := act.onRel g⁻¹ e.symbol
+      coord := e.coord
+      coord_surjective := e.coord_surjective }
+  have he := Set.ext_iff.mp h e'
+  change
+    B.rel (act.onRel g⁻¹ e.symbol) (xs ∘ e.coord) ↔
+      C.rel (act.onRel g⁻¹ e.symbol) (ys ∘ e.coord)
+  exact he
+
+/-- Relabelling by the same group element reflects equality of profiles as
+well as preserving it. -/
+theorem profile_relabel_eq_iff
+    {β γ : Type*} (g : Γ)
+    (B : Structure L β) (C : Structure L γ)
+    {n : ℕ} (xs : Fin n → β) (ys : Fin n → γ) :
+    profile (B.relabel act g) xs =
+        profile (C.relabel act g) ys ↔
+      profile B xs = profile C ys := by
+  constructor
+  · intro h
+    have h' := profile_relabel_congr act g⁻¹
+      (B.relabel act g) (C.relabel act g) xs ys h
+    simpa [Structure.relabel_mul] using h'
+  · exact profile_relabel_congr act g B C xs ys
+
+/-- A partial automorphism transforms tuple profiles exactly by relabelling the
+language. -/
+theorem profile_partialAutomorphism
+    (p : Structure.PartialAutomorphism act A)
+    {n : ℕ} (xs : Fin n → α)
+    (hxs : ∀ i, xs i ∈ p.source) :
+    profile A (p.toPartialEquiv ∘ xs) =
+      profile (A.relabel act p.lang) xs := by
+  ext e
+  have hdom :
+      ∀ i, (xs ∘ e.coord) i ∈ p.source := by
+    intro i
+    exact hxs (e.coord i)
+  have hp :=
+    p.map_rel_iff (act.onRel p.lang⁻¹ e.symbol)
+      (xs ∘ e.coord) hdom
+  simpa [profile, Function.comp_assoc, ← Language.Action.onRel_mul] using hp
+
+/-- The finite pattern structure `T(A)`: an injective tuple realizes a
+pattern symbol precisely when its full relational profile is the profile
+named by that symbol. -/
+def patternStructure :
+    Structure (patternLanguage act A) α where
+  rel P xs :=
+    Function.Injective xs ∧ profile A xs = patternProfile act A P
+  func := by
+    intro n F xs
+    exact PEmpty.elim F
+
+/-- Relabelling a pattern symbol relabels the structure whose stored tuple
+names that profile. -/
+@[simp] theorem patternProfile_patternPerm
+    (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
+    patternProfile act A (patternPerm act A g P) =
+      profile (P.1.1.1.relabel act g) P.1.2.1 :=
+  rfl
+
+/-- Profile equality in a pattern relation is preserved and reflected by a
+partial automorphism of the original structure. -/
+theorem patternProfile_map_iff
+    (p : Structure.PartialAutomorphism act A)
+    {n : ℕ} (P : PatternSymbol act A n)
+    (xs : Fin n → α) (hxs : ∀ i, xs i ∈ p.source) :
+    profile A (p.toPartialEquiv ∘ xs) =
+        patternProfile act A (patternPerm act A p.lang P) ↔
+      profile A xs = patternProfile act A P := by
+  rw [profile_partialAutomorphism act A p xs hxs]
+  change
+    profile (A.relabel act p.lang) xs =
+        profile (P.1.1.1.relabel act p.lang) P.1.2.1 ↔
+      profile A xs = profile P.1.1.1 P.1.2.1
+  exact profile_relabel_eq_iff act p.lang
+    A P.1.1.1 xs P.1.2.1
+
+/-- Every partial automorphism of `A` induces, with exactly the same language
+component and vertex partial equivalence, a partial automorphism of `T(A)`. -/
+def liftPartialAutomorphism
+    (p : Structure.PartialAutomorphism act A) :
+    Structure.PartialAutomorphism (patternAction act A)
+      (patternStructure act A) where
+  lang := p.lang
+  toPartialEquiv := p.toPartialEquiv
+  source_closed := by
+    intro n F xs hxs
+    exact PEmpty.elim F
+  target_closed := by
+    intro n F xs hxs
+    exact PEmpty.elim F
+  map_rel_iff := by
+    intro n P xs hxs
+    change
+      (Function.Injective (p.toPartialEquiv ∘ xs) ∧
+        profile A (p.toPartialEquiv ∘ xs) =
+          patternProfile act A (patternPerm act A p.lang P)) ↔
+      (Function.Injective xs ∧
+        profile A xs = patternProfile act A P)
+    constructor
+    · rintro ⟨hinj, hprof⟩
+      refine ⟨?_, (patternProfile_map_iff act A p P xs hxs).1 hprof⟩
+      intro i j hij
+      apply hinj
+      exact congrArg p.toPartialEquiv hij
+    · rintro ⟨hinj, hprof⟩
+      refine ⟨?_, (patternProfile_map_iff act A p P xs hxs).2 hprof⟩
+      intro i j hij
+      apply hinj
+      exact p.toPartialEquiv.injOn (hxs i) (hxs j) hij
+  map_func := by
+    intro n F xs hxs
+    exact PEmpty.elim F
+
+@[simp] theorem liftPartialAutomorphism_lang
+    (p : Structure.PartialAutomorphism act A) :
+    (liftPartialAutomorphism act A p).lang = p.lang :=
+  rfl
+
+@[simp] theorem liftPartialAutomorphism_partialEquiv
+    (p : Structure.PartialAutomorphism act A) :
+    (liftPartialAutomorphism act A p).toPartialEquiv = p.toPartialEquiv :=
+  rfl
+
+/-- Extensional equality of original partial automorphisms is preserved by the
+lift to the pattern structure. -/
+theorem liftPartialAutomorphism_equivalent
+    {p q : Structure.PartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q) :
+    Structure.PartialIsomorphism.Equivalent
+      (liftPartialAutomorphism act A p)
+      (liftPartialAutomorphism act A q) :=
+  hpq
 
 end InfiniteRelational
 end AllThoseEPPA

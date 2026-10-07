@@ -1269,7 +1269,11 @@ noncomputable def genericPhysicalEmbedding :
             unaryIndex (act.onFunc ψ₀.lang F) = unaryIndex F :=
           unaryIndex_onFunc (act := act) ψ₀.lang F
         rw [hidx]
-        simpa [Function.comp_def] using hyphys
+        change
+          ψ₀ y ∈
+            (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+              (act.onFunc ψ₀.lang F) (ψ₀ x)
+        exact hyphys
       · exact
           (genericPhysicalFunctionValueVertex
             act A B₀ ψ₀ x y F hy hyphys).symm
@@ -1288,7 +1292,11 @@ noncomputable def genericPhysicalEmbedding :
           b ∈
             (genericPhysicalValuation act A B₀ ψ₀ x).1.func
               (act.onFunc ψ₀.lang F) (ψ₀ x) := by
-        simpa [Function.comp_def] using hb
+        change
+          b ∈
+            (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+              (act.onFunc ψ₀.lang F) (ψ₀ x) at hb
+        exact hb
       rw [genericPhysicalValuation_center_func] at hb'
       rcases hb' with ⟨y, hy, rfl⟩
       have hyphys :

@@ -3,6 +3,7 @@ import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
+import Mathlib.Data.Set.Finite.Range
 import AllThoseEPPA.Relabelling
 import AllThoseEPPA.EPPA
 import AllThoseEPPA.RelationalExtension
@@ -537,6 +538,132 @@ theorem patternStructure_hasCoherentEPPA
   exact
     Relational.finiteRelationalStructuresHaveCoherentEPPA
       (act := patternAction act A) (patternStructure act A)
+
+
+/-- A factorization of a finite tuple through its distinct values: the support
+tuple is injective and the coordinate map is surjective. -/
+structure TupleFactorization {β : Type z} {m : ℕ} (xs : Fin m → β) where
+  n : ℕ
+  support : Fin n → β
+  support_injective : Function.Injective support
+  coord : Fin m → Fin n
+  coord_surjective : Function.Surjective coord
+  factor : xs = support ∘ coord
+
+/-- Canonical finite-range factorization of a tuple. -/
+noncomputable def tupleFactorization {β : Type z} {m : ℕ}
+    (xs : Fin m → β) : TupleFactorization xs := by
+  classical
+  let S : Set β := Set.range xs
+  letI : Fintype S := Set.Finite.fintype (Set.finite_range xs)
+  let e : S ≃ Fin (Fintype.card S) := Fintype.equivFin S
+  refine
+    { n := Fintype.card S
+      support := fun j => (e.symm j).1
+      support_injective := ?_
+      coord := fun i => e ⟨xs i, ⟨i, rfl⟩⟩
+      coord_surjective := ?_
+      factor := ?_ }
+  · intro i j hij
+    apply e.symm.injective
+    apply Subtype.ext
+    exact hij
+  · intro j
+    let y : S := e.symm j
+    rcases y.2 with ⟨i, hi⟩
+    refine ⟨i, ?_⟩
+    calc
+      e ⟨xs i, ⟨i, rfl⟩⟩ = e y := by
+        apply congrArg e
+        apply Subtype.ext
+        exact hi
+      _ = j := e.apply_symm_apply j
+  · funext i
+    change xs i = (e.symm (e ⟨xs i, ⟨i, rfl⟩⟩)).1
+    simp
+
+/-- A factorization of a nonempty tuple has nonempty support. -/
+theorem tupleFactorization_pos {β : Type z} {m : ℕ}
+    (xs : Fin m → β) (hm : 0 < m) :
+    0 < (tupleFactorization xs).n := by
+  by_contra h
+  have hn : (tupleFactorization xs).n = 0 :=
+    Nat.eq_zero_of_not_pos h
+  let i : Fin m := ⟨0, hm⟩
+  have j := (tupleFactorization xs).coord i
+  rw [hn] at j
+  exact Fin.elim0 j
+
+/-- Build a profile entry from a relation symbol and a surjective coordinate
+map. -/
+def mkProfileEntry {m n : ℕ} (R : L.RelSymbol m)
+    (ω : Fin m → Fin n) (hω : Function.Surjective ω) :
+    ProfileEntry L n where
+  arity := m
+  symbol := R
+  coord := ω
+  coord_surjective := hω
+
+/-- Decode a pattern-language structure back to the original relational
+language.  This is the paper's U construction. -/
+def decodeStructure {β : Type z}
+    (C : Structure (patternLanguage act A) β) : Structure L β where
+  rel := by
+    intro m R xs
+    exact ∃ (n : ℕ) (P : PatternSymbol act A n)
+      (ys : Fin n → β) (ω : Fin m → Fin n)
+      (hω : Function.Surjective ω),
+      C.rel P ys ∧
+        mkProfileEntry R ω hω ∈ patternProfile act A P ∧
+        xs = ys ∘ ω
+  func := by
+    intro n F xs
+    exact isEmptyElim F
+
+/-- Decoding the pattern encoding of A recovers every original relation.
+This is the required inverse identity U(T(A)) = A at the relational level. -/
+theorem decode_patternStructure_rel_iff
+    {m : ℕ} (R : L.RelSymbol m) (xs : Fin m → α) :
+    (decodeStructure act A (patternStructure act A)).rel R xs ↔
+      A.rel R xs := by
+  classical
+  constructor
+  · rintro ⟨n, P, ys, ω, hω, hpat, hentry, hfactor⟩
+    have hentryA :
+        mkProfileEntry R ω hω ∈ profile A ys := by
+      rw [hpat.2]
+      exact hentry
+    change A.rel R (ys ∘ ω) at hentryA
+    rw [hfactor]
+    exact hentryA
+  · intro hA
+    let F := tupleFactorization xs
+    have hpos : 0 < F.n :=
+      tupleFactorization_pos xs (L.relArity_pos R)
+    let OA : Orbit act A := ⟨A, ⟨1, by simp⟩⟩
+    let P : PatternSymbol act A F.n :=
+      ⟨⟨OA, ⟨F.support, F.support_injective⟩⟩, hpos⟩
+    refine ⟨F.n, P, F.support, F.coord, F.coord_surjective, ?_, ?_, F.factor⟩
+    · refine ⟨F.support_injective, ?_⟩
+      rfl
+    · change A.rel R (F.support ∘ F.coord)
+      rw [← F.factor]
+      exact hA
+
+/-- The identity vertex map embeds A into U(T(A)). -/
+def decodePatternStructureEmbedding :
+    Structure.Embedding act A
+      (decodeStructure act A (patternStructure act A)) where
+  lang := 1
+  toFun := id
+  injective := Function.injective_id
+  map_rel_iff := by
+    intro n R xs
+    rw [Language.Action.onRel_one act R]
+    simpa using decode_patternStructure_rel_iff act A R xs
+  map_func := by
+    intro n F xs
+    exact isEmptyElim F
 
 end InfiniteRelational
 end AllThoseEPPA

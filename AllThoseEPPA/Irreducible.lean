@@ -188,12 +188,12 @@ def IsHomomorphismEmbedding
     (f : Homomorphism act A B) : Prop :=
   ∀ (S : Set V) (hS : A.IsClosed S),
     (A.induce S hS).IsIrreducible →
-      f.IsEmbeddingOn S
+      IsEmbeddingOn act f S
 
 /-- An embedding, regarded as a homomorphism, is a homomorphism-embedding. -/
 theorem Embedding.toHomomorphism_isHomomorphismEmbedding
     (f : Embedding act A B) :
-    f.toHomomorphism.IsHomomorphismEmbedding := by
+    IsHomomorphismEmbedding act f.toHomomorphism := by
   intro S hS hirr
   refine ⟨?_, ?_, ?_⟩
   · intro x hx y hy hxy

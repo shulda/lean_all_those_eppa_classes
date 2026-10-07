@@ -140,11 +140,10 @@ theorem sourceCorrection_comp_of_mem
       baseExtension act A p x = p x :=
     baseExtension_apply_of_mem act A p hx
   rw [baseExtension_comp act A p q htg]
-  rw [Language.Action.onRel_mul]
   change
     genericValuation A x ⟨n, R⟩ xs +
         genericValuation A (q (p x))
-          ⟨n, act.onRel q.lang (act.onRel p.lang R)⟩
+          ⟨n, act.onRel (q.lang * p.lang) R⟩
           (((baseExtension act A p).trans
               (baseExtension act A q)) ∘ xs) =
       (genericValuation A x ⟨n, R⟩ xs +
@@ -155,6 +154,7 @@ theorem sourceCorrection_comp_of_mem
           ⟨n, act.onRel q.lang (act.onRel p.lang R)⟩
           (baseExtension act A q ∘
             (baseExtension act A p ∘ xs)))
+  rw [Language.Action.onRel_mul]
   rw [hσx]
   have htuple :
       ((baseExtension act A p).trans (baseExtension act A q)) ∘ xs =

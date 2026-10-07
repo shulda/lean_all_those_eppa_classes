@@ -154,5 +154,108 @@ theorem closureAtSet_subset_descendants
     ⟨w.base, B₀.mem_closureAtSet w.base, ?_⟩
   exact (restrictionVertex_self act A B₀ ψ w).symm
 
+
+/-- The restriction vertex does not depend on the proof witnessing membership
+in the ambient one-point closure. -/
+theorem restrictionVertex_proof_irrel
+    (w : WitnessVertex act A B₀ ψ)
+    (y : β)
+    (hy hz : y ∈ B₀.closureAtSet w.base) :
+    restrictionVertex act A B₀ ψ w y hy =
+      restrictionVertex act A B₀ ψ w y hz := by
+  have h : hy = hz := Subsingleton.elim _ _
+  subst hz
+  rfl
+
+/-- Every restriction-descendant actually belongs to the one-point closure of
+the original witness vertex.  The proof is carried out inside the induced
+base closure, where the centre generates the whole carrier. -/
+theorem restrictionVertex_mem_closureAtSet
+    (w : WitnessVertex act A B₀ ψ)
+    (y : β) (hy : y ∈ B₀.closureAtSet w.base) :
+    restrictionVertex act A B₀ ψ w y hy ∈
+      (witnessStructure act A B₀ ψ).closureAtSet w := by
+  let C := B₀.closureAt w.base
+  let x0 : C := ⟨w.base, B₀.mem_closureAtSet w.base⟩
+  let r : C → WitnessVertex act A B₀ ψ :=
+    fun z => restrictionVertex act A B₀ ψ w z.1 z.2
+  let T : Set C :=
+    {z | r z ∈ (witnessStructure act A B₀ ψ).closureAtSet w}
+  have hTclosed : C.IsClosed T := by
+    intro n F zs hzs z hz
+    have hconst :
+        zs = fun _ => zs (UnaryFunctions.unaryIndex F) :=
+      UnaryFunctions.unaryTuple_eq_constant F zs
+    rw [hconst] at hz
+    let u : C := zs (UnaryFunctions.unaryIndex F)
+    have hzB :
+        z.1 ∈ B₀.func F (fun _ => u.1) := by
+      simpa [C, u, Function.comp_def] using hz
+    have hval :=
+      functionValueVertex_restrictionVertex
+        act A B₀ ψ w u.2 F hzB
+    have hproof :
+        r z =
+          restrictionVertex act A B₀ ψ w z.1
+            (B₀.closureAtSet_subset_of_mem u.2
+              (func_mem_closureAtSet B₀ F hzB)) :=
+      restrictionVertex_proof_irrel
+        act A B₀ ψ w z.1 z.2
+          (B₀.closureAtSet_subset_of_mem u.2
+            (func_mem_closureAtSet B₀ F hzB))
+    have hfun :
+        r z ∈
+          (witnessStructure act A B₀ ψ).func F
+            (fun _ => r u) := by
+      refine ⟨z.1, ?_, ?_⟩
+      · simpa [r, u, restrictionVertex, WitnessVertex.base] using hzB
+      · exact hproof.trans hval.symm
+    have hu :
+        r u ∈
+          (witnessStructure act A B₀ ψ).closureAtSet w := by
+      exact hzs (UnaryFunctions.unaryIndex F)
+    exact
+      ((witnessStructure act A B₀ ψ).isClosed_closureSet ({w} : Set _))
+        F (fun _ => r u) (fun _ => hu) hfun
+  have hx0T : x0 ∈ T := by
+    change
+      restrictionVertex act A B₀ ψ w w.base
+          (B₀.mem_closureAtSet w.base) ∈
+        (witnessStructure act A B₀ ψ).closureAtSet w
+    rw [restrictionVertex_self act A B₀ ψ w]
+    exact
+      (witnessStructure act A B₀ ψ).mem_closureAtSet w
+  have hsub : C.closureAtSet x0 ⊆ T := by
+    apply C.closureSet_minimal hTclosed
+    intro z hz
+    have hzx : z = x0 := by simpa using hz
+    subst z
+    exact hx0T
+  let yy : C := ⟨y, hy⟩
+  have hyy : yy ∈ C.closureAtSet x0 := by
+    rw [Structure.closureAtSet_in_closureAt_eq_univ]
+    exact Set.mem_univ yy
+  have hout := hsub hyy
+  exact hout
+
+/-- Restriction-descendants are contained in the faithful-witness closure. -/
+theorem descendants_subset_closureAtSet
+    (w : WitnessVertex act A B₀ ψ) :
+    {v | IsDescendant act A B₀ ψ w v} ⊆
+      (witnessStructure act A B₀ ψ).closureAtSet w := by
+  rintro v ⟨y, hy, rfl⟩
+  exact restrictionVertex_mem_closureAtSet act A B₀ ψ w y hy
+
+/-- **Closure characterization.**  One-point closure in the faithful witness
+is exactly restriction of the valuation structure along the corresponding
+base one-point closure. -/
+theorem closureAtSet_eq_descendants
+    (w : WitnessVertex act A B₀ ψ) :
+    (witnessStructure act A B₀ ψ).closureAtSet w =
+      {v | IsDescendant act A B₀ ψ w v} := by
+  apply Set.Subset.antisymm
+  · exact closureAtSet_subset_descendants act A B₀ ψ w
+  · exact descendants_subset_closureAtSet act A B₀ ψ w
+
 end Faithful
 end AllThoseEPPA

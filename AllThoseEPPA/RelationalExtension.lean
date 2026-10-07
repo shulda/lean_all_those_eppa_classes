@@ -218,7 +218,8 @@ theorem sourceParity_eq_false_of_forall_mem
       p (xs i₀) = baseExtension act A p (xs i₀) := by
     symm
     exact baseExtension_apply_of_mem act A p (hxs i₀)
-  simp [genericValuation, hσ, hrel, i₀, hfirstσ, Bool.zero_eq_false]
+  simp [genericValuation, hσ, hrel, i₀, hfirstσ,
+    Bool.zero_eq_false, Bool.add_eq_xor]
 
 /-- The completed flip correction `F_R(xs)`, viewed as a function of the
 base vertex rather than of a tuple index. Equal base vertices therefore get

@@ -722,6 +722,7 @@ theorem Valuation.physicalSignature_closureAt_image
       ⟨⟨y, v.orbit.1.mem_closureAtSet y⟩, ?_⟩
     apply congrArg v.toFun
     apply Subtype.ext
+    rfl
   · rintro b ⟨z, rfl⟩
     let T : Set α :=
       {a | ∃ ha : a ∈ v.orbit.1.closureAtSet v.center,
@@ -750,6 +751,7 @@ theorem Valuation.physicalSignature_closureAt_image
         refine ⟨t, ht, ?_⟩
         apply congrArg v.toFun
         apply Subtype.ext
+        rfl
       have hout :
           v.toFun ⟨t, htcenter⟩ ∈
             s.closureAtSet (v.toFun y₀) :=
@@ -759,15 +761,14 @@ theorem Valuation.physicalSignature_closureAt_image
       refine ⟨hy, ?_⟩
       exact s.mem_closureAtSet (v.toFun y₀)
     have hzT : z.1 ∈ T := by
-      apply
-        v.orbit.1.closureSet_minimal hTclosed
-          (show ({y} : Set α) ⊆ T from ?_)
-      · intro a ha
+      have hsub : ({y} : Set α) ⊆ T := by
+        intro a ha
         have hay : a = y := by
           simpa using ha
         subst a
         exact hyT
-      · exact z.2
+      exact
+        (v.orbit.1.closureSet_minimal hTclosed hsub) z.2
     rcases hzT with ⟨hzcenter, hzimage⟩
     have hzsub :
         (⟨z.1, hzcenter⟩ :
@@ -775,6 +776,7 @@ theorem Valuation.physicalSignature_closureAt_image
         ⟨z.1,
           v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩ := by
       apply Subtype.ext
+      rfl
     simpa [s, y₀, hzsub] using hzimage
 
 

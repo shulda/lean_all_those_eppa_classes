@@ -275,5 +275,77 @@ theorem closureAtSet_eq_descendants
   · exact closureAtSet_subset_descendants act A B₀ ψ w
   · exact descendants_subset_closureAtSet act A B₀ ψ w
 
+
+/-- Any unary function value belongs to the one-point closure of its input in
+the faithful witness itself. -/
+theorem witness_func_mem_closureAtSet
+    {x y : WitnessVertex act A B₀ ψ}
+    {n : ℕ} (F : L.FuncSymbol n)
+    (hy :
+      y ∈
+        (witnessStructure act A B₀ ψ).func F (fun _ => x)) :
+    y ∈ (witnessStructure act A B₀ ψ).closureAtSet x := by
+  change
+    y ∈ (witnessStructure act A B₀ ψ).closureSet {x}
+  exact
+    ((witnessStructure act A B₀ ψ).isClosed_closureSet
+      ({x} : Set _))
+      F (fun _ => x)
+      (fun _ => (witnessStructure act A B₀ ψ).mem_closureAtSet x)
+      hy
+
+/-- Looking at an internal valuation point after restriction is literally the
+same as looking at the corresponding point of the original valuation
+structure. -/
+theorem restrictionVertex_pointAt
+    (w : WitnessVertex act A B₀ ψ)
+    {y : β} (hy : y ∈ B₀.closureAtSet w.base)
+    (z : B₀.closureAtSet y) :
+    (restrictionVertex act A B₀ ψ w y hy).pointAt
+        act A B₀ ψ z =
+      w.pointAt act A B₀ ψ
+        (closureInclusion B₀ hy z) :=
+  rfl
+
+/-- Every valuation point of a vertex in the closure of `w` is represented
+by an internal valuation point of `w`. -/
+theorem pointAt_eq_ancestor_of_mem_closure
+    (w x : WitnessVertex act A B₀ ψ)
+    (hx :
+      x ∈ (witnessStructure act A B₀ ψ).closureAtSet w)
+    (u : B₀.closureAtSet x.base) :
+    ∃ u' : B₀.closureAtSet w.base,
+      x.pointAt act A B₀ ψ u =
+        w.pointAt act A B₀ ψ u' := by
+  rw [closureAtSet_eq_descendants act A B₀ ψ w] at hx
+  rcases hx with ⟨y, hy, rfl⟩
+  exact
+    ⟨closureInclusion B₀ hy u,
+      restrictionVertex_pointAt act A B₀ ψ w hy u⟩
+
+/-- Two descendants of the same witness vertex have pairwise generic internal
+valuation points. -/
+theorem points_generic_of_mem_closure_same_ancestor
+    (w x y : WitnessVertex act A B₀ ψ)
+    (hx :
+      x ∈ (witnessStructure act A B₀ ψ).closureAtSet w)
+    (hy :
+      y ∈ (witnessStructure act A B₀ ψ).closureAtSet w)
+    (u : B₀.closureAtSet x.base)
+    (v : B₀.closureAtSet y.base) :
+    AreGeneric act A B₀ ψ
+      (x.pointAt act A B₀ ψ u)
+      (y.pointAt act A B₀ ψ v) := by
+  rcases
+      pointAt_eq_ancestor_of_mem_closure
+        act A B₀ ψ w x hx u with
+    ⟨u', hu⟩
+  rcases
+      pointAt_eq_ancestor_of_mem_closure
+        act A B₀ ψ w y hy v with
+    ⟨v', hv⟩
+  rw [hu, hv]
+  exact w.valuation.2 u' v'
+
 end Faithful
 end AllThoseEPPA

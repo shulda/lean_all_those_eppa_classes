@@ -530,18 +530,18 @@ theorem projection_injOn_of_generic
   rcases v with ⟨y, W⟩
   change x = y at hbase
   subst y
-  apply Sigma.ext rfl
-  apply heq_of_eq
-  apply Subtype.ext
-  funext z
-  have hg :=
-    hS ⟨⟨x, V⟩, hw⟩ ⟨⟨x, W⟩, hv⟩ z z
-  change
-    AreGeneric act A B₀ ψ
-      ⟨z.1, V.1 z⟩ ⟨z.1, W.1 z⟩ at hg
-  rcases hg with heq | ⟨hne, hlabels⟩
-  · exact eq_of_heq (Sigma.mk.inj_iff.mp heq).2
-  · exact (hne rfl).elim
+  have hVW : V = W := by
+    apply Subtype.ext
+    funext z
+    have hg :=
+      hS ⟨⟨x, V⟩, hw⟩ ⟨⟨x, W⟩, hv⟩ z z
+    change
+      AreGeneric act A B₀ ψ
+        ⟨z.1, V.1 z⟩ ⟨z.1, W.1 z⟩ at hg
+    rcases hg with heq | ⟨hne, hlabels⟩
+    · exact eq_of_heq (Sigma.mk.inj_iff.mp heq).2
+    · exact (hne rfl).elim
+  exact Sigma.ext rfl (heq_of_eq hVW)
 
 /-- **Claim `c:faithful:generic`.**  Projection is an embedding on every
 generic subset of the faithful witness. -/

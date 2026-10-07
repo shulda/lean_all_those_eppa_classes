@@ -1715,6 +1715,79 @@ theorem physicalFunctionValueVertex_transport
         (PhysicalWitnessVertex.funcValue_mem_support
           act A B₀ w F hy)
 
+/-- The lifted witness permutation transports each unary function-value set
+to the relabelled function-value set. -/
+theorem physicalWitnessFunction_transport
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (ws : Fin n → PhysicalWitnessVertex act A B₀) :
+    Structure.imageSet
+        (physicalWitnessEquiv act A B₀ hA h)
+        ((physicalWitnessStructure act A B₀).func F ws) =
+      (physicalWitnessStructure act A B₀).func
+        (act.onFunc h.lang F)
+        (physicalWitnessEquiv act A B₀ hA h ∘ ws) := by
+  let w := ws (unaryIndex F)
+  let wt := PhysicalWitnessVertex.transport act A B₀ h w
+  ext z
+  constructor
+  · rintro ⟨z₀, hz₀, rfl⟩
+    rcases
+        (mem_physicalWitnessStructure_func_iff
+          act A B₀ F ws z₀).1 hz₀ with
+      ⟨y, hy, rfl⟩
+    have hyT :
+        h y ∈ wt.valuation.1.func
+          (act.onFunc h.lang F) (h w.base) := by
+      change
+        h y ∈
+          (PhysicalWitnessVertex.transport act A B₀ h w).valuation.1.func
+            (act.onFunc h.lang F) (h w.base)
+      rw [PhysicalWitnessVertex.transport_center_func]
+      exact ⟨y, hy, rfl⟩
+    apply
+      (mem_physicalWitnessStructure_func_iff
+        act A B₀ (act.onFunc h.lang F)
+        (physicalWitnessEquiv act A B₀ hA h ∘ ws) _).2
+    refine ⟨h y, ?_, ?_⟩
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+        using hyT
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+        using
+          (physicalFunctionValueVertex_transport
+            act A B₀ hA h w F y hy hyT)
+  · intro hz
+    rcases
+        (mem_physicalWitnessStructure_func_iff
+          act A B₀ (act.onFunc h.lang F)
+          (physicalWitnessEquiv act A B₀ hA h ∘ ws) z).1 hz with
+      ⟨y', hy', rfl⟩
+    have hyT :
+        y' ∈ wt.valuation.1.func
+          (act.onFunc h.lang F) (h w.base) := by
+      simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+        using hy'
+    rw [PhysicalWitnessVertex.transport_center_func] at hyT
+    rcases hyT with ⟨y, hy, hyy'⟩
+    subst y'
+    let hyT' :
+        h y ∈
+          (PhysicalWitnessVertex.transport act A B₀ h w).valuation.1.func
+            (act.onFunc h.lang F) (h w.base) := by
+      rw [PhysicalWitnessVertex.transport_center_func]
+      exact ⟨y, hy, rfl⟩
+    refine
+      ⟨physicalFunctionValueVertex act A B₀ w F y hy, ?_, ?_⟩
+    · apply
+        (mem_physicalWitnessStructure_func_iff
+          act A B₀ F ws _).2
+      exact ⟨y, hy, by rfl⟩
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
+        using
+          (physicalFunctionValueVertex_transport
+            act A B₀ hA h w F y hy hyT')
+
 /-- The lifted witness permutation preserves and reflects every relation. -/
 theorem physicalWitnessRelation_transport_iff
     (hA : A.HasFiniteRelabelOrbit act)

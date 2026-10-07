@@ -1067,6 +1067,133 @@ theorem physicalWitnessVertex_finite
 
 end PhysicalWitness
 
+
+section GenericCopy
+
+variable
+  (ψ₀ : Structure.Embedding act.relationalReduct
+    A.relationalReduct B₀)
+
+/-- The orbit representative in which the relational embedding `ψ₀` has
+identity language component. -/
+def genericOrbit : Orbit act A :=
+  ⟨A.relabel act ψ₀.lang, ⟨ψ₀.lang, rfl⟩⟩
+
+/-- The abstract valuation presentation attached to a vertex of the generic
+copy of `A`. -/
+def genericValuation (x : α) :
+    Valuation act A B₀ (ψ₀ x) where
+  orbit := genericOrbit act A ψ₀
+  center := x
+  toFun := fun z => ψ₀ z.1
+  injective := by
+    intro z z' h
+    apply Subtype.ext
+    exact ψ₀.injective h
+  map_rel_iff := by
+    intro n R xs
+    let S : L.RelSymbol n := act.onRel ψ₀.lang⁻¹ R
+    have hmap :=
+      ψ₀.map_rel_iff S (fun i => (xs i).1)
+    have hsym :
+        act.relationalReduct.onRel ψ₀.lang S = R := by
+      change act.onRel ψ₀.lang S = R
+      simp [S, ← Language.Action.onRel_mul]
+    rw [hsym] at hmap
+    change
+      B₀.rel R (fun i => ψ₀ (xs i).1) ↔
+        (A.relabel act ψ₀.lang).rel R
+          (fun i => (xs i).1)
+    simpa [S, Structure.relabel_rel, Function.comp_def] using hmap
+  center_eq := rfl
+
+/-- The presentation-independent valuation attached to the generic vertex. -/
+def genericPhysicalValuation (x : α) :
+    PhysicalValuation act A B₀ (ψ₀ x) :=
+  ⟨Valuation.physicalSignature act A B₀
+      (genericValuation act A B₀ ψ₀ x),
+    ⟨genericValuation act A B₀ ψ₀ x, rfl⟩⟩
+
+/-- Vertex map of the generic copy of `A` in the physical witness. -/
+def genericPhysicalVertex (x : α) :
+    PhysicalWitnessVertex act A B₀ :=
+  ⟨ψ₀ x, genericPhysicalValuation act A B₀ ψ₀ x⟩
+
+@[simp] theorem genericPhysicalVertex_base (x : α) :
+    (genericPhysicalVertex act A B₀ ψ₀ x).base = ψ₀ x :=
+  rfl
+
+/-- Restricting the generic abstract valuation at `x` to a point `y` in
+its closure literally gives the generic valuation at `y`. -/
+theorem genericValuation_restrict
+    (x y : α)
+    (hy :
+      y ∈
+        (genericOrbit act A ψ₀).1.closureAtSet x) :
+    Valuation.restrict act A B₀
+        (genericValuation act A B₀ ψ₀ x) y hy =
+      genericValuation act A B₀ ψ₀ y := by
+  rfl
+
+/-- At the centre of the generic valuation, physical values of the relabelled
+function symbol are exactly the images under `ψ₀` of the original function
+values. -/
+theorem genericPhysicalValuation_center_func
+    (x : α) {n : ℕ} (F : L.FuncSymbol n) :
+    (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+        (act.onFunc ψ₀.lang F) (ψ₀ x) =
+      ψ₀ '' A.func F (fun _ => x) := by
+  let v := genericValuation act A B₀ ψ₀ x
+  let z : v.orbit.1.closureAtSet v.center :=
+    ⟨x, v.orbit.1.mem_closureAtSet x⟩
+  have hz : v.toFun z = ψ₀ x := rfl
+  ext b
+  rw [show
+    (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+        (act.onFunc ψ₀.lang F) (ψ₀ x) =
+      Valuation.physicalFunc act A B₀ v
+        (act.onFunc ψ₀.lang F) (v.toFun z) by
+      rfl]
+  rw [Valuation.mem_physicalFunc_at_image_iff]
+  constructor
+  · rintro ⟨y, hy, hby⟩
+    refine ⟨y, ?_, hby.symm⟩
+    change
+      y ∈ (A.relabel act ψ₀.lang).func
+        (act.onFunc ψ₀.lang F) (fun _ => x) at hy
+    simpa [Structure.relabel_func,
+      ← Language.Action.onFunc_mul] using hy
+  · rintro ⟨y, hy, rfl⟩
+    refine ⟨y, ?_, rfl⟩
+    change
+      y ∈ (A.relabel act ψ₀.lang).func
+        (act.onFunc ψ₀.lang F) (fun _ => x)
+    simpa [Structure.relabel_func,
+      ← Language.Action.onFunc_mul] using hy
+
+/-- Physical restriction of a generic valuation agrees with the generic
+valuation at the new centre. -/
+theorem genericPhysicalValuation_restrict
+    (x y : α)
+    (hy :
+      y ∈
+        (genericOrbit act A ψ₀).1.closureAtSet x)
+    (hyphys :
+      ψ₀ y ∈
+        (genericPhysicalValuation act A B₀ ψ₀ x).1.support) :
+    PhysicalValuation.restrict act A B₀
+        (genericPhysicalValuation act A B₀ ψ₀ x)
+        (ψ₀ y) hyphys =
+      genericPhysicalValuation act A B₀ ψ₀ y := by
+  apply Subtype.ext
+  have hphys :=
+    Valuation.physicalSignature_restrict
+      act A B₀ (genericValuation act A B₀ ψ₀ x) y hy
+  rw [genericValuation_restrict act A B₀ ψ₀ x y hy] at hphys
+  exact hphys.symm
+
+end GenericCopy
+
 section Transport
 
 /-- The underlying vertex permutation of a total automorphism. -/

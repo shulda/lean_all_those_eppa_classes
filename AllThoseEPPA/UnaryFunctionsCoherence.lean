@@ -31,10 +31,16 @@ theorem PhysicalValuation.func_eq_empty_of_not_mem_support
   ext b
   constructor
   · intro hb
+    have hb' :
+        b ∈ Valuation.physicalFunc act A B₀ v F a := by
+      change b ∈
+        (Valuation.physicalSignature act A B₀ v).func F a
+      rw [hv]
+      exact hb
+    rcases hb' with ⟨z, hza, y, hy, hby⟩
     exfalso
     apply ha
     rw [← hv]
-    rcases hb with ⟨z, hza, y, hy, hby⟩
     exact ⟨z, hza⟩
   · intro hb
     simpa using hb
@@ -154,6 +160,7 @@ theorem genericPhysicalValuation_transport_func_of_extends
     hext.2 y hysrc
   have hpre : e.symm (ψ₀ (p y)) = ψ₀ y := by
     have hp := congrArg e.symm hpy
+    symm
     simpa [e] using hp
   have hinv :=
     inverse_language_conjugacy act A B₀ ψ₀ p h hext
@@ -320,7 +327,9 @@ theorem ValuationSignature.transport_comp
     let ec := automorphismEquiv act (h.comp g)
     have hpre : eg.symm (eh.symm a) = ec.symm a := by
       apply ec.injective
-      change h (g (eg.symm (eh.symm a))) = a
+      rw [ec.apply_symm_apply]
+      change (h.comp g) (eg.symm (eh.symm a)) = a
+      rw [Structure.Automorphism.comp_apply]
       rw [show g (eg.symm (eh.symm a)) = eh.symm a by
         exact eg.apply_symm_apply (eh.symm a)]
       exact eh.apply_symm_apply a
@@ -364,7 +373,8 @@ theorem PhysicalWitnessVertex.transport_comp
     PhysicalWitnessVertex.transport act A B₀ h
         (PhysicalWitnessVertex.transport act A B₀ g w) =
       PhysicalWitnessVertex.transport act A B₀ (h.comp g) w := by
-  apply Sigma.ext rfl
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
   exact heq_of_eq
     (PhysicalValuation.transport_comp act A B₀ h g w.2)
 

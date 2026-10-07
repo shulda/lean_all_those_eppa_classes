@@ -286,5 +286,111 @@ theorem flipCorrection_eq_false_of_not_mem_range
       simp [hne, Bool.zero_eq_false]
     · simp [F2Completion.evenCompletion, hxsrc, hout, Bool.zero_eq_false]
 
+
+
+/-- Pull a relation symbol back through the language component of a partial
+automorphism. -/
+def preRel
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (S : L.RelSymbol n) : L.RelSymbol n :=
+  act.onRel p.lang⁻¹ S
+
+@[simp] theorem relabel_preRel
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (S : L.RelSymbol n) :
+    act.onRel p.lang (preRel act A p S) = S := by
+  rw [← Language.Action.onRel_mul]
+  simp [preRel]
+
+/-- Pull a tuple back through the chosen total extension of the vertex map. -/
+def preTuple
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (zs : Fin n → α) : Fin n → α :=
+  (baseExtension act A p).symm ∘ zs
+
+@[simp] theorem baseExtension_preTuple
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (zs : Fin n → α) :
+    baseExtension act A p ∘ preTuple act A p zs = zs := by
+  funext i
+  simp [preTuple, Function.comp_apply]
+
+/-- Affine transport of one valuation vertex.
+
+This is the paper's map
+`(x,χ) ↦ (hat p(x), f_x(χ))`, written as pullback plus translation in the
+Boolean vector space of valuations. -/
+noncomputable def extendWitnessVertex
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α) : WitnessVertex L α := by
+  classical
+  let σ := baseExtension act A p
+  refine
+    { base := σ v.base
+      valuation := fun S zs =>
+        v.valuation ⟨S.1, preRel act A p S.2⟩ (preTuple act A p zs) +
+          flipCorrection act A p (preRel act A p S.2)
+            (preTuple act A p zs) v.base
+      off_support_false := ?_ }
+  intro S zs hmiss
+  have hmissOld :
+      ∀ i, preTuple act A p zs i ≠ v.base := by
+    intro i hi
+    apply hmiss i
+    have hσ := congrArg σ hi
+    simpa [σ, preTuple, Function.comp_apply] using hσ
+  have hval :
+      v.valuation ⟨S.1, preRel act A p S.2⟩
+          (preTuple act A p zs) = false :=
+    v.off_support_false
+      ⟨S.1, preRel act A p S.2⟩
+      (preTuple act A p zs) hmissOld
+  have hnrange :
+      v.base ∉ Set.range (preTuple act A p zs) := by
+    rintro ⟨i, hi⟩
+    exact hmissOld i hi
+  have hflip :
+      flipCorrection act A p (preRel act A p S.2)
+          (preTuple act A p zs) v.base = false :=
+    flipCorrection_eq_false_of_not_mem_range
+      act A p (preRel act A p S.2) (preTuple act A p zs) hnrange
+  rw [hval, hflip]
+  rfl
+
+@[simp] theorem extendWitnessVertex_base
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α) :
+    (extendWitnessVertex act A p v).base =
+      baseExtension act A p v.base :=
+  rfl
+
+/-- On the generic copy and on the source of the partial automorphism, the
+affine valuation transport agrees with the given partial automorphism. -/
+theorem extendWitnessVertex_generic_of_mem
+    (p : RelPartialAutomorphism act A)
+    {x : α} (hx : x ∈ p.source) :
+    extendWitnessVertex act A p (genericVertex A x) =
+      genericVertex A (p x) := by
+  classical
+  apply WitnessVertex.ext
+  · exact baseExtension_apply_of_mem act A p hx
+  · funext S zs
+    let R : L.RelSymbol S.1 := preRel act A p S.2
+    let ys : Fin S.1 → α := preTuple act A p zs
+    have hR : act.onRel p.lang R = S.2 := by
+      simpa [R] using relabel_preRel act A p S.2
+    have htuple :
+        baseExtension act A p ∘ ys = zs := by
+      simpa [ys] using baseExtension_preTuple act A p zs
+    change
+      genericValuation A x ⟨S.1, R⟩ ys +
+          flipCorrection act A p R ys x =
+        genericValuation A (p x) S zs
+    rw [flipCorrection_of_mem act A p R ys hx]
+    rw [sourceCorrection_of_mem act A p R ys hx]
+    rw [hR, htuple]
+    cases h₁ : genericValuation A x ⟨S.1, R⟩ ys <;>
+      cases h₂ : genericValuation A (p x) S zs <;> rfl
+
 end Relational
 end AllThoseEPPA

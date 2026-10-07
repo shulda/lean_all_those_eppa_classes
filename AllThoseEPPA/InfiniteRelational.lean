@@ -704,7 +704,7 @@ noncomputable def decodeEmbedding
     intro m R xs
     constructor
     · rintro ⟨n, P', ys', ω, hω, hD, hentry, hfactor⟩
-      let P : PatternSymbol act A n := patternPerm act A f.lang⁻¹ P'
+      let P : PatternSymbol act A n := (patternPerm act A f.lang).symm P'
       let ys : Fin n → β := fun j => xs (Function.surjInv hω j)
       have hys : f.toFun ∘ ys = ys' := by
         funext j
@@ -714,10 +714,11 @@ noncomputable def decodeEmbedding
         change f (xs i) = ys' (ω i) at hf
         simpa [ys, i, hωi] using hf
       have hP : patternPerm act A f.lang P = P' := by
-        simp [P]
+        exact (patternPerm act A f.lang).apply_symm_apply P'
       have hC : C.rel P ys := by
         have hmap := f.map_rel_iff P ys
         apply hmap.mp
+        change D.rel (patternPerm act A f.lang P) (f.toFun ∘ ys)
         rw [hP, hys]
         exact hD
       have hentryC :

@@ -88,9 +88,15 @@ theorem ext_of_lang_apply
   | mk gp gs gt =>
     cases h with
     | mk hp hs ht =>
+      change gp.lang = hp.lang at hlang
+      change ∀ x, gp.toPartialEquiv x = hp.toPartialEquiv x at happly
+      change gp.toPartialEquiv.source = Set.univ at gs
+      change gp.toPartialEquiv.target = Set.univ at gt
+      change hp.toPartialEquiv.source = Set.univ at hs
+      change hp.toPartialEquiv.target = Set.univ at ht
       have hsource :
-          gp.toPartialEquiv.source = hp.toPartialEquiv.source := by
-        rw [gs, hs]
+          gp.toPartialEquiv.source = hp.toPartialEquiv.source :=
+        gs.trans hs.symm
       have heqOn :
           PartialEquiv.EqOnSource gp.toPartialEquiv hp.toPartialEquiv := by
         refine ⟨hsource, ?_⟩
@@ -100,12 +106,10 @@ theorem ext_of_lang_apply
           gp.toPartialEquiv = hp.toPartialEquiv :=
         PartialEquiv.eq_of_eqOnSource_univ
           gp.toPartialEquiv hp.toPartialEquiv heqOn gs gt
-      have hpi : gp = hp := by
-        apply PartialIsomorphism.ext
-        · exact hlang
-        · exact hpe
-      cases hpi
-      rfl
+      cases gp
+      cases hp
+      simp_all
+
 
 end Automorphism
 

@@ -251,7 +251,7 @@ theorem sum_bool_eq_bodd_filter_card
               a ∉ s.filter (fun i => f i = true) := by
             simp [ha]
           simp [Finset.sum_insert, ha, hfa, hfilter,
-            Finset.card_insert, haFilter, ih, Bool.add_eq_xor]
+            haFilter, ih, Bool.add_eq_xor]
 
 /-- The XOR-sum is `true` exactly when an odd number of summands are
 `true`. -/

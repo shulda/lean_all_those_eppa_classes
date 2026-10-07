@@ -467,6 +467,24 @@ noncomputable def unextendWitnessVertex
   rw [hval, hflip]
   rfl
 
+@[simp] theorem unextendWitnessVertex_base
+    (p : RelPartialAutomorphism act A)
+    (w : WitnessVertex L α) :
+    (unextendWitnessVertex act A p w).base =
+      (baseExtension act A p).symm w.base :=
+  rfl
+
+theorem unextendWitnessVertex_valuation
+    (p : RelPartialAutomorphism act A)
+    (w : WitnessVertex L α)
+    (R : L.AnyRelSymbol) (ys : Fin R.1 → α) :
+    (unextendWitnessVertex act A p w).valuation R ys =
+      w.valuation ⟨R.1, act.onRel p.lang R.2⟩
+          (baseExtension act A p ∘ ys) +
+        flipCorrection act A p R.2 ys
+          ((baseExtension act A p).symm w.base) :=
+  rfl
+
 theorem unextend_extend
     (p : RelPartialAutomorphism act A)
     (v : WitnessVertex L α) :
@@ -475,12 +493,8 @@ theorem unextend_extend
   apply WitnessVertex.ext
   · simp [unextendWitnessVertex]
   · funext R ys
-    change
-      (extendWitnessVertex act A p v).valuation
-          ⟨R.1, act.onRel p.lang R.2⟩
-          (baseExtension act A p ∘ ys) +
-        flipCorrection act A p R.2 ys v.base =
-      v.valuation R ys
+    rw [unextendWitnessVertex_valuation]
+    simp only [extendWitnessVertex_base, Equiv.symm_apply_apply]
     rw [extendWitnessVertex_valuation_relabel]
     cases hval : v.valuation R ys <;>
       cases hflip : flipCorrection act A p R.2 ys v.base <;> rfl

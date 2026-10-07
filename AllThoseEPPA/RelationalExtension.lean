@@ -563,7 +563,8 @@ theorem activeIndices_eq_filter_representatives
           (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs) = true) := by
   classical
   ext i
-  simp [WitnessVertex.activeIndices, F2Completion.representatives,
+  simp only [WitnessVertex.activeIndices, F2Completion.representatives,
+    Finset.mem_filter, Finset.mem_univ, true_and,
     WitnessVertex.IsFirstBase, F2Completion.IsFirstValue,
     WitnessVertex.bases]
 
@@ -698,8 +699,11 @@ noncomputable def witnessAutomorphism
         Structure.isClosed_univ (witnessStructure (L := L) α)
       map_rel_iff := by
         intro n R vs hvs
-        simpa [Function.comp_apply] using
-          (witnessRelation_extend_iff act A p R vs)
+        change
+          (witnessStructure (L := L) α).rel (act.onRel p.lang R)
+              (extendWitnessVertex act A p ∘ vs) ↔
+            (witnessStructure (L := L) α).rel R vs
+        exact witnessRelation_extend_iff act A p R vs
       map_func := by
         intro n F vs hvs
         exact isEmptyElim F }

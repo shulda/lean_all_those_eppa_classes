@@ -303,6 +303,15 @@ def preRel
   rw [← Language.Action.onRel_mul]
   simp
 
+
+@[simp] theorem preRel_relabel
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) :
+    preRel act A p (act.onRel p.lang R) = R := by
+  unfold preRel
+  rw [← Language.Action.onRel_mul]
+  simp
+
 /-- Pull a tuple back through the chosen total extension of the vertex map. -/
 noncomputable def preTuple
     (p : RelPartialAutomorphism act A)
@@ -313,6 +322,14 @@ noncomputable def preTuple
     (p : RelPartialAutomorphism act A)
     {n : ℕ} (zs : Fin n → α) :
     baseExtension act A p ∘ preTuple act A p zs = zs := by
+  funext i
+  simp [preTuple, Function.comp_apply]
+
+
+@[simp] theorem preTuple_baseExtension
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (xs : Fin n → α) :
+    preTuple act A p (baseExtension act A p ∘ xs) = xs := by
   funext i
   simp [preTuple, Function.comp_apply]
 
@@ -365,6 +382,27 @@ noncomputable def extendWitnessVertex
       baseExtension act A p v.base :=
   rfl
 
+
+/-- Coordinate formula for the affine transport. -/
+theorem extendWitnessVertex_valuation_relabel
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) :
+    (extendWitnessVertex act A p v).valuation
+        ⟨n, act.onRel p.lang R⟩
+        (baseExtension act A p ∘ xs) =
+      v.valuation ⟨n, R⟩ xs +
+        flipCorrection act A p R xs v.base := by
+  change
+    v.valuation
+        ⟨n, preRel act A p (act.onRel p.lang R)⟩
+        (preTuple act A p (baseExtension act A p ∘ xs)) +
+      flipCorrection act A p
+        (preRel act A p (act.onRel p.lang R))
+        (preTuple act A p (baseExtension act A p ∘ xs)) v.base =
+      _
+  rw [preRel_relabel, preTuple_baseExtension]
+
 /-- On the generic copy and on the source of the partial automorphism, the
 affine valuation transport agrees with the given partial automorphism. -/
 theorem extendWitnessVertex_generic_of_mem
@@ -392,6 +430,102 @@ theorem extendWitnessVertex_generic_of_mem
     rw [hR, htuple]
     cases h₁ : genericValuation A x ⟨S.1, R⟩ ys <;>
       cases h₂ : genericValuation A (p x) S zs <;> rfl
+
+
+
+/-- Explicit inverse affine transport on witness vertices. -/
+noncomputable def unextendWitnessVertex
+    (p : RelPartialAutomorphism act A)
+    (w : WitnessVertex L α) : WitnessVertex L α := by
+  classical
+  let σ := baseExtension act A p
+  let x := σ.symm w.base
+  refine
+    { base := x
+      valuation := fun R ys =>
+        w.valuation ⟨R.1, act.onRel p.lang R.2⟩ (σ ∘ ys) +
+          flipCorrection act A p R.2 ys x
+      off_support_false := ?_ }
+  intro R ys hmiss
+  have hmissTarget :
+      ∀ i, (σ ∘ ys) i ≠ w.base := by
+    intro i hi
+    apply hmiss i
+    have hpre := congrArg σ.symm hi
+    simpa [σ, x, Function.comp_apply] using hpre
+  have hval :
+      w.valuation ⟨R.1, act.onRel p.lang R.2⟩ (σ ∘ ys) = false :=
+    w.off_support_false
+      ⟨R.1, act.onRel p.lang R.2⟩ (σ ∘ ys) hmissTarget
+  have hnrange : x ∉ Set.range ys := by
+    rintro ⟨i, hi⟩
+    exact hmiss i hi
+  have hflip :
+      flipCorrection act A p R.2 ys x = false :=
+    flipCorrection_eq_false_of_not_mem_range
+      act A p R.2 ys hnrange
+  rw [hval, hflip]
+  rfl
+
+theorem unextend_extend
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α) :
+    unextendWitnessVertex act A p (extendWitnessVertex act A p v) = v := by
+  classical
+  apply WitnessVertex.ext
+  · simp [unextendWitnessVertex]
+  · funext R ys
+    change
+      (extendWitnessVertex act A p v).valuation
+          ⟨R.1, act.onRel p.lang R.2⟩
+          (baseExtension act A p ∘ ys) +
+        flipCorrection act A p R.2 ys v.base =
+      v.valuation R ys
+    rw [extendWitnessVertex_valuation_relabel]
+    cases hval : v.valuation R ys <;>
+      cases hflip : flipCorrection act A p R.2 ys v.base <;> rfl
+
+theorem extend_unextend
+    (p : RelPartialAutomorphism act A)
+    (w : WitnessVertex L α) :
+    extendWitnessVertex act A p (unextendWitnessVertex act A p w) = w := by
+  classical
+  apply WitnessVertex.ext
+  · simp [extendWitnessVertex, unextendWitnessVertex]
+  · funext S zs
+    let R : L.RelSymbol S.1 := preRel act A p S.2
+    let ys : Fin S.1 → α := preTuple act A p zs
+    change
+      (w.valuation ⟨S.1, act.onRel p.lang R⟩
+          (baseExtension act A p ∘ ys) +
+        flipCorrection act A p R ys
+          ((baseExtension act A p).symm w.base)) +
+        flipCorrection act A p R ys
+          ((baseExtension act A p).symm w.base) =
+      w.valuation S zs
+    rw [show act.onRel p.lang R = S.2 by
+      simpa [R] using relabel_preRel act A p S.2]
+    rw [show baseExtension act A p ∘ ys = zs by
+      simpa [ys] using baseExtension_preTuple act A p zs]
+    cases hval : w.valuation S zs <;>
+      cases hflip :
+        flipCorrection act A p R ys
+          ((baseExtension act A p).symm w.base) <;> rfl
+
+/-- The affine transport is a permutation of all relational witness vertices. -/
+noncomputable def witnessVertexEquiv
+    (p : RelPartialAutomorphism act A) :
+    WitnessVertex L α ≃ WitnessVertex L α where
+  toFun := extendWitnessVertex act A p
+  invFun := unextendWitnessVertex act A p
+  left_inv := unextend_extend act A p
+  right_inv := extend_unextend act A p
+
+@[simp] theorem witnessVertexEquiv_apply
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α) :
+    witnessVertexEquiv act A p v = extendWitnessVertex act A p v :=
+  rfl
 
 end Relational
 end AllThoseEPPA

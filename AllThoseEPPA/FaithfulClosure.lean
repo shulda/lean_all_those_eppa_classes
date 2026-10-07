@@ -27,6 +27,9 @@ theorem ValuationStructure.restrict_self
     V.restrict act A B₀ ψ x (B₀.mem_closureAtSet x) = V := by
   apply Subtype.ext
   funext t
+  change
+    V.1 (closureInclusion B₀ (B₀.mem_closureAtSet x) t) =
+      V.1 t
   apply congrArg V.1
   apply Subtype.ext
   rfl
@@ -43,6 +46,13 @@ theorem ValuationStructure.restrict_trans
         (B₀.closureAtSet_subset_of_mem hy hz) := by
   apply Subtype.ext
   funext t
+  change
+    V.1
+        (closureInclusion B₀ hy
+          (closureInclusion B₀ hz t)) =
+      V.1
+        (closureInclusion B₀
+          (B₀.closureAtSet_subset_of_mem hy hz) t)
   apply congrArg V.1
   apply Subtype.ext
   rfl
@@ -119,15 +129,18 @@ theorem descendants_isClosed
     (witnessStructure act A B₀ ψ).IsClosed
       {v | IsDescendant act A B₀ ψ w v} := by
   intro n F xs hxs z hz
-  have hconst :
-      xs = fun _ => xs (UnaryFunctions.unaryIndex F) :=
-    UnaryFunctions.unaryTuple_eq_constant F xs
-  rcases hxs (UnaryFunctions.unaryIndex F) with
-    ⟨y, hy, hxy⟩
+  let i := UnaryFunctions.unaryIndex F
+  let u := xs i
+  have huDesc : IsDescendant act A B₀ ψ w u := by
+    exact hxs i
+  rcases huDesc with ⟨y, hy, huy⟩
+  have hconst : xs = fun _ => u := by
+    simpa [u, i] using
+      (UnaryFunctions.unaryTuple_eq_constant F xs)
   rw [hconst] at hz
   rcases hz with ⟨t, ht, hzt⟩
   subst z
-  rw [hxy] at ht ⊢
+  subst u
   have ht' :
       t ∈ B₀.func F (fun _ => y) := by
     simpa [restrictionVertex, WitnessVertex.base] using ht
@@ -175,22 +188,24 @@ theorem restrictionVertex_mem_closureAtSet
     (y : β) (hy : y ∈ B₀.closureAtSet w.base) :
     restrictionVertex act A B₀ ψ w y hy ∈
       (witnessStructure act A B₀ ψ).closureAtSet w := by
-  let C := B₀.closureAt w.base
-  let x0 : C := ⟨w.base, B₀.mem_closureAtSet w.base⟩
-  let r : C → WitnessVertex act A B₀ ψ :=
+  let x0 : B₀.closureAtSet w.base :=
+    ⟨w.base, B₀.mem_closureAtSet w.base⟩
+  let r : B₀.closureAtSet w.base →
+      WitnessVertex act A B₀ ψ :=
     fun z => restrictionVertex act A B₀ ψ w z.1 z.2
-  let T : Set C :=
+  let T : Set (B₀.closureAtSet w.base) :=
     {z | r z ∈ (witnessStructure act A B₀ ψ).closureAtSet w}
-  have hTclosed : C.IsClosed T := by
+  have hTclosed : (B₀.closureAt w.base).IsClosed T := by
     intro n F zs hzs z hz
     have hconst :
         zs = fun _ => zs (UnaryFunctions.unaryIndex F) :=
       UnaryFunctions.unaryTuple_eq_constant F zs
     rw [hconst] at hz
-    let u : C := zs (UnaryFunctions.unaryIndex F)
+    let u : B₀.closureAtSet w.base :=
+      zs (UnaryFunctions.unaryIndex F)
     have hzB :
         z.1 ∈ B₀.func F (fun _ => u.1) := by
-      simpa [C, u, Function.comp_def] using hz
+      simpa [u, Function.comp_def] using hz
     have hval :=
       functionValueVertex_restrictionVertex
         act A B₀ ψ w u.2 F hzB
@@ -208,14 +223,16 @@ theorem restrictionVertex_mem_closureAtSet
           (witnessStructure act A B₀ ψ).func F
             (fun _ => r u) := by
       refine ⟨z.1, ?_, ?_⟩
-      · simpa [r, u, restrictionVertex, WitnessVertex.base] using hzB
+      · simpa [r, u, restrictionVertex,
+          WitnessVertex.base] using hzB
       · exact hproof.trans hval.symm
     have hu :
         r u ∈
           (witnessStructure act A B₀ ψ).closureAtSet w := by
       exact hzs (UnaryFunctions.unaryIndex F)
     exact
-      ((witnessStructure act A B₀ ψ).isClosed_closureSet ({w} : Set _))
+      ((witnessStructure act A B₀ ψ).isClosed_closureSet
+        ({w} : Set _))
         F (fun _ => r u) (fun _ => hu) hfun
   have hx0T : x0 ∈ T := by
     change
@@ -225,18 +242,19 @@ theorem restrictionVertex_mem_closureAtSet
     rw [restrictionVertex_self act A B₀ ψ w]
     exact
       (witnessStructure act A B₀ ψ).mem_closureAtSet w
-  have hsub : C.closureAtSet x0 ⊆ T := by
-    apply C.closureSet_minimal hTclosed
+  have hsub :
+      (B₀.closureAt w.base).closureAtSet x0 ⊆ T := by
+    apply (B₀.closureAt w.base).closureSet_minimal hTclosed
     intro z hz
     have hzx : z = x0 := by simpa using hz
     subst z
     exact hx0T
-  let yy : C := ⟨y, hy⟩
-  have hyy : yy ∈ C.closureAtSet x0 := by
+  let yy : B₀.closureAtSet w.base := ⟨y, hy⟩
+  have hyy :
+      yy ∈ (B₀.closureAt w.base).closureAtSet x0 := by
     rw [Structure.closureAtSet_in_closureAt_eq_univ]
     exact Set.mem_univ yy
-  have hout := hsub hyy
-  exact hout
+  exact hsub hyy
 
 /-- Restriction-descendants are contained in the faithful-witness closure. -/
 theorem descendants_subset_closureAtSet

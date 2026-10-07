@@ -1261,6 +1261,55 @@ noncomputable def ValuationSignature.transport
   rfl
 
 
+
+@[simp] theorem ValuationSignature.transport_func
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : ValuationSignature (L := L) x)
+    {n : ℕ} (F : L.FuncSymbol n) (a : β) :
+    (s.transport act B₀ h).func F a =
+      h '' s.func (act.onFunc h.lang⁻¹ F)
+        ((automorphismEquiv act h).symm a) :=
+  rfl
+
+/-- Conjugating a physical signature by a base automorphism is injective. -/
+theorem ValuationSignature.transport_injective
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} :
+    Function.Injective
+      (ValuationSignature.transport act B₀ h :
+        ValuationSignature (L := L) x →
+          ValuationSignature (L := L) (h x)) := by
+  intro s t hst
+  apply ValuationSignature.ext
+  · have hs := congrArg ValuationSignature.support hst
+    change h '' s.support = h '' t.support at hs
+    exact (Set.image_injective.mpr
+      (automorphismEquiv act h).injective) hs
+  · funext n F a
+    have hf :=
+      congrArg
+        (fun q : ValuationSignature (L := L) (h x) =>
+          q.func (act.onFunc h.lang F) (h a)) hst
+    have himage :
+        h '' s.func F a = h '' t.func F a := by
+      simpa [ValuationSignature.transport_func,
+        ← Language.Action.onFunc_mul] using hf
+    exact (Set.image_injective.mpr
+      (automorphismEquiv act h).injective) himage
+
+/-- Hence transport on realised physical valuations is injective as well. -/
+theorem PhysicalValuation.transport_injective
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} :
+    Function.Injective
+      (PhysicalValuation.transport act A B₀ h :
+        PhysicalValuation act A B₀ x →
+          PhysicalValuation act A B₀ (h x)) := by
+  intro s t hst
+  apply Subtype.ext
+  apply ValuationSignature.transport_injective act B₀ h
+  exact congrArg Subtype.val hst
+
 /-- Abstract transport moves the physical support exactly by the underlying
 base automorphism. -/
 theorem Valuation.physicalSignature_transport_support

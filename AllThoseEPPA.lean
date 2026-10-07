@@ -21,3 +21,4 @@ import AllThoseEPPA.UnaryFunctionsCoherence
 import AllThoseEPPA.Irreducible
 import AllThoseEPPA.Faithful
 import AllThoseEPPA.FaithfulClosure
+import AllThoseEPPA.FaithfulIrreducible

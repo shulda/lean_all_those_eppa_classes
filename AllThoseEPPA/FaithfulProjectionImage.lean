@@ -98,26 +98,31 @@ private theorem irreducible_target_of_surjective_embedding
     · exact Or.inl hleft
     · exact Or.inr hright
   · intro n F xs hcross
-    apply Set.eq_empty_iff_forall_not_mem.mpr
-    intro y hy
-    have hcrossD :
-        ¬ ((∀ i, f (xs i) ∈ d.left) ∨
-          (∀ i, f (xs i) ∈ d.right)) := by
-      intro h
-      apply hcross
-      exact h
-    have hempty :=
-      d.func_cross_empty (act.onFunc f.lang F)
-        (f.toFun ∘ xs) hcrossD
-    have hfy :
-        f y ∈ D.func (act.onFunc f.lang F) (f.toFun ∘ xs) := by
-      have himg :
-          f y ∈ Structure.imageSet f.toFun (C.func F xs) :=
-        ⟨y, hy, rfl⟩
-      rw [f.map_func F xs] at himg
-      exact himg
-    rw [hempty] at hfy
-    exact hfy
+    ext y
+    constructor
+    · intro hy
+      have hcrossD :
+          ¬ ((∀ i, f (xs i) ∈ d.left) ∨
+            (∀ i, f (xs i) ∈ d.right)) := by
+        intro h
+        apply hcross
+        exact h
+      have hempty :=
+        d.func_cross_empty (act.onFunc f.lang F)
+          (f.toFun ∘ xs) hcrossD
+      have hfy :
+          f y ∈ D.func (act.onFunc f.lang F) (f.toFun ∘ xs) := by
+        have himg :
+            f y ∈ Structure.imageSet f.toFun (C.func F xs) :=
+          ⟨y, hy, rfl⟩
+        rw [f.map_func F xs] at himg
+        exact himg
+      rw [hempty] at hfy
+      have hfalse : False := by simpa using hfy
+      exact hfalse.elim
+    · intro hy
+      have hfalse : False := by simpa using hy
+      exact hfalse.elim
 
 /-- Image of a witness subset under the projection. -/
 def projectionImage
@@ -149,7 +154,13 @@ theorem projectionImage_isClosed
     exact hy
   have hproj :=
     projection_map_func_eq act A B₀ ψ F ws
-  rw [← hproj] at hy'
+  have hproj' :
+      Structure.imageSet
+          (fun w : WitnessVertex act A B₀ ψ => w.base)
+          ((witnessStructure act A B₀ ψ).func F ws) =
+        B₀.func F (fun i => (ws i).base) := by
+    simpa [projection, Function.comp_def] using hproj
+  rw [← hproj'] at hy'
   rcases hy' with ⟨z, hz, hzy⟩
   have hzS : z ∈ S :=
     hS F ws hwsS hz
@@ -183,7 +194,12 @@ noncomputable def projectionInducedEmbedding
     have hrel :=
       hEmb.2.1 R (fun i => (xs i).1)
         (fun i => (xs i).2)
-    simpa [Structure.induce, Function.comp_def] using hrel
+    have hrel' :
+        B₀.rel R (fun i => (xs i).1.base) ↔
+          (witnessStructure act A B₀ ψ).rel R
+            (fun i => (xs i).1) := by
+      simpa [projection, Function.comp_def] using hrel
+    simpa [Structure.induce, Function.comp_def] using hrel'
   map_func := by
     intro n F xs
     have hEmb :=
@@ -192,32 +208,46 @@ noncomputable def projectionInducedEmbedding
     have hfun :=
       hEmb.2.2 F (fun i => (xs i).1)
         (fun i => (xs i).2)
+    have hfun' :
+        Structure.imageSet
+            (fun w : WitnessVertex act A B₀ ψ => w.base)
+            ((witnessStructure act A B₀ ψ).func F
+              (fun i => (xs i).1)) =
+          B₀.func F (fun i => (xs i).1.base) := by
+      simpa [projection, Function.comp_def] using hfun
     ext y
     constructor
     · rintro ⟨z, hz, rfl⟩
+      have hzB :
+          z.1 ∈
+            (witnessStructure act A B₀ ψ).func F
+              (fun i => (xs i).1) := by
+        exact hz
       have himg :
           z.1.base ∈
             Structure.imageSet
               (fun w : WitnessVertex act A B₀ ψ => w.base)
               ((witnessStructure act A B₀ ψ).func F
                 (fun i => (xs i).1)) :=
-        ⟨z.1, hz, rfl⟩
-      rw [hfun] at himg
+        ⟨z.1, hzB, rfl⟩
+      rw [hfun'] at himg
+      change
+        z.1.base ∈ B₀.func F
+          (fun i => (xs i).1.base)
       exact himg
     · intro hy
-      have hy' :
-          y.1 ∈
-            B₀.func F
-              (fun i => (xs i).1.base) := by
-        exact hy
-      rw [← hfun] at hy'
-      rcases hy' with ⟨z, hz, hzy⟩
+      change
+        y.1 ∈ B₀.func F
+          (fun i => (xs i).1.base) at hy
+      rw [← hfun'] at hy
+      rcases hy with ⟨z, hz, hzy⟩
       have hzS : z ∈ S :=
         hS F (fun i => (xs i).1)
           (fun i => (xs i).2) hz
-      refine ⟨⟨z, hzS⟩, hz, ?_⟩
-      apply Subtype.ext
-      exact hzy
+      refine ⟨⟨z, hzS⟩, ?_, ?_⟩
+      · exact hz
+      · apply Subtype.ext
+        exact hzy
 
 theorem projectionInducedEmbedding_surjective
     (S : Set (WitnessVertex act A B₀ ψ))
@@ -324,7 +354,8 @@ theorem irreducible_projection_not_bad
     · apply Subtype.ext
       have hbase :
           (witnessOf b).base = (witnessOf c).base :=
-        congrArg Sigma.fst heq
+        congrArg
+          (fun p : ValuationPoint act A B₀ ψ => p.1) heq
       rw [witnessOf_base b, witnessOf_base c] at hbase
       exact hbase
     · exfalso
@@ -340,7 +371,7 @@ theorem irreducible_projection_not_bad
   have hforget_injective : Function.Injective forget := by
     intro a b hab
     apply Subtype.ext
-    exact congrArg Subtype.val hab
+    exact congrArg (fun x : I.carrier => x.1) hab
 
   have hforget_not_surjective :
       ¬ Function.Surjective forget := by

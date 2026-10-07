@@ -840,6 +840,38 @@ noncomputable def ValuationSignature.transport
     (s.transport act B₀ h).support = h '' s.support :=
   rfl
 
+
+/-- Abstract transport moves the physical support exactly by the underlying
+base automorphism. -/
+theorem Valuation.physicalSignature_transport_support
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (v : Valuation act A B₀ x) :
+    (Valuation.physicalSignature act A B₀
+        (Valuation.transport act A B₀ h v)).support =
+      (ValuationSignature.transport act B₀ h
+        (Valuation.physicalSignature act A B₀ v)).support := by
+  change
+    Set.range
+        (fun z =>
+          h (v.toFun
+            (relabelClosureToOriginal act A h.lang
+              v.orbit v.center z))) =
+      h '' Set.range v.toFun
+  ext b
+  constructor
+  · rintro ⟨z, rfl⟩
+    exact
+      ⟨v.toFun
+          (relabelClosureToOriginal act A h.lang
+            v.orbit v.center z),
+        ⟨relabelClosureToOriginal act A h.lang
+          v.orbit v.center z, rfl⟩, rfl⟩
+  · rintro ⟨a, ⟨z, rfl⟩, rfl⟩
+    refine
+      ⟨originalClosureToRelabel act A h.lang
+          v.orbit v.center z, ?_⟩
+    simp
+
 end Transport
 
 end PhysicalValuations

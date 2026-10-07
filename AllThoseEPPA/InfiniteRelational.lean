@@ -1,4 +1,5 @@
 import Mathlib.Data.Fintype.EquivFin
+import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Relabelling
@@ -48,7 +49,7 @@ def profile {β : Type*} (B : Structure L β) {n : ℕ}
 abbrev Orbit :=
   {B : Structure L α // B ∈ Set.range fun g : Γ => A.relabel act g}
 
-noncomputable instance orbitFintype
+noncomputable def orbitFintype
     (hA : A.HasFiniteRelabelOrbit act) :
     Fintype (Orbit act A) :=
   Set.Finite.fintype hA
@@ -57,9 +58,10 @@ noncomputable instance orbitFintype
 abbrev InjTuple (α : Type v) (n : ℕ) :=
   {xs : Fin n → α // Function.Injective xs}
 
-noncomputable instance injTupleFintype (n : ℕ) :
-    Fintype (InjTuple α n) :=
-  Fintype.ofFinite _
+noncomputable def injTupleFintype (n : ℕ) :
+    Fintype (InjTuple α n) := by
+  classical
+  exact Fintype.ofFinite _
 
 /-- A symbol of the compressed finite language: a positive-arity injective
 tuple in one member of the finite relabelling orbit.  Different codes with the
@@ -76,22 +78,31 @@ def patternProfile {n : ℕ} (P : PatternSymbol act A n) :
 def orbitRelabel (g : Γ) : Orbit act A ≃ Orbit act A where
   toFun := fun B => by
     refine ⟨B.1.relabel act g, ?_⟩
-    rcases B.2 with ⟨h, rfl⟩
+    rcases B.2 with ⟨h, hB⟩
     refine ⟨g * h, ?_⟩
-    exact Structure.relabel_mul act g h A
+    calc
+      A.relabel act (g * h) = (A.relabel act h).relabel act g :=
+        (Structure.relabel_mul act g h A).symm
+      _ = B.1.relabel act g := congrArg (fun C => C.relabel act g) hB
   invFun := fun B => by
     refine ⟨B.1.relabel act g⁻¹, ?_⟩
-    rcases B.2 with ⟨h, rfl⟩
+    rcases B.2 with ⟨h, hB⟩
     refine ⟨g⁻¹ * h, ?_⟩
-    exact Structure.relabel_mul act g⁻¹ h A
+    calc
+      A.relabel act (g⁻¹ * h) = (A.relabel act h).relabel act g⁻¹ :=
+        (Structure.relabel_mul act g⁻¹ h A).symm
+      _ = B.1.relabel act g⁻¹ :=
+        congrArg (fun C => C.relabel act g⁻¹) hB
   left_inv := by
     intro B
     apply Subtype.ext
+    change (B.1.relabel act g).relabel act g⁻¹ = B.1
     rw [Structure.relabel_mul]
     simp
   right_inv := by
     intro B
     apply Subtype.ext
+    change (B.1.relabel act g⁻¹).relabel act g = B.1
     rw [Structure.relabel_mul]
     simp
 
@@ -104,13 +115,14 @@ def orbitAction : Γ →* Equiv.Perm (Orbit act A) where
   toFun := orbitRelabel act A
   map_one' := by
     ext B
-    apply Subtype.ext
-    simp [orbitRelabel]
+    change B.1.relabel act 1 = B.1
+    simp
   map_mul' := by
     intro g h
     ext B
-    apply Subtype.ext
-    exact Structure.relabel_mul act g h B.1
+    change B.1.relabel act (g * h) =
+      (B.1.relabel act h).relabel act g
+    exact (Structure.relabel_mul act g h B.1).symm
 
 /-- Action on a pattern symbol: relabel the stored orbit structure and keep
 the injective coordinate tuple fixed. -/
@@ -124,15 +136,13 @@ def patternPerm (g : Γ) {n : ℕ} :
     intro P
     apply Subtype.ext
     apply Prod.ext
-    · apply Subtype.ext
-      simp [orbitRelabel]
+    · exact (orbitRelabel act A g).left_inv P.1.1
     · rfl
   right_inv := by
     intro P
     apply Subtype.ext
     apply Prod.ext
-    · apply Subtype.ext
-      simp [orbitRelabel]
+    · exact (orbitRelabel act A g).right_inv P.1.1
     · rfl
 
 /-- The finite profile language attached to `A`. -/
@@ -154,23 +164,26 @@ def patternAction :
         ext P
         apply Subtype.ext
         apply Prod.ext
-        · apply Subtype.ext
-          simp [patternPerm, orbitRelabel]
+        · change orbitRelabel act A 1 P.1.1 = P.1.1
+          exact congrFun (orbitAction act A).map_one P.1.1
         · rfl
       map_mul' := by
         intro g h
         ext P
         apply Subtype.ext
         apply Prod.ext
-        · apply Subtype.ext
-          exact Structure.relabel_mul act g h P.1.1.1
+        · change orbitRelabel act A (g * h) P.1.1 =
+            orbitRelabel act A g (orbitRelabel act A h P.1.1)
+          exact congrFun ((orbitAction act A).map_mul g h) P.1.1
         · rfl }
   func _ := 1
 
-noncomputable instance patternSymbolFintype
+noncomputable def patternSymbolFintype
     (hA : A.HasFiniteRelabelOrbit act) (n : ℕ) :
     Fintype ((patternLanguage act A).RelSymbol n) := by
   letI : Fintype (Orbit act A) := orbitFintype act A hA
+  letI : Fintype (InjTuple α n) := injTupleFintype n
+  classical
   exact Fintype.ofFinite _
 
 /-- Every pattern arity is bounded by the size of the original finite vertex
@@ -187,10 +200,11 @@ abbrev BoundedPatternCode :=
   Σ k : Fin (Fintype.card α + 1),
     (patternLanguage act A).RelSymbol k.1
 
-noncomputable instance boundedPatternCodeFintype
+noncomputable def boundedPatternCodeFintype
     (hA : A.HasFiniteRelabelOrbit act) :
     Fintype (BoundedPatternCode act A) := by
   letI : Fintype (Orbit act A) := orbitFintype act A hA
+  letI (n : ℕ) : Fintype (InjTuple α n) := injTupleFintype n
   letI (n : ℕ) : Fintype ((patternLanguage act A).RelSymbol n) :=
     patternSymbolFintype act A hA n
   infer_instance
@@ -212,12 +226,15 @@ theorem anyPatternToBounded_injective :
   rcases Q with ⟨m, Q⟩
   have hnm : n = m := congrArg (fun z => z.1.1) h
   subst m
-  apply Sigma.ext rfl
-  exact congrArg Sigma.snd h
+  have hPQ : P = Q := by
+    have hs := congrArg (fun z => z.2) h
+    exact hs
+  cases hPQ
+  rfl
 
 /-- The compressed pattern language has finitely many relation symbols in
 total, even though the original language may be infinite. -/
-noncomputable instance patternAnyRelFinite
+theorem patternAnyRelFinite
     (hA : A.HasFiniteRelabelOrbit act) :
     Finite (patternLanguage act A).AnyRelSymbol := by
   letI : Fintype (BoundedPatternCode act A) :=

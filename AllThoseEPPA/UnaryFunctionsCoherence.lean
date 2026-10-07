@@ -81,7 +81,8 @@ theorem PhysicalWitnessVertex.ext_of_signature
   rcases z with ⟨y, t⟩
   change x = y at hbase
   subst y
-  apply Sigma.ext rfl
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
   apply heq_of_eq
   apply Subtype.ext
   apply ValuationSignature.ext

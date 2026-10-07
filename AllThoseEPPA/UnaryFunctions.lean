@@ -280,9 +280,10 @@ theorem finite
     Finite (Valuation act A B₀ x) := by
   classical
   letI : Fintype (Orbit act A) := orbitFintype act A hA
+  letI : Fintype β := Fintype.ofFinite β
   letI (C : Orbit act A) (y : α) :
-      Finite (C.1.closureAtSet y) :=
-    Finite.of_injective Subtype.val Subtype.val_injective
+      Fintype (C.1.closureAtSet y) :=
+    Fintype.ofFinite _
   haveI : Finite (Code act A (β := β)) := by
     infer_instance
   exact Finite.of_injective

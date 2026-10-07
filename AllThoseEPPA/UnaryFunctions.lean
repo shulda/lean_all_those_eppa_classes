@@ -1660,6 +1660,30 @@ noncomputable def physicalWitnessEquiv
   rfl
 
 
+/-- At the centre of a transported physical valuation, the relabelled
+function values are exactly the images of the old function values. -/
+theorem PhysicalWitnessVertex.transport_center_func
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀)
+    {n : ℕ} (F : L.FuncSymbol n) :
+    (PhysicalWitnessVertex.transport act A B₀ h w).valuation.1.func
+        (act.onFunc h.lang F) (h w.base) =
+      h '' w.valuation.1.func F w.base := by
+  change
+    (ValuationSignature.transport act B₀ h w.valuation.1).func
+        (act.onFunc h.lang F) (h w.base) =
+      h '' w.valuation.1.func F w.base
+  rw [ValuationSignature.transport_func]
+  have hpre :
+      (automorphismEquiv act h).symm (h w.base) = w.base :=
+    (automorphismEquiv act h).symm_apply_apply w.base
+  rw [hpre]
+  have hsym :
+      act.onFunc h.lang⁻¹ (act.onFunc h.lang F) = F := by
+    rw [← Language.Action.onFunc_mul]
+    simp
+  rw [hsym]
+
 /-- The lifted witness permutation preserves and reflects every relation. -/
 theorem physicalWitnessRelation_transport_iff
     (hA : A.HasFiniteRelabelOrbit act)

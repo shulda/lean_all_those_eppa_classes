@@ -46,6 +46,26 @@ noncomputable def baseExtension
     baseExtension act A p x = p x :=
   PartialEquiv.orderedExtension_apply_of_mem p.toPartialEquiv hx
 
+
+/-- The chosen total base permutation respects composition of compatible
+partial automorphisms. -/
+theorem baseExtension_comp
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source) :
+    baseExtension act A (q.comp p htg) =
+      (baseExtension act A p).trans (baseExtension act A q) := by
+  exact PartialEquiv.orderedExtension_trans'
+    p.toPartialEquiv q.toPartialEquiv htg
+
+/-- The chosen total extension transports the source of the first partial
+automorphism exactly onto the source of the second. -/
+theorem baseExtension_mem_second_source_iff
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source) (x : α) :
+    baseExtension act A p x ∈ q.source ↔ x ∈ p.source := by
+  rw [← htg]
+  exact PartialEquiv.orderedExtension_mem_target_iff p.toPartialEquiv x
+
 /-- A partial automorphism preserves every relation on tuples from its source,
 with the relation symbol relabelled by its language component. -/
 theorem partialAutomorphism_rel_iff
@@ -95,6 +115,60 @@ theorem sourceCorrection_of_mem
           (baseExtension act A p ∘ xs) := by
   classical
   simp [sourceCorrection, hx]
+
+
+/-- Forced affine corrections add under composition.  The second correction is
+transported by the total extension of the first base map. -/
+theorem sourceCorrection_comp_of_mem
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) {x : α}
+    (hx : x ∈ p.source) :
+    sourceCorrection act A (q.comp p htg) R xs x =
+      sourceCorrection act A p R xs x +
+        sourceCorrection act A q (act.onRel p.lang R)
+          (baseExtension act A p ∘ xs) (baseExtension act A p x) := by
+  classical
+  have hqx :
+      baseExtension act A p x ∈ q.source :=
+    (baseExtension_mem_second_source_iff act A p q htg x).2 hx
+  rw [sourceCorrection_of_mem act A (q.comp p htg) R xs hx]
+  rw [sourceCorrection_of_mem act A p R xs hx]
+  rw [sourceCorrection_of_mem act A q (act.onRel p.lang R)
+    (baseExtension act A p ∘ xs) hqx]
+  have hσx :
+      baseExtension act A p x = p x :=
+    baseExtension_apply_of_mem act A p hx
+  rw [baseExtension_comp act A p q htg]
+  rw [Language.Action.onRel_mul]
+  change
+    genericValuation A x ⟨n, R⟩ xs +
+        genericValuation A (q (p x))
+          ⟨n, act.onRel q.lang (act.onRel p.lang R)⟩
+          (((baseExtension act A p).trans
+              (baseExtension act A q)) ∘ xs) =
+      (genericValuation A x ⟨n, R⟩ xs +
+        genericValuation A (p x)
+          ⟨n, act.onRel p.lang R⟩
+          (baseExtension act A p ∘ xs)) +
+      (genericValuation A (q (baseExtension act A p x))
+          ⟨n, act.onRel q.lang (act.onRel p.lang R)⟩
+          (baseExtension act A q ∘
+            (baseExtension act A p ∘ xs)))
+  rw [hσx]
+  have htuple :
+      ((baseExtension act A p).trans (baseExtension act A q)) ∘ xs =
+        baseExtension act A q ∘ (baseExtension act A p ∘ xs) := by
+    rfl
+  rw [htuple]
+  let a := genericValuation A x ⟨n, R⟩ xs
+  let b := genericValuation A (p x)
+    ⟨n, act.onRel p.lang R⟩ (baseExtension act A p ∘ xs)
+  let d := genericValuation A (q (p x))
+    ⟨n, act.onRel q.lang (act.onRel p.lang R)⟩
+    (baseExtension act A q ∘ (baseExtension act A p ∘ xs))
+  change a + d = (a + b) + (b + d)
+  cases a <;> cases b <;> cases d <;> rfl
 
 /-- The generic valuation at `x` can only see tuples whose first coordinate
 is `x`.  Consequently the source part of the paper's flip matrix is zero

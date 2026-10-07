@@ -1296,19 +1296,6 @@ theorem ValuationSignature.transport_injective
     exact (Set.image_injective.mpr
       (automorphismEquiv act h).injective) himage
 
-/-- Hence transport on realised physical valuations is injective as well. -/
-theorem PhysicalValuation.transport_injective
-    (h : Structure.Automorphism act.relationalReduct B₀)
-    {x : β} :
-    Function.Injective
-      (PhysicalValuation.transport act A B₀ h :
-        PhysicalValuation act A B₀ x →
-          PhysicalValuation act A B₀ (h x)) := by
-  intro s t hst
-  apply Subtype.ext
-  apply ValuationSignature.transport_injective act B₀ h
-  exact congrArg Subtype.val hst
-
 /-- Abstract transport moves the physical support exactly by the underlying
 base automorphism. -/
 theorem Valuation.physicalSignature_transport_support
@@ -1485,6 +1472,19 @@ noncomputable def PhysicalValuation.transport
     (PhysicalValuation.transport act A B₀ h s).1 =
       ValuationSignature.transport act B₀ h s.1 :=
   rfl
+
+/-- Transport on realised physical valuations is injective. -/
+theorem PhysicalValuation.transport_injective
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} :
+    Function.Injective
+      (PhysicalValuation.transport act A B₀ h :
+        PhysicalValuation act A B₀ x →
+          PhysicalValuation act A B₀ (h x)) := by
+  intro s t hst
+  apply Subtype.ext
+  apply ValuationSignature.transport_injective act B₀ h
+  exact congrArg Subtype.val hst
 
 end Transport
 

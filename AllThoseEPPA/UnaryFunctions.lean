@@ -1849,13 +1849,13 @@ theorem physicalFunctionValueVertex_transport
       PhysicalValuation.restrict act A B₀
         (PhysicalValuation.transport act A B₀ h w.valuation)
         (h y) _⟩
-  apply Sigma.ext rfl
-  apply heq_of_eq
-  exact
-    PhysicalValuation.transport_restrict
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
+  exact heq_of_eq
+    (PhysicalValuation.transport_restrict
       act A B₀ h w.valuation y
         (PhysicalWitnessVertex.funcValue_mem_support
-          act A B₀ w F hy)
+          act A B₀ w F hy))
 
 /-- The lifted witness permutation transports each unary function-value set
 to the relabelled function-value set. -/

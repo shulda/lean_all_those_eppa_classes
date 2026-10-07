@@ -76,6 +76,37 @@ def comp (g f : Automorphism act A) : Automorphism act A := by
     (g.comp f).lang = g.lang * f.lang :=
   rfl
 
+
+/-- Total automorphisms are determined by their language component and their
+action on vertices. -/
+theorem ext_of_lang_apply
+    (g h : Automorphism act A)
+    (hlang : g.lang = h.lang)
+    (happly : ∀ x, g x = h x) :
+    g = h := by
+  cases g with
+  | mk gp gs gt =>
+    cases h with
+    | mk hp hs ht =>
+      have hsource :
+          gp.toPartialEquiv.source = hp.toPartialEquiv.source := by
+        rw [gs, hs]
+      have heqOn :
+          PartialEquiv.EqOnSource gp.toPartialEquiv hp.toPartialEquiv := by
+        refine ⟨hsource, ?_⟩
+        intro x hx
+        exact happly x
+      have hpe :
+          gp.toPartialEquiv = hp.toPartialEquiv :=
+        PartialEquiv.eq_of_eqOnSource_univ
+          gp.toPartialEquiv hp.toPartialEquiv heqOn gs gt
+      have hpi : gp = hp := by
+        apply PartialIsomorphism.ext
+        · exact hlang
+        · exact hpe
+      cases hpi
+      rfl
+
 end Automorphism
 
 /-- A total automorphism g of B extends a partial automorphism p of A along an

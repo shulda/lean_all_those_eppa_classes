@@ -1,4 +1,5 @@
 import AllThoseEPPA.Irreducible
+import AllThoseEPPA.UnaryFunctions
 
 /-!
 # Irreducible-structure faithful EPPA
@@ -180,6 +181,201 @@ theorem canonical_areGeneric
     intro I hxI hyI
     change x ≠ y
     exact hxy
+
+
+/-- An embedding has a function-closed range. -/
+theorem embedding_range_isClosed
+    (f : Structure.Embedding act A B₀) :
+    B₀.IsClosed (Set.range f) := by
+  classical
+  intro n F xs hxs y hy
+  choose as has using hxs
+  have htuple : f.toFun ∘ as = xs := by
+    funext i
+    exact has i
+  have hy' :
+      y ∈ B₀.func (act.onFunc f.lang F) (f.toFun ∘ as) := by
+    rw [htuple]
+    exact hy
+  rw [← f.map_func F as] at hy'
+  rcases hy' with ⟨a, ha, hfa⟩
+  exact ⟨a, hfa⟩
+
+/-- The one-point closure of a vertex in an embedded copy remains in that
+copy. -/
+theorem closureAtSet_subset_embedding_range
+    (f : Structure.Embedding act A B₀)
+    {x : β} (hx : x ∈ Set.range f) :
+    B₀.closureAtSet x ⊆ Set.range f := by
+  apply B₀.closureSet_minimal (embedding_range_isClosed act A B₀ f)
+  intro y hy
+  have hyx : y = x := by simpa using hy
+  subst y
+  exact hx
+
+/-- A valuation assignment over the one-point closure of a base vertex. -/
+abbrev ValuationAssignment (x : β) :=
+  ∀ y : B₀.closureAtSet x,
+    ValuationFunction act A B₀ ψ y.1
+
+/-- The valuation point selected at a member of a one-point closure. -/
+def valuationPointAt
+    {x : β} (v : ValuationAssignment act A B₀ ψ x)
+    (y : B₀.closureAtSet x) :
+    ValuationPoint act A B₀ ψ :=
+  ⟨y.1, v y⟩
+
+/-- Genericity of all valuation points occurring in one valuation
+assignment. -/
+def IsGenericAssignment
+    {x : β} (v : ValuationAssignment act A B₀ ψ x) : Prop :=
+  ∀ y z : B₀.closureAtSet x,
+    AreGeneric act A B₀ ψ
+      (valuationPointAt act A B₀ ψ v y)
+      (valuationPointAt act A B₀ ψ v z)
+
+/-- A valuation structure over `x`, normalized to the data that matter:
+one valuation function above every point of `cl_{B₀}(x)`, with generic
+total graph.  The actual structure is uniquely recovered via projection to
+the closure, so carrying it separately would only add proof bureaucracy. -/
+abbrev ValuationStructure (x : β) :=
+  {v : ValuationAssignment act A B₀ ψ x //
+    IsGenericAssignment act A B₀ ψ v}
+
+/-- Valuation structures over a point form a finite type whenever the base
+witness is finite. -/
+theorem valuationStructure_finite [Finite β] (x : β) :
+    Finite (ValuationStructure act A B₀ ψ x) := by
+  letI (y : B₀.closureAtSet x) :
+      Finite (ValuationFunction act A B₀ ψ y.1) :=
+    valuationFunction_finite act A B₀ ψ y.1
+  infer_instance
+
+/-- Inclusion of a smaller one-point closure into a larger one. -/
+def closureInclusion
+    {x y : β} (hy : y ∈ B₀.closureAtSet x)
+    (z : B₀.closureAtSet y) :
+    B₀.closureAtSet x :=
+  ⟨z.1, B₀.closureAtSet_subset_of_mem hy z.2⟩
+
+/-- Restrict a valuation structure to the one-point closure of one of its
+points. -/
+def ValuationStructure.restrict
+    {x : β} (V : ValuationStructure act A B₀ ψ x)
+    (y : β) (hy : y ∈ B₀.closureAtSet x) :
+    ValuationStructure act A B₀ ψ y :=
+  ⟨fun z => V.1 (closureInclusion act A B₀ ψ hy z),
+    by
+      intro z z'
+      exact V.2
+        (closureInclusion act A B₀ ψ hy z)
+        (closureInclusion act A B₀ ψ hy z')⟩
+
+/-- Vertices of the faithful witness. -/
+abbrev WitnessVertex :=
+  Σ x : β, ValuationStructure act A B₀ ψ x
+
+def WitnessVertex.base
+    (w : WitnessVertex act A B₀ ψ) : β :=
+  w.1
+
+def WitnessVertex.valuation
+    (w : WitnessVertex act A B₀ ψ) :
+    ValuationStructure act A B₀ ψ w.base :=
+  w.2
+
+/-- The valuation point of a witness vertex corresponding to an arbitrary
+point of its one-point closure. -/
+def WitnessVertex.pointAt
+    (w : WitnessVertex act A B₀ ψ)
+    (y : B₀.closureAtSet w.base) :
+    ValuationPoint act A B₀ ψ :=
+  valuationPointAt act A B₀ ψ w.valuation.1 y
+
+/-- A family of witness vertices is generic when the union of all valuation
+structures appearing in it is generic, exactly as in the paper. -/
+def WitnessFamilyGeneric
+    {ι : Type*} (ws : ι → WitnessVertex act A B₀ ψ) : Prop :=
+  ∀ i j (y : B₀.closureAtSet (ws i).base)
+      (z : B₀.closureAtSet (ws j).base),
+    AreGeneric act A B₀ ψ
+      ((ws i).pointAt act A B₀ ψ y)
+      ((ws j).pointAt act A B₀ ψ z)
+
+/-- Function values at a constant tuple belong to the one-point closure of
+the constant vertex. -/
+theorem func_mem_closureAtSet
+    {x y : β} {n : ℕ} (F : L.FuncSymbol n)
+    (hy : y ∈ B₀.func F (fun _ => x)) :
+    y ∈ B₀.closureAtSet x := by
+  change y ∈ B₀.closureSet {x}
+  exact
+    (B₀.isClosed_closureSet ({x} : Set β))
+      F (fun _ => x) (fun _ => B₀.mem_closureAtSet x) hy
+
+/-- Witness vertex attached to a unary function value. -/
+def functionValueVertex
+    (w : WitnessVertex act A B₀ ψ)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : β) (hy : y ∈ B₀.func F (fun _ => w.base)) :
+    WitnessVertex act A B₀ ψ :=
+  ⟨y,
+    w.valuation.restrict act A B₀ ψ y
+      (func_mem_closureAtSet act A B₀ F hy)⟩
+
+section UnaryWitness
+
+variable [L.HasUnaryFunctions]
+
+/-- The normalized irreducible-faithful witness construction. -/
+noncomputable def witnessStructure :
+    Structure L (WitnessVertex act A B₀ ψ) where
+  rel := by
+    intro n R ws
+    exact
+      B₀.rel R (fun i => (ws i).base) ∧
+        WitnessFamilyGeneric act A B₀ ψ ws
+  func := by
+    intro n F ws
+    let w := ws (UnaryFunctions.unaryIndex F)
+    exact
+      {z | ∃ (y : β)
+        (hy : y ∈ B₀.func F (fun _ => w.base)),
+        z = functionValueVertex act A B₀ ψ w F y hy}
+
+/-- The faithful witness has finite carrier over a finite base witness. -/
+theorem witnessVertex_finite [Finite β] :
+    Finite (WitnessVertex act A B₀ ψ) := by
+  letI (x : β) : Finite (ValuationStructure act A B₀ ψ x) :=
+    valuationStructure_finite act A B₀ ψ x
+  infer_instance
+
+end UnaryWitness
+
+/-- Canonical valuation structure over a point of the distinguished embedded
+copy.  Every point of its closure is again in the embedded copy and labels
+itself. -/
+noncomputable def canonicalValuationStructure
+    (x : β) (hx : x ∈ Set.range ψ) :
+    ValuationStructure act A B₀ ψ x := by
+  let hsub :
+      B₀.closureAtSet x ⊆ Set.range ψ :=
+    closureAtSet_subset_embedding_range act A B₀ ψ hx
+  refine
+    ⟨fun y =>
+      canonicalValuationFunction act A B₀ ψ y.1 (hsub y.2),
+      ?_⟩
+  intro y z
+  exact
+    canonical_areGeneric act A B₀ ψ
+      (hsub y.2) (hsub z.2)
+
+/-- Canonical witness vertex representing a vertex of `A`. -/
+noncomputable def canonicalVertex (a : α) :
+    WitnessVertex act A B₀ ψ :=
+  ⟨ψ a,
+    canonicalValuationStructure act A B₀ ψ
+      (ψ a) ⟨a, rfl⟩⟩
 
 end Faithful
 end AllThoseEPPA

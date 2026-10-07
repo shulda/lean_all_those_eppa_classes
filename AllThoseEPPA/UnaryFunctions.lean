@@ -314,6 +314,12 @@ theorem unaryTuple_eq_constant {X : Type*} {n : ℕ}
   subst n
   exact Fin.eq_zero i ▸ rfl
 
+
+@[simp] theorem unaryIndex_onFunc
+    (g : Γ) {n : ℕ} (F : L.FuncSymbol n) :
+    unaryIndex (act.onFunc g F) = unaryIndex F :=
+  Subsingleton.elim _ _
+
 /-- Vertices of the unary-function witness are the paper's pairs `(x,V)`. -/
 abbrev WitnessVertex :=
   Σ x : β, Valuation act A B₀ x

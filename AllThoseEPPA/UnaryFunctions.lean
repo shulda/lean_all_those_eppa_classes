@@ -970,6 +970,98 @@ noncomputable def PhysicalValuation.restrict
       s.1.restrict y hy :=
   rfl
 
+
+section PhysicalWitness
+
+/-- Vertices of the presentation-independent unary-function witness. -/
+abbrev PhysicalWitnessVertex :=
+  Σ x : β, PhysicalValuation act A B₀ x
+
+def PhysicalWitnessVertex.base
+    (w : PhysicalWitnessVertex act A B₀) : β :=
+  w.1
+
+def PhysicalWitnessVertex.valuation
+    (w : PhysicalWitnessVertex act A B₀) :
+    PhysicalValuation act A B₀ w.base :=
+  w.2
+
+/-- Every physical function value of the centre remains in the support, so its
+one-point restriction is again a physical valuation. -/
+theorem PhysicalWitnessVertex.funcValue_mem_support
+    (w : PhysicalWitnessVertex act A B₀)
+    {n : ℕ} (F : L.FuncSymbol n) {y : β}
+    (hy : y ∈ w.valuation.1.func F w.base) :
+    y ∈ w.valuation.1.support :=
+  w.valuation.1.func_supported F w.valuation.1.center_mem hy
+
+/-- The witness vertex corresponding to a unary function value. -/
+noncomputable def physicalFunctionValueVertex
+    (w : PhysicalWitnessVertex act A B₀)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : β) (hy : y ∈ w.valuation.1.func F w.base) :
+    PhysicalWitnessVertex act A B₀ :=
+  ⟨y,
+    PhysicalValuation.restrict act A B₀ w.valuation y
+      (PhysicalWitnessVertex.funcValue_mem_support
+        act A B₀ w F hy)⟩
+
+@[simp] theorem physicalFunctionValueVertex_base
+    (w : PhysicalWitnessVertex act A B₀)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : β) (hy : y ∈ w.valuation.1.func F w.base) :
+    (physicalFunctionValueVertex act A B₀ w F y hy).base = y :=
+  rfl
+
+/-- The physical unary-function witness.
+
+Relations are read in the relational base witness.  Unary functions use the
+physical function graph stored by the valuation and then restrict to the
+one-point closure at the selected value. -/
+noncomputable def physicalWitnessStructure :
+    Structure L (PhysicalWitnessVertex act A B₀) where
+  rel := by
+    intro n R ws
+    exact B₀.rel R (fun i => (ws i).base)
+  func := by
+    intro n F ws
+    let w := ws (unaryIndex F)
+    exact
+      {z | ∃ (y : β)
+        (hy : y ∈ w.valuation.1.func F w.base),
+        z = physicalFunctionValueVertex act A B₀ w F y hy}
+
+@[simp] theorem physicalWitnessStructure_rel_iff
+    {n : ℕ} (R : L.RelSymbol n)
+    (ws : Fin n → PhysicalWitnessVertex act A B₀) :
+    (physicalWitnessStructure act A B₀).rel R ws ↔
+      B₀.rel R (fun i => (ws i).base) :=
+  Iff.rfl
+
+theorem mem_physicalWitnessStructure_func_iff
+    {n : ℕ} (F : L.FuncSymbol n)
+    (ws : Fin n → PhysicalWitnessVertex act A B₀)
+    (z : PhysicalWitnessVertex act A B₀) :
+    z ∈ (physicalWitnessStructure act A B₀).func F ws ↔
+      ∃ (y : β)
+        (hy : y ∈
+          (ws (unaryIndex F)).valuation.1.func F
+            (ws (unaryIndex F)).base),
+        z =
+          physicalFunctionValueVertex act A B₀
+            (ws (unaryIndex F)) F y hy := by
+  rfl
+
+/-- The presentation-independent witness remains finite. -/
+theorem physicalWitnessVertex_finite
+    (hA : A.HasFiniteRelabelOrbit act) :
+    Finite (PhysicalWitnessVertex act A B₀) := by
+  letI (x : β) : Finite (PhysicalValuation act A B₀ x) :=
+    physicalValuation_finite act A B₀ hA x
+  infer_instance
+
+end PhysicalWitness
+
 section Transport
 
 /-- The underlying vertex permutation of a total automorphism. -/

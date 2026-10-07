@@ -1015,6 +1015,65 @@ theorem witnessAutomorphism_extends
         genericVertex A (p x)
     exact extendWitnessVertex_generic_of_mem act A p hx
 
+
+/-- The chosen witness automorphism depends only on the mathematical partial
+automorphism. -/
+theorem witnessAutomorphism_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q) :
+    witnessAutomorphism act A p =
+      witnessAutomorphism act A q := by
+  apply Structure.Automorphism.ext_of_lang_apply
+  · exact hpq.1
+  · intro v
+    change
+      extendWitnessVertex act A p v =
+        extendWitnessVertex act A q v
+    exact extendWitnessVertex_eq_of_equivalent act A hpq v
+
+/-- Witness automorphisms respect composition of compatible partial
+automorphisms. -/
+theorem witnessAutomorphism_comp
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source) :
+    witnessAutomorphism act A (q.comp p htg) =
+      (witnessAutomorphism act A q).comp
+        (witnessAutomorphism act A p) := by
+  apply Structure.Automorphism.ext_of_lang_apply
+  · rfl
+  · intro v
+    change
+      extendWitnessVertex act A (q.comp p htg) v =
+        extendWitnessVertex act A q
+          (extendWitnessVertex act A p v)
+    exact extendWitnessVertex_comp act A p q htg v
+
+/-- The affine construction gives a coherent simultaneous extension of all
+partial automorphisms. -/
+noncomputable def relationalCoherentExtension :
+    Structure.CoherentExtension act (genericEmbedding act A) where
+  extension := witnessAutomorphism act A
+  extension_spec := witnessAutomorphism_extends act A
+  respects_equivalent := by
+    intro p q hpq
+    exact witnessAutomorphism_eq_of_equivalent act A hpq
+  coherent := by
+    intro p q r hcoh
+    rcases hcoh with ⟨htg, hr⟩
+    calc
+      witnessAutomorphism act A r =
+          witnessAutomorphism act A (q.comp p htg) :=
+        witnessAutomorphism_eq_of_equivalent act A hr
+      _ =
+          (witnessAutomorphism act A q).comp
+            (witnessAutomorphism act A p) :=
+        witnessAutomorphism_comp act A p q htg
+
+/-- The relational valuation witness is a coherent EPPA-witness. -/
+theorem relationalWitness_isCoherentEPPAWitness :
+    Structure.IsCoherentEPPAWitness act (genericEmbedding act A) :=
+  ⟨relationalCoherentExtension act A⟩
+
 /-- The finite relational valuation witness is a plain EPPA-witness. -/
 theorem relationalWitness_isEPPAWitness :
     Structure.IsEPPAWitness act (genericEmbedding act A) := by
@@ -1037,6 +1096,22 @@ theorem finiteRelationalStructuresHaveEPPA
     LinearOrder.lift' (Fintype.equivFin β) (Fintype.equivFin β).injective
   exact ⟨genericEmbedding act B,
     relationalWitness_isEPPAWitness act B⟩
+
+
+/-- **Finite relational structures have coherent EPPA.**
+
+This is Proposition `prop:relstructures` of the paper. -/
+theorem finiteRelationalStructuresHaveCoherentEPPA
+    {β : Type v} [Fintype β] [Finite L.AnyRelSymbol]
+    (B : Structure L β) :
+    ∃ ψ : Structure.Embedding act B
+        (witnessStructure (L := L) β),
+      Structure.IsCoherentEPPAWitness act ψ := by
+  classical
+  letI : LinearOrder β :=
+    LinearOrder.lift' (Fintype.equivFin β) (Fintype.equivFin β).injective
+  exact ⟨genericEmbedding act B,
+    relationalWitness_isCoherentEPPAWitness act B⟩
 
 end Relational
 end AllThoseEPPA

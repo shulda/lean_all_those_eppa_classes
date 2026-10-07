@@ -338,12 +338,11 @@ theorem Valuation.func_mem_closure {x : β}
     {y : α}
     (hy : y ∈ v.orbit.1.func F (fun _ => v.center)) :
     y ∈ v.orbit.1.closureAtSet v.center := by
-  have hclosed :
-      v.orbit.1.IsClosed (v.orbit.1.closureAtSet v.center) := by
-    simpa [Structure.closureAtSet] using
-      v.orbit.1.isClosed_closureSet ({v.center} : Set α)
-  exact hclosed F (fun _ => v.center)
-    (fun _ => v.orbit.1.mem_closureAtSet v.center) hy
+  change y ∈ v.orbit.1.closureSet {v.center}
+  exact
+    (v.orbit.1.isClosed_closureSet ({v.center} : Set α))
+      F (fun _ => v.center)
+      (fun _ => v.orbit.1.mem_closureAtSet v.center) hy
 
 /-- The witness vertex obtained from a value `y ∈ F_V(x)`: retain the image
 of `y` in the relational base and restrict the valuation to `cl_V(y)`. -/

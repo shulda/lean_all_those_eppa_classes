@@ -21,7 +21,7 @@ keeps the language component of partial automorphisms literally unchanged.
 namespace AllThoseEPPA
 namespace InfiniteRelational
 
-universe u v w
+universe u v w z t
 
 variable {L : Language.{u}} [L.IsRelational]
 variable {Γ : Type w} [Group Γ]
@@ -74,6 +74,61 @@ abbrev PatternSymbol (n : ℕ) :=
 def patternProfile {n : ℕ} (P : PatternSymbol act A n) :
     Profile L n :=
   profile P.1.1.1 P.1.2.1
+
+
+/-- Relabel the relation-symbol coordinate of one profile entry. -/
+def relabelProfileEntry (g : Γ) {n : ℕ}
+    (e : ProfileEntry L n) : ProfileEntry L n where
+  arity := e.arity
+  symbol := act.onRel g e.symbol
+  coord := e.coord
+  coord_surjective := e.coord_surjective
+
+@[simp] theorem relabelProfileEntry_inv_apply
+    (g : Γ) {n : ℕ} (e : ProfileEntry L n) :
+    relabelProfileEntry act g⁻¹ (relabelProfileEntry act g e) = e := by
+  rcases e with ⟨m, R, ω, hω⟩
+  have hR : act.onRel g⁻¹ (act.onRel g R) = R := by
+    rw [← Language.Action.onRel_mul]
+    simp
+  cases hR
+  rfl
+
+@[simp] theorem relabelProfileEntry_apply_inv
+    (g : Γ) {n : ℕ} (e : ProfileEntry L n) :
+    relabelProfileEntry act g (relabelProfileEntry act g⁻¹ e) = e := by
+  rcases e with ⟨m, R, ω, hω⟩
+  have hR : act.onRel g (act.onRel g⁻¹ R) = R := by
+    rw [← Language.Action.onRel_mul]
+    simp
+  cases hR
+  rfl
+
+/-- Relabel a profile by the original language action.  The inverse in the
+membership test matches the convention used by `Structure.relabel`. -/
+def relabelProfile (g : Γ) {n : ℕ}
+    (X : Profile L n) : Profile L n :=
+  {e | relabelProfileEntry act g⁻¹ e ∈ X}
+
+@[simp] theorem relabelProfile_inv_apply
+    (g : Γ) {n : ℕ} (X : Profile L n) :
+    relabelProfile act g⁻¹ (relabelProfile act g X) = X := by
+  ext e
+  simp [relabelProfile]
+
+theorem relabelProfile_injective
+    (g : Γ) {n : ℕ} :
+    Function.Injective (relabelProfile act g : Profile L n → Profile L n) :=
+  Function.LeftInverse.injective (relabelProfile_inv_apply act g)
+
+/-- The profile named by a pattern symbol transforms equivariantly under the
+pattern-language action. -/
+@[simp] theorem patternProfile_patternPerm
+    (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
+    patternProfile act A (patternPerm act A g P) =
+      relabelProfile act g (patternProfile act A P) := by
+  ext e
+  rfl
 
 /-- Relabel one orbit element. -/
 def orbitRelabel (g : Γ) : Orbit act A ≃ Orbit act A where
@@ -187,6 +242,12 @@ def patternAction :
         · rfl }
   func _ := 1
 
+
+@[simp] theorem patternAction_onRel
+    (g : Γ) {n : ℕ} (P : (patternLanguage act A).RelSymbol n) :
+    (patternAction act A).onRel g P = patternPerm act A g P :=
+  rfl
+
 noncomputable def patternSymbolFintype
     (hA : A.HasFiniteRelabelOrbit act) (n : ℕ) :
     Fintype ((patternLanguage act A).RelSymbol n) := by
@@ -267,6 +328,90 @@ theorem patternAnyRelFinite
   exact Finite.of_injective
     (anyPatternToBounded act A)
     (anyPatternToBounded_injective act A)
+
+
+
+/-- Relabelling a profile along an embedding is exactly relabelling its
+relation-symbol coordinate. -/
+theorem profile_embedding
+    {β : Type z} {γ : Type t}
+    {B : Structure L β} {C : Structure L γ}
+    (f : Structure.Embedding act B C)
+    {n : ℕ} (xs : Fin n → β) :
+    profile C (f.toFun ∘ xs) =
+      relabelProfile act f.lang (profile B xs) := by
+  ext e
+  change
+    C.rel e.symbol ((f.toFun ∘ xs) ∘ e.coord) ↔
+      B.rel (act.onRel f.lang⁻¹ e.symbol) (xs ∘ e.coord)
+  have h :=
+    f.map_rel_iff (act.onRel f.lang⁻¹ e.symbol) (xs ∘ e.coord)
+  have hs :
+      act.onRel f.lang (act.onRel f.lang⁻¹ e.symbol) = e.symbol := by
+    rw [← Language.Action.onRel_mul]
+    simp
+  rw [hs] at h
+  simpa [Function.comp_assoc] using h
+
+/-- The profile encoding `T(B)`: an injective tuple satisfies the pattern
+symbol `P` exactly when its complete original-language profile is the
+profile named by `P`. -/
+def encodeStructure {β : Type z} (B : Structure L β) :
+    Structure (patternLanguage act A) β where
+  rel := by
+    intro n P xs
+    exact Function.Injective xs ∧
+      profile B xs = patternProfile act A P
+  func := by
+    intro n F xs
+    exact PEmpty.elim F
+
+@[simp] theorem encodeStructure_rel
+    {β : Type z} (B : Structure L β)
+    {n : ℕ} (P : (patternLanguage act A).RelSymbol n)
+    (xs : Fin n → β) :
+    (encodeStructure act A B).rel P xs ↔
+      Function.Injective xs ∧
+        profile B xs = patternProfile act A P :=
+  Iff.rfl
+
+/-- The profile encoding is functorial on embeddings.  This is the first half
+of Lemma `lem:functors` in the paper. -/
+def encodeEmbedding
+    {β : Type z} {γ : Type t}
+    {B : Structure L β} {C : Structure L γ}
+    (f : Structure.Embedding act B C) :
+    Structure.Embedding (patternAction act A)
+      (encodeStructure act A B) (encodeStructure act A C) where
+  lang := f.lang
+  toFun := f.toFun
+  injective := f.injective
+  map_rel_iff := by
+    intro n P xs
+    change
+      (Function.Injective (f.toFun ∘ xs) ∧
+        profile C (f.toFun ∘ xs) =
+          patternProfile act A (patternPerm act A f.lang P)) ↔
+      (Function.Injective xs ∧
+        profile B xs = patternProfile act A P)
+    constructor
+    · rintro ⟨hinj, hprofile⟩
+      have hxs : Function.Injective xs := by
+        intro i j hij
+        exact hinj (congrArg f.toFun hij)
+      refine ⟨hxs, ?_⟩
+      apply relabelProfile_injective act f.lang
+      rw [← profile_embedding act f xs]
+      rw [← patternProfile_patternPerm act A f.lang P]
+      exact hprofile
+    · rintro ⟨hinj, hprofile⟩
+      refine ⟨f.injective.comp hinj, ?_⟩
+      rw [profile_embedding act f xs]
+      rw [patternProfile_patternPerm act A f.lang P]
+      exact congrArg (relabelProfile act f.lang) hprofile
+  map_func := by
+    intro n F xs
+    exact PEmpty.elim F
 
 end InfiniteRelational
 end AllThoseEPPA

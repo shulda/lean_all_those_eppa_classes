@@ -19,3 +19,4 @@ import AllThoseEPPA.InfiniteRelational
 import AllThoseEPPA.UnaryFunctions
 import AllThoseEPPA.UnaryFunctionsCoherence
 import AllThoseEPPA.Irreducible
+import AllThoseEPPA.Faithful

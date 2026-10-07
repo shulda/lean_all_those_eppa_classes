@@ -1,5 +1,6 @@
 import Mathlib.Data.Fintype.EquivFin
 import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Relabelling
@@ -161,20 +162,19 @@ def patternAction :
   rel n :=
     { toFun := fun g => patternPerm act A g
       map_one' := by
-        ext P
+        apply Equiv.ext
+        intro P
         apply Subtype.ext
         apply Prod.ext
-        · change orbitRelabel act A 1 P.1.1 = P.1.1
-          exact congrFun (orbitAction act A).map_one P.1.1
+        · exact congrFun (orbitAction act A).map_one P.1.1
         · rfl
       map_mul' := by
         intro g h
-        ext P
+        apply Equiv.ext
+        intro P
         apply Subtype.ext
         apply Prod.ext
-        · change orbitRelabel act A (g * h) P.1.1 =
-            orbitRelabel act A g (orbitRelabel act A h P.1.1)
-          exact congrFun ((orbitAction act A).map_mul g h) P.1.1
+        · exact congrFun ((orbitAction act A).map_mul g h) P.1.1
         · rfl }
   func _ := 1
 
@@ -219,18 +219,22 @@ noncomputable def anyPatternToBounded
     Nat.lt_succ_iff.mpr (patternSymbol_arity_le act A P)
   exact ⟨⟨n, hn⟩, P⟩
 
-theorem anyPatternToBounded_injective :
-    Function.Injective (anyPatternToBounded act A) := by
-  intro P Q h
+/-- Forget the arity bound from a bounded pattern code. -/
+def boundedToAnyPattern
+    (P : BoundedPatternCode act A) :
+    (patternLanguage act A).AnyRelSymbol :=
+  ⟨P.1.1, P.2⟩
+
+theorem boundedToAnyPattern_anyPatternToBounded
+    (P : (patternLanguage act A).AnyRelSymbol) :
+    boundedToAnyPattern act A (anyPatternToBounded act A P) = P := by
   rcases P with ⟨n, P⟩
-  rcases Q with ⟨m, Q⟩
-  have hnm : n = m := congrArg (fun z => z.1.1) h
-  subst m
-  have hPQ : P = Q := by
-    have hs := congrArg (fun z => z.2) h
-    exact hs
-  cases hPQ
   rfl
+
+theorem anyPatternToBounded_injective :
+    Function.Injective (anyPatternToBounded act A) :=
+  Function.LeftInverse.injective
+    (boundedToAnyPattern_anyPatternToBounded act A)
 
 /-- The compressed pattern language has finitely many relation symbols in
 total, even though the original language may be infinite. -/

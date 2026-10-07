@@ -19,6 +19,47 @@ variable (act : L.Action Γ) (A : Structure L α)
 variable {β : Type z} [Finite β]
 variable (B₀ : Structure L.relationalReduct β)
 
+
+/-- A realised physical valuation has no function values outside its
+support. -/
+theorem PhysicalValuation.func_eq_empty_of_not_mem_support
+    {x : β} (s : PhysicalValuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n) (a : β)
+    (ha : a ∉ s.1.support) :
+    s.1.func F a = ∅ := by
+  rcases s.2 with ⟨v, hv⟩
+  ext b
+  constructor
+  · intro hb
+    exfalso
+    apply ha
+    rw [← hv]
+    rcases hb with ⟨z, hza, y, hy, hby⟩
+    exact ⟨z, hza⟩
+  · intro hb
+    simpa using hb
+
+/-- In the generic physical valuation, a relabelled function symbol has
+exactly the embedded image of the corresponding original function values. -/
+theorem genericPhysicalValuation_func_image
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (x a : α) (ha : a ∈ A.closureAtSet x)
+    {n : ℕ} (F : L.FuncSymbol n) :
+    (genericPhysicalValuation act A B₀ ψ₀ x).1.func
+        (act.onFunc ψ₀.lang F) (ψ₀ a) =
+      ψ₀ '' A.func F (fun _ => a) := by
+  ext b
+  rw [genericPhysicalValuation_mem_func_at_image_iff
+    act A B₀ ψ₀ x a ha (act.onFunc ψ₀.lang F) b]
+  constructor
+  · rintro ⟨y, hy, hby⟩
+    refine ⟨y, ?_, hby.symm⟩
+    simpa [Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
+  · rintro ⟨y, hy, hby⟩
+    refine ⟨y, ?_, hby.symm⟩
+    simpa [Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
+
 /-- Conjugation of physical signatures is functorial in the base
 automorphism. -/
 theorem ValuationSignature.transport_comp

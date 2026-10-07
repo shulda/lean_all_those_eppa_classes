@@ -410,12 +410,30 @@ theorem mem_witnessStructure_func_iff
 theorem witnessVertex_finite
     (hA : A.HasFiniteRelabelOrbit act) :
     Finite (WitnessVertex act A B₀) := by
+  classical
   letI : Fintype β := Fintype.ofFinite β
-  letI (x : β) : Finite (Valuation act A B₀ x) :=
-    Valuation.finite act A B₀ hA x
-  letI (x : β) : Fintype (Valuation act A B₀ x) :=
+  letI : Fintype (Orbit act A) := orbitFintype act A hA
+  letI (C : Orbit act A) (y : α) :
+      Fintype (C.1.closureAtSet y) :=
     Fintype.ofFinite _
-  exact Fintype.finite _
+  haveI : Finite (Valuation.Code act A (β := β)) := by
+    infer_instance
+  let code :
+      WitnessVertex act A B₀ →
+        β × Valuation.Code act A (β := β) :=
+    fun w => (w.1, Valuation.code act A B₀ w.2)
+  apply Finite.of_injective code
+  rintro ⟨x, v⟩ ⟨y, w⟩ h
+  have hxy : x = y := congrArg Prod.fst h
+  subst y
+  have hv :
+      Valuation.code act A B₀ v =
+        Valuation.code act A B₀ w :=
+    congrArg Prod.snd h
+  have hvw : v = w :=
+    Valuation.code_injective act A B₀ hv
+  subst w
+  rfl
 
 end Witness
 

@@ -975,6 +975,49 @@ theorem Valuation.physicalFunc_transport
         apply Subtype.ext
         rfl
 
+/-- Transport commutes with forgetting an abstract valuation presentation.
+This is the key descent statement to the quotient by physical signatures. -/
+theorem Valuation.physicalSignature_transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (v : Valuation act A B₀ x) :
+    Valuation.physicalSignature act A B₀
+        (Valuation.transport act A B₀ h v) =
+      ValuationSignature.transport act B₀ h
+        (Valuation.physicalSignature act A B₀ v) := by
+  apply ValuationSignature.ext
+  · exact Valuation.physicalSignature_transport_support act A B₀ h v
+  · funext n F a
+    exact Valuation.physicalFunc_transport act A B₀ h v F a
+
+/-- The base automorphism acts canonically on physical valuations; the
+previous theorem shows that this is independent of the chosen abstract
+presentation. -/
+noncomputable def PhysicalValuation.transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : PhysicalValuation act A B₀ x) :
+    PhysicalValuation act A B₀ (h x) := by
+  refine
+    ⟨ValuationSignature.transport act B₀ h s.1, ?_⟩
+  rcases s.2 with ⟨v, hv⟩
+  refine
+    ⟨Valuation.transport act A B₀ h v, ?_⟩
+  calc
+    Valuation.physicalSignature act A B₀
+        (Valuation.transport act A B₀ h v) =
+        ValuationSignature.transport act B₀ h
+          (Valuation.physicalSignature act A B₀ v) :=
+      Valuation.physicalSignature_transport act A B₀ h v
+    _ =
+        ValuationSignature.transport act B₀ h s.1 :=
+      congrArg (ValuationSignature.transport act B₀ h) hv
+
+@[simp] theorem PhysicalValuation.transport_val
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : PhysicalValuation act A B₀ x) :
+    (PhysicalValuation.transport act A B₀ h s).1 =
+      ValuationSignature.transport act B₀ h s.1 :=
+  rfl
+
 end Transport
 
 end PhysicalValuations

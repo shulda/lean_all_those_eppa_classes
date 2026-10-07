@@ -413,7 +413,9 @@ theorem witnessVertex_finite
   letI : Fintype β := Fintype.ofFinite β
   letI (x : β) : Finite (Valuation act A B₀ x) :=
     Valuation.finite act A B₀ hA x
-  infer_instance
+  letI (x : β) : Fintype (Valuation act A B₀ x) :=
+    Fintype.ofFinite _
+  exact Fintype.finite _
 
 end Witness
 

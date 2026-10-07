@@ -698,8 +698,6 @@ theorem Valuation.imageClosure_isClosed
         F (fun _ => z.1) (fun _ => z.2) ht
   refine ⟨⟨t, htcl⟩, ?_⟩
   rw [hbt]
-  apply congrArg v.toFun
-  apply Subtype.ext
 
 
 section Transport

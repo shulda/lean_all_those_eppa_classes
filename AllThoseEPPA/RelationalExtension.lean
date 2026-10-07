@@ -299,11 +299,12 @@ def preRel
     (p : RelPartialAutomorphism act A)
     {n : ℕ} (S : L.RelSymbol n) :
     act.onRel p.lang (preRel act A p S) = S := by
+  unfold preRel
   rw [← Language.Action.onRel_mul]
-  simp [preRel]
+  simp
 
 /-- Pull a tuple back through the chosen total extension of the vertex map. -/
-def preTuple
+noncomputable def preTuple
     (p : RelPartialAutomorphism act A)
     {n : ℕ} (zs : Fin n → α) : Fin n → α :=
   (baseExtension act A p).symm ∘ zs

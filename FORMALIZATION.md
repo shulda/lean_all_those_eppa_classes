@@ -27,7 +27,7 @@ green.
 | Lemma `lem:graphs:auto` / finite graphs have EPPA | `AllThoseEPPA/Examples/GraphWitness.lean`, `AllThoseEPPA/Examples/GraphExtension.lean`; `AllThoseEPPA.Graph.finiteGraphsHaveEPPA` | **Formalized** | Explicit valuation witness, generic embedding, flip consistency, witness automorphism and extension are checked. |
 | Lemma `lem:graphs:coherence` and Proposition `prop:graphs` | — | Intentionally skipped | The graph section has served its purpose as an API warm-up; coherence is deferred unless later work needs it. |
 | Proposition `prop:relstructures`: finite relational structures have coherent EPPA | `AllThoseEPPA/RelationalWitness.lean`, `AllThoseEPPA/F2Completion.lean`, `AllThoseEPPA/RelationalExtension.lean`; `AllThoseEPPA.Relational.finiteRelationalStructuresHaveCoherentEPPA` | **Formalized** | The full affine/𝔽₂ valuation construction is checked, including extensionality of partial maps and coherent composition. |
-| Infinite relational languages / finite relabelling orbit | `AllThoseEPPA/Relabelling.lean` | **Current prerequisite** | Formalizing `prop:infinite_languages`, needed by the unary-function construction. Relabelling and relational-reduct infrastructure added first. |\n| Unary functions | — | Next | `prop:eppafunctions` depends on the infinite-language relational proposition. |
+| Proposition `prop:infinite_languages`: finite relabelling orbit in an arbitrary relational language | `AllThoseEPPA/Relabelling.lean`, `AllThoseEPPA/InfiniteRelational.lean`; `AllThoseEPPA.InfiniteRelational.finiteOrbitRelationalStructuresHaveCoherentEPPA` | **Formalized** | Uses an equivalent direct finite profile language with the original group Γ, rather than adjoining all paper symbols and then invoking `lem:redundant_groups`. The finite witness and coherent transfer through `T` and `U` are checked. |\n| Unary functions / Proposition `prop:eppafunctions` | — | **Current target** | The required infinite-language relational proposition is now green. |
 | Irreducible-structure faithfulness | — | Planned | Regression target: finite 3-uniform hypergraphs. |
 | Restricted / locally tree-like construction | — | Planned | Regression target: finite integer-valued metric spaces with distances `{0,...,D}`. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
@@ -36,3 +36,19 @@ green.
 ### Foundation audit note
 
 On 2026-10-06 the start of the general relational construction exposed that the paper requires relation symbols to have positive arity, while the initial Lean `Language` allowed nullary relations. The Lean API was corrected by adding `Language.relArity_pos`. No manuscript correction was needed: the paper already states the requirement explicitly in the background section.
+
+
+### Infinite-language proof note
+
+The Lean proof of Proposition `prop:infinite_languages` compresses directly to
+a finite profile language whose symbols are coded by a member of the finite
+relabelling orbit of `A` together with an injective tuple.  Different codes
+may name the same profile; this redundancy is harmless.  The original group
+`Γ` acts directly on these codes, so the formal proof does not need the
+paper's intermediate language `M = M' ∪ L` nor a separate application of
+Lemma `lem:redundant_groups`.
+
+The proof still formalizes the substantive `T/U` mechanism: profile encoding
+is functorial on embeddings, decoding is functorial on embeddings,
+`U(T(A)) = A` at the relational level, partial automorphisms lift to `T(A)`,
+and coherent automorphism extensions decode back to the original language.

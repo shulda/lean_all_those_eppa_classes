@@ -779,6 +779,37 @@ theorem Valuation.physicalSignature_closureAt_image
       rfl
     simpa [s, y₀, hzsub] using hzimage
 
+/-- Every point represented by an abstract valuation lies in its physical
+support. -/
+theorem Valuation.physicalPoint_mem_support
+    {x : β} (v : Valuation act A B₀ x)
+    (z : v.orbit.1.closureAtSet v.center) :
+    v.toFun z ∈
+      (Valuation.physicalSignature act A B₀ v).support :=
+  ⟨z, rfl⟩
+
+/-- Restricting an abstract valuation has exactly the support obtained by
+restricting its physical signature. -/
+theorem Valuation.physicalSignature_restrict_support
+    {x : β} (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center) :
+    (Valuation.physicalSignature act A B₀
+        (Valuation.restrict act A B₀ v y hy)).support =
+      ((Valuation.physicalSignature act A B₀ v).restrict
+        (v.toFun ⟨y, hy⟩)
+        (Valuation.physicalPoint_mem_support
+          act A B₀ v ⟨y, hy⟩)).support := by
+  rw [ValuationSignature.restrict_support]
+  rw [Valuation.physicalSignature_closureAt_image
+    act A B₀ v y hy]
+  ext b
+  constructor
+  · rintro ⟨z, rfl⟩
+    exact ⟨z, rfl⟩
+  · rintro ⟨z, hb⟩
+    refine ⟨z, ?_⟩
+    exact hb.symm
+
 
 section Transport
 

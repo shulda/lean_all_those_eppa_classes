@@ -470,6 +470,102 @@ noncomputable def projection :
     projection act A B₀ ψ w = w.base :=
   rfl
 
+/-- Projection maps each unary witness-function fibre exactly onto the
+corresponding base-witness function fibre. -/
+theorem projection_map_func_eq_constant
+    [L.HasUnaryFunctions]
+    {n : ℕ} (F : L.FuncSymbol n)
+    (w : WitnessVertex act A B₀ ψ) :
+    Structure.imageSet
+        (projection act A B₀ ψ).toFun
+        ((witnessStructure act A B₀ ψ).func F (fun _ => w)) =
+      B₀.func F (fun _ => w.base) := by
+  ext y
+  constructor
+  · rintro ⟨z, hz, hzy⟩
+    rcases hz with ⟨b, hb, hzb⟩
+    subst z
+    have hby : b = y := by
+      simpa [projection, functionValueVertex, WitnessVertex.base] using hzy
+    subst y
+    exact hb
+  · intro hy
+    refine
+      ⟨functionValueVertex act A B₀ ψ w F y hy, ?_, ?_⟩
+    · exact ⟨y, hy, rfl⟩
+    · rfl
+
+/-- Projection actually preserves unary function fibres by equality, not only
+by the inclusion required of a homomorphism. -/
+theorem projection_map_func_eq
+    [L.HasUnaryFunctions]
+    {n : ℕ} (F : L.FuncSymbol n)
+    (xs : Fin n → WitnessVertex act A B₀ ψ) :
+    Structure.imageSet
+        (projection act A B₀ ψ).toFun
+        ((witnessStructure act A B₀ ψ).func F xs) =
+      B₀.func (act.onFunc (projection act A B₀ ψ).lang F)
+        ((projection act A B₀ ψ).toFun ∘ xs) := by
+  have hxs :
+      xs = fun _ => xs (UnaryFunctions.unaryIndex F) :=
+    UnaryFunctions.unaryTuple_eq_constant F xs
+  rw [hxs]
+  simpa [projection, Function.comp_def] using
+    projection_map_func_eq_constant
+      act A B₀ ψ F (xs (UnaryFunctions.unaryIndex F))
+
+/-- Genericity of a subset of witness vertices means genericity of the union
+of all valuation structures carried by those vertices. -/
+def WitnessSetGeneric
+    (S : Set (WitnessVertex act A B₀ ψ)) : Prop :=
+  WitnessFamilyGeneric act A B₀ ψ (fun w : S => w.1)
+
+/-- Projection is injective on every generic set of witness vertices. -/
+theorem projection_injOn_of_generic
+    (S : Set (WitnessVertex act A B₀ ψ))
+    (hS : WitnessSetGeneric act A B₀ ψ S) :
+    Set.InjOn (fun w => w.base) S := by
+  intro w hw v hv hbase
+  rcases w with ⟨x, V⟩
+  rcases v with ⟨y, W⟩
+  change x = y at hbase
+  subst y
+  apply Sigma.ext rfl
+  apply heq_of_eq
+  apply Subtype.ext
+  funext z
+  have hg :=
+    hS ⟨⟨x, V⟩, hw⟩ ⟨⟨x, W⟩, hv⟩ z z
+  change
+    AreGeneric act A B₀ ψ
+      ⟨z.1, V.1 z⟩ ⟨z.1, W.1 z⟩ at hg
+  rcases hg with heq | ⟨hne, hlabels⟩
+  · exact eq_of_heq (Sigma.mk.inj_iff.mp heq).2
+  · exact (hne rfl).elim
+
+/-- **Claim `c:faithful:generic`.**  Projection is an embedding on every
+generic subset of the faithful witness. -/
+theorem projection_isEmbeddingOn_of_generic
+    [L.HasUnaryFunctions]
+    (S : Set (WitnessVertex act A B₀ ψ))
+    (hS : WitnessSetGeneric act A B₀ ψ S) :
+    Structure.Homomorphism.IsEmbeddingOn act
+      (projection act A B₀ ψ) S := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro w hw v hv h
+    exact projection_injOn_of_generic act A B₀ ψ S hS hw hv h
+  · intro n R xs hxs
+    constructor
+    · intro hrel
+      refine ⟨?_, ?_⟩
+      · simpa [projection, Function.comp_def] using hrel
+      · intro i j y z
+        exact hS ⟨xs i, hxs i⟩ ⟨xs j, hxs j⟩ y z
+    · intro hrel
+      simpa [projection, Function.comp_def] using hrel.1
+  · intro n F xs hxs
+    exact projection_map_func_eq act A B₀ ψ F xs
+
 end UnaryProjection
 
 /-- Every family of canonical witness vertices is generic. -/

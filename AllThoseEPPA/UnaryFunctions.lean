@@ -1224,6 +1224,63 @@ def genericPhysicalValuation (x : α) :
       (genericValuation act A B₀ ψ₀ x),
     ⟨genericValuation act A B₀ ψ₀ x, rfl⟩⟩
 
+
+/-- The support of the generic physical valuation is exactly the image of the
+one-point closure under the relational embedding. -/
+theorem genericPhysicalValuation_support (x : α) :
+    (genericPhysicalValuation act A B₀ ψ₀ x).1.support =
+      ψ₀ '' A.closureAtSet x := by
+  change
+    Set.range
+        (fun z :
+          (genericOrbit act A B₀ ψ₀).1.closureAtSet x =>
+          ψ₀ z.1) =
+      ψ₀ '' A.closureAtSet x
+  ext b
+  constructor
+  · rintro ⟨z, rfl⟩
+    refine ⟨z.1, ?_, rfl⟩
+    have hz := z.2
+    change z.1 ∈ (A.relabel act ψ₀.lang).closureAtSet x at hz
+    rw [closureAtSet_relabel act ψ₀.lang A x] at hz
+    exact hz
+  · rintro ⟨y, hy, rfl⟩
+    refine ⟨⟨y, ?_⟩, rfl⟩
+    change y ∈ (A.relabel act ψ₀.lang).closureAtSet x
+    rw [closureAtSet_relabel act ψ₀.lang A x]
+    exact hy
+
+/-- At an embedded point of the generic closure, physical unary-function
+membership is precisely abstract membership in the relabelled copy of `A`. -/
+theorem genericPhysicalValuation_mem_func_at_image_iff
+    (x a : α) (ha : a ∈ A.closureAtSet x)
+    {n : ℕ} (F : L.FuncSymbol n) (b : β) :
+    b ∈
+        (genericPhysicalValuation act A B₀ ψ₀ x).1.func F (ψ₀ a) ↔
+      ∃ (y : α)
+        (hy :
+          y ∈ (A.relabel act ψ₀.lang).func F (fun _ => a)),
+        b = ψ₀ y := by
+  let v := genericValuation act A B₀ ψ₀ x
+  have ha' :
+      a ∈ (genericOrbit act A B₀ ψ₀).1.closureAtSet x := by
+    change a ∈ (A.relabel act ψ₀.lang).closureAtSet x
+    rw [closureAtSet_relabel act ψ₀.lang A x]
+    exact ha
+  let z : v.orbit.1.closureAtSet v.center :=
+    ⟨a, ha'⟩
+  change
+    b ∈ Valuation.physicalFunc act A B₀ v F (v.toFun z) ↔
+      ∃ (y : α)
+        (hy : y ∈ v.orbit.1.func F (fun _ => z.1)),
+        b = v.toFun
+          ⟨y, Valuation.func_mem_closure_of_mem
+            act A B₀ v z F hy⟩
+  rw [Valuation.mem_physicalFunc_at_image_iff]
+  constructor <;> rintro ⟨y, hy, hby⟩
+  · exact ⟨y, hy, hby⟩
+  · exact ⟨y, hy, hby⟩
+
 /-- Vertex map of the generic copy of `A` in the physical witness. -/
 def genericPhysicalVertex (x : α) :
     PhysicalWitnessVertex act A B₀ :=

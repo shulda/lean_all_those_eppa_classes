@@ -35,6 +35,10 @@ private theorem exclusionSide_closed
   have hconst : xs = fun _ => xs i := by
     simpa [i] using
       (UnaryFunctions.unaryTuple_eq_constant F xs)
+  have htuple :
+      (Subtype.val ∘ xs) = fun _ => (xs i).1 := by
+    funext j
+    exact congrArg Subtype.val (congrFun hconst j)
   have hzB :
       z.1 ∈
         (witnessStructure act A B₀ ψ).func F
@@ -43,7 +47,8 @@ private theorem exclusionSide_closed
       z.1 ∈
         (witnessStructure act A B₀ ψ).func F
           (Subtype.val ∘ xs) at hz
-    simpa [hconst, Function.comp_def] using hz
+    rw [htuple] at hz
+    exact hz
   have hzcl :
       z.1 ∈
         (witnessStructure act A B₀ ψ).closureAtSet (xs i).1 :=

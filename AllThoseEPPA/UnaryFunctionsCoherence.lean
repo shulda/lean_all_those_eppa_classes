@@ -213,6 +213,92 @@ theorem genericPhysicalValuation_transport_func_of_extends
     refine ⟨ψ₀ t, ⟨t, ht, rfl⟩, ?_⟩
     exact hext.2 t (hclsrc htcl)
 
+
+/-- A base extension carries every generic physical witness vertex to the
+generic vertex prescribed by the original partial automorphism. -/
+theorem genericPhysicalVertex_transport_of_extends
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (p : Structure.PartialAutomorphism act A)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (hext :
+      Structure.ExtendsAlong act.relationalReduct ψ₀
+        (reductPartialAutomorphism act A p) h)
+    {x : α} (hx : x ∈ p.source) :
+    PhysicalWitnessVertex.transport act A B₀ h
+        (genericPhysicalVertex act A B₀ ψ₀ x) =
+      genericPhysicalVertex act A B₀ ψ₀ (p x) := by
+  have hbase : h (ψ₀ x) = ψ₀ (p x) :=
+    hext.2 x hx
+  have hsupport :=
+    genericPhysicalValuation_transport_support_of_extends
+      act A B₀ ψ₀ p h hext hx
+  rw [Sigma.ext_iff]
+  refine ⟨hbase, ?_⟩
+  cases hbase
+  apply heq_of_eq
+  apply Subtype.ext
+  apply ValuationSignature.ext
+  · exact hsupport
+  · funext n F a
+    by_cases ha :
+        a ∈
+          (genericPhysicalValuation act A B₀ ψ₀ (p x)).1.support
+    · have ha' := ha
+      rw [genericPhysicalValuation_support] at ha'
+      rcases ha' with ⟨z, hz, rfl⟩
+      have hz' :
+          z ∈ p.toPartialEquiv '' A.closureAtSet x := by
+        rw [partialAutomorphism_image_closureAtSet act A p hx]
+        exact hz
+      rcases hz' with ⟨y, hy, rfl⟩
+      exact
+        genericPhysicalValuation_transport_func_of_extends
+          act A B₀ ψ₀ p h hext hx hy F
+    · have haL :
+          a ∉
+            (PhysicalValuation.transport act A B₀ h
+              (genericPhysicalValuation act A B₀ ψ₀ x)).1.support := by
+        rw [hsupport]
+        exact ha
+      have hl :=
+        PhysicalValuation.func_eq_empty_of_not_mem_support
+          act A B₀
+          (PhysicalValuation.transport act A B₀ h
+            (genericPhysicalValuation act A B₀ ψ₀ x))
+          F a haL
+      have hr :=
+        PhysicalValuation.func_eq_empty_of_not_mem_support
+          act A B₀
+          (genericPhysicalValuation act A B₀ ψ₀ (p x))
+          F a ha
+      exact hl.trans hr.symm
+
+/-- The lifted witness automorphism extends the original partial automorphism
+along the generic physical embedding. -/
+theorem physicalWitnessAutomorphism_extends_generic
+    (hA : A.HasFiniteRelabelOrbit act)
+    (ψ₀ : Structure.Embedding act.relationalReduct
+      A.relationalReduct B₀)
+    (p : Structure.PartialAutomorphism act A)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (hext :
+      Structure.ExtendsAlong act.relationalReduct ψ₀
+        (reductPartialAutomorphism act A p) h) :
+    Structure.ExtendsAlong act
+      (genericPhysicalEmbedding act A B₀ ψ₀) p
+      (physicalWitnessAutomorphism act A B₀ hA h) := by
+  constructor
+  · simpa using hext.1
+  · intro x hx
+    change
+      PhysicalWitnessVertex.transport act A B₀ h
+          (genericPhysicalVertex act A B₀ ψ₀ x) =
+        genericPhysicalVertex act A B₀ ψ₀ (p x)
+    exact
+      genericPhysicalVertex_transport_of_extends
+        act A B₀ ψ₀ p h hext hx
+
 /-- Conjugation of physical signatures is functorial in the base
 automorphism. -/
 theorem ValuationSignature.transport_comp

@@ -1486,6 +1486,55 @@ theorem PhysicalValuation.transport_injective
   apply ValuationSignature.transport_injective act B₀ h
   exact congrArg Subtype.val hst
 
+
+/-- Transport a whole physical witness vertex along a base automorphism. -/
+noncomputable def PhysicalWitnessVertex.transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀) :
+    PhysicalWitnessVertex act A B₀ :=
+  Sigma.map h
+    (fun _ => PhysicalValuation.transport act A B₀ h) w
+
+@[simp] theorem PhysicalWitnessVertex.transport_base
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀) :
+    (PhysicalWitnessVertex.transport act A B₀ h w).base =
+      h w.base :=
+  rfl
+
+/-- Transport of witness vertices is injective fibrewise and on the base. -/
+theorem PhysicalWitnessVertex.transport_injective
+    (h : Structure.Automorphism act.relationalReduct B₀) :
+    Function.Injective
+      (PhysicalWitnessVertex.transport act A B₀ h) := by
+  exact
+    (automorphismEquiv act h).injective.sigma_map
+      (fun x => PhysicalValuation.transport_injective act A B₀ h)
+
+/-- Because the physical witness is finite, its injective transport map is a
+permutation. -/
+noncomputable def physicalWitnessEquiv
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀) :
+    PhysicalWitnessVertex act A B₀ ≃
+      PhysicalWitnessVertex act A B₀ := by
+  let f := PhysicalWitnessVertex.transport act A B₀ h
+  have hf : Function.Injective f :=
+    PhysicalWitnessVertex.transport_injective act A B₀ h
+  letI : Finite (PhysicalWitnessVertex act A B₀) :=
+    physicalWitnessVertex_finite act A B₀ hA
+  have hs : Function.Surjective f :=
+    Finite.injective_iff_surjective.mp hf
+  exact Equiv.ofBijective f ⟨hf, hs⟩
+
+@[simp] theorem physicalWitnessEquiv_apply
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀) :
+    physicalWitnessEquiv act A B₀ hA h w =
+      PhysicalWitnessVertex.transport act A B₀ h w :=
+  rfl
+
 end Transport
 
 end PhysicalValuations

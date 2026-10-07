@@ -66,6 +66,14 @@ theorem baseExtension_mem_second_source_iff
   rw [← htg]
   exact PartialEquiv.orderedExtension_mem_target_iff p.toPartialEquiv x
 
+
+/-- The total base extension depends only on the mathematical partial map. -/
+theorem baseExtension_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q) :
+    baseExtension act A p = baseExtension act A q :=
+  PartialEquiv.orderedExtension_eq_of_eqOnSource hpq.2
+
 /-- A partial automorphism preserves every relation on tuples from its source,
 with the relation symbol relabelled by its language component. -/
 theorem partialAutomorphism_rel_iff
@@ -157,6 +165,32 @@ theorem sourceCorrection_comp_of_mem
     (baseExtension act A q ∘ (baseExtension act A p ∘ xs))
   change a + d = (a + b) + (b + d)
   cases a <;> cases b <;> cases d <;> rfl
+
+
+/-- Forced source corrections depend only on the mathematical partial
+automorphism, not on the off-source representation of its `PartialEquiv`. -/
+theorem sourceCorrection_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) (x : α) :
+    sourceCorrection act A p R xs x =
+      sourceCorrection act A q R xs x := by
+  classical
+  have hs : p.source = q.source := hpq.2.1
+  by_cases hx : x ∈ p.source
+  · have hxq : x ∈ q.source := by
+      rw [← hs]
+      exact hx
+    rw [sourceCorrection_of_mem act A p R xs hx]
+    rw [sourceCorrection_of_mem act A q R xs hxq]
+    have hpx : p x = q x := hpq.2.2 hx
+    have hbase := baseExtension_eq_of_equivalent act A hpq
+    rw [hpq.1, hpx, hbase]
+  · have hxq : x ∉ q.source := by
+      intro h
+      exact hx (hs ▸ h)
+    rw [sourceCorrection_of_not_mem act A p R xs hx]
+    rw [sourceCorrection_of_not_mem act A q R xs hxq]
 
 /-- The generic valuation at `x` can only see tuples whose first coordinate
 is `x`.  Consequently the source part of the paper's flip matrix is zero
@@ -376,6 +410,25 @@ theorem flipCorrection_comp
 
 /-- The completed flip vector has even total parity on the distinct base
 vertices of every tuple. -/
+
+/-- Completed flip corrections are invariant under extensional equality of the
+underlying partial automorphism. -/
+theorem flipCorrection_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) (x : α) :
+    flipCorrection act A p R xs x =
+      flipCorrection act A q R xs x := by
+  classical
+  unfold flipCorrection
+  have hs : p.source = q.source := hpq.2.1
+  have hc :
+      sourceCorrection act A p R xs =
+        sourceCorrection act A q R xs := by
+    funext y
+    exact sourceCorrection_eq_of_equivalent act A hpq R xs y
+  rw [hs, hc]
+
 theorem flipCorrection_totalParity
     (p : RelPartialAutomorphism act A)
     {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) :
@@ -517,6 +570,18 @@ noncomputable def extendWitnessVertex
   rfl
 
 
+theorem extendWitnessVertex_valuation
+    (p : RelPartialAutomorphism act A)
+    (v : WitnessVertex L α)
+    (S : L.AnyRelSymbol) (zs : Fin S.1 → α) :
+    (extendWitnessVertex act A p v).valuation S zs =
+      v.valuation ⟨S.1, preRel act A p S.2⟩ (preTuple act A p zs) +
+        flipCorrection act A p (preRel act A p S.2)
+          (preTuple act A p zs) v.base :=
+  rfl
+
+
+
 /-- Coordinate formula for the affine transport. -/
 theorem extendWitnessVertex_valuation_relabel
     (p : RelPartialAutomorphism act A)
@@ -536,6 +601,32 @@ theorem extendWitnessVertex_valuation_relabel
         (preTuple act A p (baseExtension act A p ∘ xs)) v.base =
       _
   rw [preRel_relabel, preTuple_baseExtension]
+
+
+/-- The affine witness-vertex extension depends only on the mathematical
+partial automorphism. -/
+theorem extendWitnessVertex_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    (v : WitnessVertex L α) :
+    extendWitnessVertex act A p v =
+      extendWitnessVertex act A q v := by
+  classical
+  apply WitnessVertex.ext
+  · exact congrArg (fun σ : Equiv.Perm α => σ v.base)
+      (baseExtension_eq_of_equivalent act A hpq)
+  · funext S zs
+    rw [extendWitnessVertex_valuation, extendWitnessVertex_valuation]
+    have hpreRel :
+        preRel act A p S.2 = preRel act A q S.2 := by
+      unfold preRel
+      rw [hpq.1]
+    have hpreTuple :
+        preTuple act A p zs = preTuple act A q zs := by
+      unfold preTuple
+      rw [baseExtension_eq_of_equivalent act A hpq]
+    rw [hpreRel, hpreTuple]
+    rw [flipCorrection_eq_of_equivalent act A hpq]
 
 /-- Affine witness-vertex extensions respect composition. -/
 theorem extendWitnessVertex_comp
@@ -716,6 +807,16 @@ noncomputable def witnessVertexEquiv
     (v : WitnessVertex L α) :
     witnessVertexEquiv act A p v = extendWitnessVertex act A p v :=
   rfl
+
+
+/-- The witness permutation is invariant under extensional equality of partial
+automorphisms. -/
+theorem witnessVertexEquiv_eq_of_equivalent
+    {p q : RelPartialAutomorphism act A}
+    (hpq : Structure.PartialIsomorphism.Equivalent p q) :
+    witnessVertexEquiv act A p = witnessVertexEquiv act A q := by
+  ext v
+  exact extendWitnessVertex_eq_of_equivalent act A hpq v
 
 
 

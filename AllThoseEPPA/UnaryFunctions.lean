@@ -700,7 +700,6 @@ theorem Valuation.imageClosure_isClosed
   rw [hbt]
   apply congrArg v.toFun
   apply Subtype.ext
-  rfl
 
 
 section Transport

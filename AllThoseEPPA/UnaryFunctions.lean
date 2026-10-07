@@ -1813,6 +1813,51 @@ theorem physicalWitnessRelation_transport_iff
   simpa [Function.comp_def, physicalWitnessEquiv_apply,
     PhysicalWitnessVertex.transport, PhysicalWitnessVertex.base] using hh
 
+/-- A base automorphism lifts to an automorphism of the physical unary
+witness. -/
+noncomputable def physicalWitnessAutomorphism
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀) :
+    Structure.Automorphism act
+      (physicalWitnessStructure act A B₀) where
+  toPartialIsomorphism :=
+    { lang := h.lang
+      toPartialEquiv :=
+        (physicalWitnessEquiv act A B₀ hA h).toPartialEquiv
+      source_closed :=
+        Structure.isClosed_univ
+          (physicalWitnessStructure act A B₀)
+      target_closed :=
+        Structure.isClosed_univ
+          (physicalWitnessStructure act A B₀)
+      map_rel_iff := by
+        intro n R ws hws
+        exact
+          physicalWitnessRelation_transport_iff
+            act A B₀ hA h R ws
+      map_func := by
+        intro n F ws hws
+        exact
+          physicalWitnessFunction_transport
+            act A B₀ hA h F ws }
+  source_eq_univ := rfl
+  target_eq_univ := rfl
+
+@[simp] theorem physicalWitnessAutomorphism_lang
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀) :
+    (physicalWitnessAutomorphism act A B₀ hA h).lang = h.lang :=
+  rfl
+
+@[simp] theorem physicalWitnessAutomorphism_apply
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀) :
+    physicalWitnessAutomorphism act A B₀ hA h w =
+      PhysicalWitnessVertex.transport act A B₀ h w :=
+  rfl
+
+
 end Transport
 
 end PhysicalValuations

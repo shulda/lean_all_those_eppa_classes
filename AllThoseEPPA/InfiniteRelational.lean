@@ -166,7 +166,11 @@ def patternAction :
         intro P
         apply Subtype.ext
         apply Prod.ext
-        · exact congrFun (orbitAction act A).map_one P.1.1
+        · have h := congrArg
+            (fun e : Equiv.Perm (Orbit act A) => e P.1.1)
+            (orbitAction act A).map_one
+          change orbitRelabel act A 1 P.1.1 = P.1.1 at h
+          exact h
         · rfl
       map_mul' := by
         intro g h
@@ -174,7 +178,12 @@ def patternAction :
         intro P
         apply Subtype.ext
         apply Prod.ext
-        · exact congrFun ((orbitAction act A).map_mul g h) P.1.1
+        · have hmul := congrArg
+            (fun e : Equiv.Perm (Orbit act A) => e P.1.1)
+            ((orbitAction act A).map_mul g h)
+          change orbitRelabel act A (g * h) P.1.1 =
+            orbitRelabel act A g (orbitRelabel act A h P.1.1) at hmul
+          exact hmul
         · rfl }
   func _ := 1
 
@@ -184,6 +193,10 @@ noncomputable def patternSymbolFintype
   letI : Fintype (Orbit act A) := orbitFintype act A hA
   letI : Fintype (InjTuple α n) := injTupleFintype n
   classical
+  haveI : Finite ((patternLanguage act A).RelSymbol n) :=
+    Finite.of_injective
+      (fun P : PatternSymbol act A n => P.1)
+      Subtype.val_injective
   exact Fintype.ofFinite _
 
 /-- Every pattern arity is bounded by the size of the original finite vertex
@@ -232,9 +245,17 @@ theorem boundedToAnyPattern_anyPatternToBounded
   rfl
 
 theorem anyPatternToBounded_injective :
-    Function.Injective (anyPatternToBounded act A) :=
-  Function.LeftInverse.injective
-    (boundedToAnyPattern_anyPatternToBounded act A)
+    Function.Injective (anyPatternToBounded act A) := by
+  intro P Q h
+  rcases P with ⟨n, P⟩
+  rcases Q with ⟨m, Q⟩
+  have hk := (Sigma.mk.inj_iff.mp h).1
+  have hnm : n = m := congrArg Fin.val hk
+  subst m
+  have hheq := (Sigma.mk.inj_iff.mp h).2
+  have hPQ : P = Q := eq_of_heq hheq
+  subst Q
+  rfl
 
 /-- The compressed pattern language has finitely many relation symbols in
 total, even though the original language may be infinite. -/

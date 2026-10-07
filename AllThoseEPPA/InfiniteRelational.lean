@@ -603,6 +603,30 @@ def mkProfileEntry {m n : ℕ} (R : L.RelSymbol m)
   symbol := R
   coord := ω
   coord_surjective := hω
+/-- Relabelling a concrete profile entry only relabels its relation symbol. -/
+@[simp] theorem relabelProfileEntry_mkProfileEntry
+    (g : Γ) {m n : ℕ} (R : L.RelSymbol m)
+    (ω : Fin m → Fin n) (hω : Function.Surjective ω) :
+    relabelProfileEntry act g (mkProfileEntry R ω hω) =
+      mkProfileEntry (act.onRel g R) ω hω := by
+  rfl
+
+/-- Membership of a concrete entry transforms naturally with profile
+relabelling. -/
+theorem mkProfileEntry_mem_relabelProfile_iff
+    (g : Γ) {m n : ℕ} (R : L.RelSymbol m)
+    (ω : Fin m → Fin n) (hω : Function.Surjective ω)
+    (X : Profile L n) :
+    mkProfileEntry (act.onRel g R) ω hω ∈ relabelProfile act g X ↔
+      mkProfileEntry R ω hω ∈ X := by
+  change
+    relabelProfileEntry act g⁻¹
+        (mkProfileEntry (act.onRel g R) ω hω) ∈ X ↔
+      mkProfileEntry R ω hω ∈ X
+  have hR : act.onRel g⁻¹ (act.onRel g R) = R := by
+    rw [← Language.Action.onRel_mul]
+    simp
+  rw [relabelProfileEntry_mkProfileEntry, hR]
 
 /-- Decode a pattern-language structure back to the original relational
 language.  This is the paper's U construction. -/
@@ -661,6 +685,70 @@ def decodePatternStructureEmbedding :
     intro n R xs
     rw [Language.Action.onRel_one act R]
     simpa using decode_patternStructure_rel_iff act A R xs
+  map_func := by
+    intro n F xs
+    exact isEmptyElim F
+/-- Decoding is functorial on embeddings.  This is the second half of
+Lemma `lem:functors` in the paper. -/
+noncomputable def decodeEmbedding
+    {β : Type z} {γ : Type t}
+    {C : Structure (patternLanguage act A) β}
+    {D : Structure (patternLanguage act A) γ}
+    (f : Structure.Embedding (patternAction act A) C D) :
+    Structure.Embedding act
+      (decodeStructure act A C) (decodeStructure act A D) where
+  lang := f.lang
+  toFun := f.toFun
+  injective := f.injective
+  map_rel_iff := by
+    intro m R xs
+    constructor
+    · rintro ⟨n, P', ys', ω, hω, hD, hentry, hfactor⟩
+      let P : PatternSymbol act A n := patternPerm act A f.lang⁻¹ P'
+      let ys : Fin n → β := fun j => xs (Function.surjInv hω j)
+      have hys : f.toFun ∘ ys = ys' := by
+        funext j
+        let i : Fin m := Function.surjInv hω j
+        have hωi : ω i = j := Function.surjInv_eq hω j
+        have hf := congrFun hfactor i
+        change f (xs i) = ys' (ω i) at hf
+        simpa [ys, i, hωi] using hf
+      have hP : patternPerm act A f.lang P = P' := by
+        simp [P]
+      have hC : C.rel P ys := by
+        have hmap := f.map_rel_iff P ys
+        apply hmap.mp
+        rw [hP, hys]
+        exact hD
+      have hentryC :
+          mkProfileEntry R ω hω ∈ patternProfile act A P := by
+        have hprof :
+            patternProfile act A P' =
+              relabelProfile act f.lang (patternProfile act A P) := by
+          rw [← hP]
+          exact patternProfile_patternPerm_relabelProfile act A f.lang P
+        rw [hprof] at hentry
+        exact (mkProfileEntry_mem_relabelProfile_iff
+          act f.lang R ω hω (patternProfile act A P)).1 hentry
+      have hfactorC : xs = ys ∘ ω := by
+        funext i
+        apply f.injective
+        have hf := congrFun hfactor i
+        change f (xs i) = ys' (ω i) at hf
+        have hys_i := congrFun hys (ω i)
+        change f (ys (ω i)) = ys' (ω i) at hys_i
+        exact hf.trans hys_i.symm
+      exact ⟨n, P, ys, ω, hω, hC, hentryC, hfactorC⟩
+    · rintro ⟨n, P, ys, ω, hω, hC, hentry, hfactor⟩
+      refine ⟨n, patternPerm act A f.lang P, f.toFun ∘ ys,
+        ω, hω, ?_, ?_, ?_⟩
+      · exact (f.map_rel_iff P ys).2 hC
+      · rw [patternProfile_patternPerm_relabelProfile]
+        exact (mkProfileEntry_mem_relabelProfile_iff
+          act f.lang R ω hω (patternProfile act A P)).2 hentry
+      · funext i
+        change f (xs i) = f (ys (ω i))
+        exact congrArg f.toFun (congrFun hfactor i)
   map_func := by
     intro n F xs
     exact isEmptyElim F

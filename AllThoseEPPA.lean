@@ -1,5 +1,6 @@
 import AllThoseEPPA.Language
 import AllThoseEPPA.Structure
+import AllThoseEPPA.Relabelling
 import AllThoseEPPA.Map
 import AllThoseEPPA.Substructure
 import AllThoseEPPA.PartialIso

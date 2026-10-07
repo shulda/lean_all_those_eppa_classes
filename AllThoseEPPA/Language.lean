@@ -35,6 +35,23 @@ instance {L : Language.{u}} [L.IsRelational] {n : ℕ} :
     IsEmpty (L.FuncSymbol n) :=
   IsRelational.func_isEmpty n
 
+
+/-- A language has unary functions if every function symbol has arity one.
+This is the function-language scope used by the main constructions of the
+paper. -/
+class HasUnaryFunctions (L : Language.{u}) : Prop where
+  arity_eq_one : ∀ {n : ℕ}, L.FuncSymbol n → n = 1
+
+/-- The relational reduct of a language: keep all relation symbols and forget
+all function symbols. -/
+def relationalReduct (L : Language.{u}) : Language.{u} where
+  RelSymbol := L.RelSymbol
+  FuncSymbol := fun _ => Empty
+  relArity_pos := L.relArity_pos
+
+instance (L : Language.{u}) : L.relationalReduct.IsRelational where
+  func_isEmpty := fun _ => inferInstance
+
 /-- A relation symbol bundled together with its arity. -/
 abbrev AnyRelSymbol (L : Language.{u}) := Σ n, L.RelSymbol n
 

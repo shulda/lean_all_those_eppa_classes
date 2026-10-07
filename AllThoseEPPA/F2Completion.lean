@@ -232,10 +232,26 @@ theorem sum_bool_eq_bodd_filter_card
   classical
   induction s using Finset.induction_on with
   | empty =>
-      simp
+      simp [Bool.zero_eq_false]
   | @insert a s ha ih =>
-      cases hfa : f a <;>
-        simp [ha, hfa, ih, Bool.add_eq_xor]
+      cases hfa : f a with
+      | false =>
+          have hfilter :
+              (insert a s).filter (fun i => f i = true) =
+                s.filter (fun i => f i = true) := by
+            simp [Finset.filter_insert, hfa]
+          simpa [Finset.sum_insert, ha, hfa, hfilter,
+            Bool.add_eq_xor] using ih
+      | true =>
+          have hfilter :
+              (insert a s).filter (fun i => f i = true) =
+                insert a (s.filter fun i => f i = true) := by
+            simp [Finset.filter_insert, hfa]
+          have haFilter :
+              a ∉ s.filter (fun i => f i = true) := by
+            simp [ha]
+          simp [Finset.sum_insert, ha, hfa, hfilter,
+            Finset.card_insert, haFilter, ih, Bool.add_eq_xor]
 
 /-- The XOR-sum is `true` exactly when an odd number of summands are
 `true`. -/

@@ -249,5 +249,17 @@ theorem sum_bool_eq_true_iff_filter_card_mod_two
   cases h : Nat.bodd ((s.filter fun i => f i = true).card) <;>
     simp [h]
 
+
+/-- Taking first-occurrence representatives is invariant under an injective
+change of the tuple values. -/
+theorem representatives_comp_injective
+    {β : Type*} [DecidableEq β]
+    (f : α → β) (hf : Function.Injective f)
+    {n : ℕ} (xs : Fin n → α) :
+    representatives (f ∘ xs) = representatives xs := by
+  classical
+  ext i
+  simp [representatives, IsFirstValue, Function.comp_apply, hf.eq_iff]
+
 end F2Completion
 end AllThoseEPPA

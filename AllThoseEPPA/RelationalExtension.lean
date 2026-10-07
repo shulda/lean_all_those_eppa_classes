@@ -541,5 +541,146 @@ noncomputable def witnessVertexEquiv
     witnessVertexEquiv act A p v = extendWitnessVertex act A p v :=
   rfl
 
+
+
+/-- XOR of the valuation bits contributed by the distinct base vertices of a
+witness tuple. -/
+noncomputable def tupleValuationParity
+    {n : ℕ} (R : L.RelSymbol n)
+    (vs : Fin n → WitnessVertex L α) : Bool := by
+  classical
+  exact ∑ i ∈ F2Completion.representatives (WitnessVertex.bases vs),
+    (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs)
+
+/-- The paper's active indices are exactly the first-occurrence
+representatives whose valuation bit is one. -/
+theorem activeIndices_eq_filter_representatives
+    {n : ℕ} (R : L.RelSymbol n)
+    (vs : Fin n → WitnessVertex L α) :
+    WitnessVertex.activeIndices R vs =
+      (F2Completion.representatives (WitnessVertex.bases vs)).filter
+        (fun i =>
+          (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs) = true) := by
+  classical
+  ext i
+  simp [WitnessVertex.activeIndices, F2Completion.representatives,
+    WitnessVertex.IsFirstBase, F2Completion.IsFirstValue,
+    WitnessVertex.bases]
+
+/-- Linear form of the witness relation: compatibility plus XOR-parity one. -/
+theorem relationHolds_iff_tupleValuationParity
+    {n : ℕ} (R : L.RelSymbol n)
+    (vs : Fin n → WitnessVertex L α) :
+    WitnessVertex.RelationHolds R vs ↔
+      WitnessVertex.TupleCompatible vs ∧
+        tupleValuationParity R vs = true := by
+  classical
+  change
+    (WitnessVertex.TupleCompatible vs ∧
+      (WitnessVertex.activeIndices R vs).card % 2 = 1) ↔
+    (WitnessVertex.TupleCompatible vs ∧
+      tupleValuationParity R vs = true)
+  constructor
+  · rintro ⟨hcompat, hodd⟩
+    refine ⟨hcompat, ?_⟩
+    unfold tupleValuationParity
+    apply (F2Completion.sum_bool_eq_true_iff_filter_card_mod_two
+      (F2Completion.representatives (WitnessVertex.bases vs))
+      (fun i =>
+        (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs))).2
+    rw [← activeIndices_eq_filter_representatives R vs]
+    exact hodd
+  · rintro ⟨hcompat, hsum⟩
+    refine ⟨hcompat, ?_⟩
+    have hodd :=
+      (F2Completion.sum_bool_eq_true_iff_filter_card_mod_two
+        (F2Completion.representatives (WitnessVertex.bases vs))
+        (fun i =>
+          (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs))).1
+        (by simpa [tupleValuationParity] using hsum)
+    rw [← activeIndices_eq_filter_representatives R vs] at hodd
+    exact hodd
+
+@[simp] theorem bases_extendWitnessVertex
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (vs : Fin n → WitnessVertex L α) :
+    WitnessVertex.bases (extendWitnessVertex act A p ∘ vs) =
+      baseExtension act A p ∘ WitnessVertex.bases vs := by
+  funext i
+  rfl
+
+/-- Tuple compatibility is preserved and reflected by the affine witness
+permutation. -/
+theorem tupleCompatible_extend_iff
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (vs : Fin n → WitnessVertex L α) :
+    WitnessVertex.TupleCompatible (extendWitnessVertex act A p ∘ vs) ↔
+      WitnessVertex.TupleCompatible vs := by
+  constructor
+  · intro h i j hij
+    have hijTarget :
+        ((extendWitnessVertex act A p ∘ vs) i).base =
+          ((extendWitnessVertex act A p ∘ vs) j).base := by
+      change
+        baseExtension act A p (vs i).base =
+          baseExtension act A p (vs j).base
+      exact congrArg (baseExtension act A p) hij
+    have hext := h i j hijTarget
+    exact (witnessVertexEquiv act A p).injective
+      (by simpa [Function.comp_apply] using hext)
+  · intro h i j hij
+    have hijBase : (vs i).base = (vs j).base := by
+      apply (baseExtension act A p).injective
+      simpa [Function.comp_apply] using hij
+    have hv := h i j hijBase
+    simpa [Function.comp_apply] using
+      congrArg (extendWitnessVertex act A p) hv
+
+/-- The XOR valuation sum is invariant under the affine witness
+transformation. -/
+theorem tupleValuationParity_extend
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n)
+    (vs : Fin n → WitnessVertex L α) :
+    tupleValuationParity (act.onRel p.lang R)
+        (extendWitnessVertex act A p ∘ vs) =
+      tupleValuationParity R vs := by
+  classical
+  unfold tupleValuationParity
+  rw [bases_extendWitnessVertex]
+  rw [F2Completion.representatives_comp_injective
+    (baseExtension act A p) (baseExtension act A p).injective
+    (WitnessVertex.bases vs)]
+  simp_rw [Function.comp_apply]
+  simp_rw [extendWitnessVertex_valuation_relabel act A p]
+  rw [Finset.sum_add_distrib]
+  have hflip :=
+    flipCorrection_totalParity act A p R (WitnessVertex.bases vs)
+  unfold F2Completion.totalParity at hflip
+  have hflip' :
+      (∑ i ∈ F2Completion.representatives (WitnessVertex.bases vs),
+        flipCorrection act A p R (WitnessVertex.bases vs) (vs i).base) =
+        false := by
+    simpa [WitnessVertex.bases] using hflip
+  rw [hflip']
+  simp [Bool.zero_eq_false]
+
+/-- Every relation of the valuation witness is preserved and reflected by the
+affine extension, with the relation symbol relabelled by `p.lang`. -/
+theorem witnessRelation_extend_iff
+    (p : RelPartialAutomorphism act A)
+    {n : ℕ} (R : L.RelSymbol n)
+    (vs : Fin n → WitnessVertex L α) :
+    (witnessStructure (L := L) α).rel (act.onRel p.lang R)
+        (extendWitnessVertex act A p ∘ vs) ↔
+      (witnessStructure (L := L) α).rel R vs := by
+  change
+    WitnessVertex.RelationHolds (act.onRel p.lang R)
+        (extendWitnessVertex act A p ∘ vs) ↔
+      WitnessVertex.RelationHolds R vs
+  rw [relationHolds_iff_tupleValuationParity,
+    relationHolds_iff_tupleValuationParity]
+  rw [tupleCompatible_extend_iff, tupleValuationParity_extend]
+
 end Relational
 end AllThoseEPPA

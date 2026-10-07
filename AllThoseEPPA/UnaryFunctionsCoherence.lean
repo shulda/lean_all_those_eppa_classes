@@ -67,6 +67,28 @@ theorem genericPhysicalValuation_func_image
     simpa [Structure.relabel_func, ← Language.Action.onFunc_mul] using hy
 
 
+/-- Physical witness vertices are determined by their base point and the
+physical signature carried over that base. -/
+theorem PhysicalWitnessVertex.ext_of_signature
+    (w z : PhysicalWitnessVertex act A B₀)
+    (hbase : w.base = z.base)
+    (hsupport : w.valuation.1.support = z.valuation.1.support)
+    (hfunc :
+      ∀ {n : ℕ} (F : L.FuncSymbol n) (a : β),
+        w.valuation.1.func F a = z.valuation.1.func F a) :
+    w = z := by
+  rcases w with ⟨x, s⟩
+  rcases z with ⟨y, t⟩
+  change x = y at hbase
+  subst y
+  apply Sigma.ext rfl
+  apply heq_of_eq
+  apply Subtype.ext
+  apply ValuationSignature.ext
+  · exact hsupport
+  · funext n F a
+    exact hfunc F a
+
 /-- The language equation in an extension square also gives the inverse
 conjugacy relation needed for transporting function symbols. -/
 theorem inverse_language_conjugacy
@@ -159,9 +181,11 @@ theorem genericPhysicalValuation_transport_func_of_extends
   have hpy : h (ψ₀ y) = ψ₀ (p y) :=
     hext.2 y hysrc
   have hpre : e.symm (ψ₀ (p y)) = ψ₀ y := by
-    have hp := congrArg e.symm hpy
-    symm
-    simpa [e] using hp
+    calc
+      e.symm (ψ₀ (p y)) = e.symm (h (ψ₀ y)) :=
+        congrArg e.symm hpy.symm
+      _ = ψ₀ y := by
+        simpa [e] using e.symm_apply_apply (ψ₀ y)
   have hinv :=
     inverse_language_conjugacy act A B₀ ψ₀ p h hext
   have hsourceSymbol :
@@ -240,14 +264,10 @@ theorem genericPhysicalVertex_transport_of_extends
   have hsupport :=
     genericPhysicalValuation_transport_support_of_extends
       act A B₀ ψ₀ p h hext hx
-  rw [Sigma.ext_iff]
-  refine ⟨hbase, ?_⟩
-  cases hbase
-  apply heq_of_eq
-  apply Subtype.ext
-  apply ValuationSignature.ext
+  apply PhysicalWitnessVertex.ext_of_signature act A B₀
+  · exact hbase
   · exact hsupport
-  · funext n F a
+  · intro n F a
     by_cases ha :
         a ∈
           (genericPhysicalValuation act A B₀ ψ₀ (p x)).1.support
@@ -296,7 +316,8 @@ theorem physicalWitnessAutomorphism_extends_generic
       (genericPhysicalEmbedding act A B₀ ψ₀) p
       (physicalWitnessAutomorphism act A B₀ hA h) := by
   constructor
-  · simpa using hext.1
+  · change h.lang * ψ₀.lang = ψ₀.lang * p.lang
+    exact hext.1
   · intro x hx
     change
       PhysicalWitnessVertex.transport act A B₀ h

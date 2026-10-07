@@ -4,7 +4,7 @@ import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Relabelling
-import AllThoseEPPA.PartialIso
+import AllThoseEPPA.EPPA
 
 /-!
 # Compressing an infinite relational language around a finite structure
@@ -88,22 +88,14 @@ def relabelProfileEntry (g : Γ) {n : ℕ}
 @[simp] theorem relabelProfileEntry_inv_apply
     (g : Γ) {n : ℕ} (e : ProfileEntry L n) :
     relabelProfileEntry act g⁻¹ (relabelProfileEntry act g e) = e := by
-  rcases e with ⟨m, R, ω, hω⟩
-  have hR : act.onRel g⁻¹ (act.onRel g R) = R := by
-    rw [← Language.Action.onRel_mul]
-    simp
-  cases hR
-  rfl
+  cases e
+  simp [relabelProfileEntry, ← Language.Action.onRel_mul]
 
 @[simp] theorem relabelProfileEntry_apply_inv
     (g : Γ) {n : ℕ} (e : ProfileEntry L n) :
     relabelProfileEntry act g (relabelProfileEntry act g⁻¹ e) = e := by
-  rcases e with ⟨m, R, ω, hω⟩
-  have hR : act.onRel g (act.onRel g⁻¹ R) = R := by
-    rw [← Language.Action.onRel_mul]
-    simp
-  cases hR
-  rfl
+  cases e
+  simp [relabelProfileEntry, ← Language.Action.onRel_mul]
 
 /-- Relabel a profile by the original language action.  The inverse in the
 membership test matches the convention used by `Structure.relabel`. -/
@@ -121,15 +113,6 @@ theorem relabelProfile_injective
     (g : Γ) {n : ℕ} :
     Function.Injective (relabelProfile act g : Profile L n → Profile L n) :=
   Function.LeftInverse.injective (relabelProfile_inv_apply act g)
-
-/-- The profile named by a pattern symbol transforms equivariantly under the
-pattern-language action. -/
-@[simp] theorem patternProfile_patternPerm_relabelProfile
-    (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
-    patternProfile act A (patternPerm act A g P) =
-      relabelProfile act g (patternProfile act A P) := by
-  ext e
-  rfl
 
 /-- Relabel one orbit element. -/
 def orbitRelabel (g : Γ) : Orbit act A ≃ Orbit act A where
@@ -201,6 +184,15 @@ def patternPerm (g : Γ) {n : ℕ} :
     apply Prod.ext
     · exact (orbitRelabel act A g).right_inv P.1.1
     · rfl
+
+/-- The profile named by a pattern symbol transforms equivariantly under the
+pattern-language action. -/
+@[simp] theorem patternProfile_patternPerm_relabelProfile
+    (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
+    patternProfile act A (patternPerm act A g P) =
+      relabelProfile act g (patternProfile act A P) := by
+  ext e
+  rfl
 
 /-- The finite profile language attached to `A`. -/
 def patternLanguage : Language.{max u v} where
@@ -481,14 +473,6 @@ def patternStructure :
   func := by
     intro n F xs
     exact PEmpty.elim F
-
-/-- Relabelling a pattern symbol relabels the structure whose stored tuple
-names that profile. -/
-@[simp] theorem patternProfile_patternPerm
-    (g : Γ) {n : ℕ} (P : PatternSymbol act A n) :
-    patternProfile act A (patternPerm act A g P) =
-      profile (P.1.1.1.relabel act g) P.1.2.1 :=
-  rfl
 
 /-- Profile equality in a pattern relation is preserved and reflected by a
 partial automorphism of the original structure. -/

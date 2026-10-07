@@ -45,6 +45,7 @@ jobs:
             Mathlib.Data.Fin.Tuple.Basic \
             Mathlib.Data.Fintype.Sort \
             Mathlib.Data.Fintype.Pi \
+            Mathlib.Data.Fintype.Prod \
             Mathlib.Data.Fintype.Sigma \
             Mathlib.Data.Nat.Bits \
             Mathlib.Logic.Equiv.Fintype \

@@ -122,12 +122,15 @@ abbrev ValuationFunction (x : β) :=
 /-- Valuation functions form a finite type over a finite base witness. -/
 theorem valuationFunction_finite [Finite β] (x : β) :
     Finite (ValuationFunction act A B₀ ψ x) := by
+  classical
   letI : Finite (BadIrreducible act A B₀ ψ) :=
     BadIrreducible.finite act A B₀ ψ
-  letI : Finite (BadAt act A B₀ ψ x) := inferInstance
+  letI : Fintype (BadAt act A B₀ ψ x) :=
+    Fintype.ofFinite _
   letI (I : BadAt act A B₀ ψ x) :
-      Finite (BadLabel act A B₀ ψ I.1) := inferInstance
-  infer_instance
+      Fintype (BadLabel act A B₀ ψ I.1) :=
+    Fintype.ofFinite _
+  exact Finite.of_fintype _
 
 /-- A base point together with one of its valuation functions. -/
 abbrev ValuationPoint :=
@@ -262,12 +265,16 @@ abbrev ValuationStructure (x : β) :=
 witness is finite. -/
 theorem valuationStructure_finite [Finite β] (x : β) :
     Finite (ValuationStructure act A B₀ ψ x) := by
-  letI : Finite (B₀.closureAtSet x) := inferInstance
+  classical
+  letI : Fintype (B₀.closureAtSet x) :=
+    Fintype.ofFinite _
   letI (y : B₀.closureAtSet x) :
       Finite (ValuationFunction act A B₀ ψ y.1) :=
     valuationFunction_finite act A B₀ ψ y.1
-  letI : Finite (ValuationAssignment act A B₀ ψ x) := inferInstance
-  infer_instance
+  letI (y : B₀.closureAtSet x) :
+      Fintype (ValuationFunction act A B₀ ψ y.1) :=
+    Fintype.ofFinite _
+  exact Finite.of_fintype _
 
 /-- Inclusion of a smaller one-point closure into a larger one. -/
 def closureInclusion
@@ -364,9 +371,13 @@ noncomputable def witnessStructure :
 /-- The faithful witness has finite carrier over a finite base witness. -/
 theorem witnessVertex_finite [Finite β] :
     Finite (WitnessVertex act A B₀ ψ) := by
+  classical
+  letI : Fintype β := Fintype.ofFinite β
   letI (x : β) : Finite (ValuationStructure act A B₀ ψ x) :=
     valuationStructure_finite act A B₀ ψ x
-  exact Sigma.finite
+  letI (x : β) : Fintype (ValuationStructure act A B₀ ψ x) :=
+    Fintype.ofFinite _
+  exact Finite.of_fintype _
 
 end UnaryWitness
 
@@ -418,10 +429,10 @@ theorem canonicalValuationStructure_restrict
       canonicalValuationStructure act A B₀ ψ y hyA := by
   apply Subtype.ext
   funext z
-  change
-    canonicalValuationFunction act A B₀ ψ z.1 _ =
-      canonicalValuationFunction act A B₀ ψ z.1 _
-  apply canonicalValuationFunction_proof_irrel act A B₀ ψ
+  apply funext
+  intro I
+  apply Subtype.ext
+  rfl
 
 section UnaryProjection
 
@@ -435,7 +446,7 @@ noncomputable def projection :
   toFun := fun w => WitnessVertex.base act A B₀ ψ w
   map_rel := by
     intro n R xs hrel
-    simpa using hrel.1
+    simpa [Function.comp_def] using hrel.1
   map_func := by
     intro n F xs
     have hxs :
@@ -449,7 +460,8 @@ noncomputable def projection :
         (witnessStructure act A B₀ ψ).func F
           (fun _ => xs (UnaryFunctions.unaryIndex F)) at hz
     rcases hz with ⟨b, hb, rfl⟩
-    simpa using hb
+    simpa [Function.comp_def, functionValueVertex,
+      WitnessVertex.base] using hb
 
 /-- Projection is literally the first coordinate. -/
 @[simp] theorem projection_apply

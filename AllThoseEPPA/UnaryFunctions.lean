@@ -1487,6 +1487,124 @@ theorem PhysicalValuation.transport_injective
   exact congrArg Subtype.val hst
 
 
+
+/-- One-point closure is equivariant under conjugation by a base
+automorphism. -/
+theorem ValuationSignature.transport_closureAtSet
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : ValuationSignature (L := L) x)
+    (y : β) :
+    (s.transport act B₀ h).closureAtSet (h y) =
+      h '' s.closureAtSet y := by
+  let e := automorphismEquiv act h
+  let t := s.transport act B₀ h
+  apply Set.Subset.antisymm
+  · apply t.closureSet_minimal
+    · intro n F a ha b hb
+      rcases ha with ⟨d, hd, rfl⟩
+      have hpre : e.symm (h d) = d := by
+        exact e.symm_apply_apply d
+      rw [ValuationSignature.transport_func] at hb
+      rw [hpre] at hb
+      rcases hb with ⟨c, hc, rfl⟩
+      refine ⟨c, ?_, rfl⟩
+      exact
+        (s.isClosed_closureSet {y})
+          (act.onFunc h.lang⁻¹ F) hd hc
+    · intro a ha
+      have hay : a = h y := by
+        simpa using ha
+      subst a
+      exact ⟨y, s.mem_closureAtSet y, rfl⟩
+  · rintro b ⟨c, hc, rfl⟩
+    let T : Set β :=
+      {d | h d ∈ t.closureAtSet (h y)}
+    have hTclosed : s.IsClosed T := by
+      intro n F a ha b hb
+      have hpre : e.symm (h a) = a :=
+        e.symm_apply_apply a
+      have hphys :
+          h b ∈ t.func (act.onFunc h.lang F) (h a) := by
+        rw [ValuationSignature.transport_func]
+        rw [hpre]
+        have hsym :
+            act.onFunc h.lang⁻¹
+                (act.onFunc h.lang F) = F := by
+          rw [← Language.Action.onFunc_mul]
+          simp
+        rw [hsym]
+        exact ⟨b, hb, rfl⟩
+      exact
+        (t.isClosed_closureSet {h y})
+          (act.onFunc h.lang F) ha hphys
+    have hyT : y ∈ T :=
+      t.mem_closureAtSet (h y)
+    have hsingle : ({y} : Set β) ⊆ T := by
+      intro a ha
+      have hay : a = y := by simpa using ha
+      subst a
+      exact hyT
+    exact (s.closureSet_minimal hTclosed hsingle) hc
+
+/-- Transport commutes with restricting a physical signature to a supported
+point. -/
+theorem ValuationSignature.transport_restrict
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : ValuationSignature (L := L) x)
+    (y : β) (hy : y ∈ s.support) :
+    (s.restrict y hy).transport act B₀ h =
+      (s.transport act B₀ h).restrict (h y)
+        ⟨y, hy, rfl⟩ := by
+  let e := automorphismEquiv act h
+  apply ValuationSignature.ext
+  · rw [ValuationSignature.transport_support,
+      ValuationSignature.restrict_support,
+      ValuationSignature.restrict_support,
+      ValuationSignature.transport_closureAtSet]
+  · funext n F a
+    by_cases ha :
+        a ∈ (s.transport act B₀ h).closureAtSet (h y)
+    · have hpre :
+          e.symm a ∈ s.closureAtSet y := by
+        rw [ValuationSignature.transport_closureAtSet] at ha
+        rcases ha with ⟨d, hd, hda⟩
+        have hed : e.symm a = d := by
+          apply e.injective
+          simpa [e, hda]
+        simpa [hed] using hd
+      rw [ValuationSignature.restrict_func_of_mem
+        (s.transport act B₀ h) (h y) ⟨y, hy, rfl⟩ F ha]
+      rw [ValuationSignature.transport_func]
+      rw [ValuationSignature.restrict_func_of_mem
+        s y hy (act.onFunc h.lang⁻¹ F) hpre]
+      rfl
+    · have hpre :
+          e.symm a ∉ s.closureAtSet y := by
+        intro hmem
+        apply ha
+        rw [ValuationSignature.transport_closureAtSet]
+        refine ⟨e.symm a, hmem, ?_⟩
+        exact e.apply_symm_apply a
+      rw [ValuationSignature.restrict_func_of_not_mem
+        (s.transport act B₀ h) (h y) ⟨y, hy, rfl⟩ F ha]
+      rw [ValuationSignature.transport_func]
+      rw [ValuationSignature.restrict_func_of_not_mem
+        s y hy (act.onFunc h.lang⁻¹ F) hpre]
+      simp
+
+/-- The same commutation law descends to realised physical valuations. -/
+theorem PhysicalValuation.transport_restrict
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (s : PhysicalValuation act A B₀ x)
+    (y : β) (hy : y ∈ s.1.support) :
+    PhysicalValuation.transport act A B₀ h
+        (PhysicalValuation.restrict act A B₀ s y hy) =
+      PhysicalValuation.restrict act A B₀
+        (PhysicalValuation.transport act A B₀ h s)
+        (h y) ⟨y, hy, rfl⟩ := by
+  apply Subtype.ext
+  exact ValuationSignature.transport_restrict act B₀ h s.1 y hy
+
 /-- Transport a whole physical witness vertex along a base automorphism. -/
 noncomputable def PhysicalWitnessVertex.transport
     (h : Structure.Automorphism act.relationalReduct B₀)

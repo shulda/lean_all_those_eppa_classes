@@ -563,10 +563,24 @@ theorem activeIndices_eq_filter_representatives
           (vs i).valuation ⟨n, R⟩ (WitnessVertex.bases vs) = true) := by
   classical
   ext i
-  simp only [WitnessVertex.activeIndices, F2Completion.representatives,
-    Finset.mem_filter, Finset.mem_univ, true_and,
-    WitnessVertex.IsFirstBase, F2Completion.IsFirstValue,
-    WitnessVertex.bases]
+  constructor
+  · intro hi
+    have hi' := Finset.mem_filter.mp hi
+    rcases hi'.2 with ⟨hfirst, hval⟩
+    apply Finset.mem_filter.mpr
+    constructor
+    · apply Finset.mem_filter.mpr
+      refine ⟨Finset.mem_univ _, ?_⟩
+      simpa [WitnessVertex.IsFirstBase, F2Completion.IsFirstValue,
+        WitnessVertex.bases] using hfirst
+    · exact hval
+  · intro hi
+    have hi' := Finset.mem_filter.mp hi
+    have hrep := Finset.mem_filter.mp hi'.1
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_univ _, ?_, hi'.2⟩
+    simpa [WitnessVertex.IsFirstBase, F2Completion.IsFirstValue,
+      WitnessVertex.bases] using hrep.2
 
 /-- Linear form of the witness relation: compatibility plus XOR-parity one. -/
 theorem relationHolds_iff_tupleValuationParity

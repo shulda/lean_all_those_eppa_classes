@@ -855,7 +855,8 @@ noncomputable def decodedWitnessEmbedding
     (ψ : Structure.Embedding (patternAction act A)
       (patternStructure act A) C) :
     (decodedWitnessEmbedding act A ψ).lang = ψ.lang := by
-  simp [decodedWitnessEmbedding, Structure.Embedding.comp]
+  change ψ.lang * 1 = ψ.lang
+  simp
 
 /-- A coherent extension for T(A) decodes to a coherent extension for A.
 All language and vertex components are preserved literally. -/

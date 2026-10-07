@@ -872,6 +872,101 @@ theorem Valuation.physicalSignature_transport_support
           v.orbit v.center z, ?_⟩
     simp
 
+
+/-- Abstract valuation transport also gives exactly the conjugated physical
+unary-function values. -/
+theorem Valuation.physicalFunc_transport
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    {x : β} (v : Valuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n) (a : β) :
+    Valuation.physicalFunc act A B₀
+        (Valuation.transport act A B₀ h v) F a =
+      h '' Valuation.physicalFunc act A B₀ v
+        (act.onFunc h.lang⁻¹ F)
+        ((automorphismEquiv act h).symm a) := by
+  classical
+  let e := automorphismEquiv act h
+  ext b
+  constructor
+  · intro hb
+    rcases hb with ⟨z, hza, y, hy, hby⟩
+    let z₀ : v.orbit.1.closureAtSet v.center :=
+      relabelClosureToOriginal act A h.lang v.orbit v.center z
+    have hza₀ : v.toFun z₀ = e.symm a := by
+      apply e.injective
+      change h (v.toFun z₀) = h (e.symm a)
+      rw [e.apply_symm_apply]
+      exact hza
+    have hy₀ :
+        y ∈ v.orbit.1.func (act.onFunc h.lang⁻¹ F)
+          (fun _ => z₀.1) := by
+      simpa [z₀, Structure.relabel_func] using hy
+    have hycl :
+        y ∈ v.orbit.1.closureAtSet v.center :=
+      Valuation.func_mem_closure_of_mem act A B₀ v z₀
+        (act.onFunc h.lang⁻¹ F) hy₀
+    let c₀ : β := v.toFun ⟨y, hycl⟩
+    refine ⟨c₀, ?_, ?_⟩
+    · refine ⟨z₀, hza₀, y, hy₀, ?_⟩
+      rfl
+    · rw [hby]
+      change
+        h c₀ =
+          h
+            (v.toFun
+              (relabelClosureToOriginal act A h.lang
+                v.orbit v.center
+                ⟨y,
+                  Valuation.func_mem_closure_of_mem act A B₀
+                    (Valuation.transport act A B₀ h v) z F hy⟩))
+      apply congrArg h
+      apply congrArg v.toFun
+      apply Subtype.ext
+      rfl
+  · intro hb
+    rcases hb with ⟨c₀, hc₀, hcb⟩
+    rcases hc₀ with ⟨z₀, hza₀, y, hy₀, hcy⟩
+    let z :=
+      originalClosureToRelabel act A h.lang v.orbit v.center z₀
+    have hza :
+        h
+            (v.toFun
+              (relabelClosureToOriginal act A h.lang
+                v.orbit v.center z)) = a := by
+      rw [show
+        relabelClosureToOriginal act A h.lang
+            v.orbit v.center z = z₀ by
+          simp [z]]
+      change e (v.toFun z₀) = a
+      rw [hza₀]
+      exact e.apply_symm_apply a
+    have hy :
+        y ∈ (v.orbit.1.relabel act h.lang).func F
+          (fun _ => z.1) := by
+      simpa [z, Structure.relabel_func] using hy₀
+    refine ⟨z, hza, y, hy, ?_⟩
+    calc
+      b = h c₀ := hcb.symm
+      _ =
+          h
+            (v.toFun
+              ⟨y,
+                Valuation.func_mem_closure_of_mem act A B₀ v z₀
+                  (act.onFunc h.lang⁻¹ F) hy₀⟩) :=
+        congrArg h hcy
+      _ =
+          h
+            (v.toFun
+              (relabelClosureToOriginal act A h.lang
+                v.orbit v.center
+                ⟨y,
+                  Valuation.func_mem_closure_of_mem act A B₀
+                    (Valuation.transport act A B₀ h v) z F hy⟩)) := by
+        apply congrArg h
+        apply congrArg v.toFun
+        apply Subtype.ext
+        rfl
+
 end Transport
 
 end PhysicalValuations

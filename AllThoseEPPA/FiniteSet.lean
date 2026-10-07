@@ -52,6 +52,26 @@ theorem orderedExtension_apply_of_not_mem (p : PartialEquiv α α) {x : α}
   simp [orderedExtension, Equiv.subtypeCongr, hx]
 
 
+/-- The canonical total extension sends the source of a partial equivalence
+exactly onto its target. -/
+theorem orderedExtension_mem_target_iff (p : PartialEquiv α α) (x : α) :
+    orderedExtension p x ∈ p.target ↔ x ∈ p.source := by
+  classical
+  by_cases hx : x ∈ p.source
+  · constructor
+    · intro _
+      exact hx
+    · intro _
+      rw [orderedExtension_apply_of_mem p hx]
+      exact p.map_source hx
+  · constructor
+    · intro ht
+      rw [orderedExtension_apply_of_not_mem p hx] at ht
+      exact ((orderedComplementOrderIso p ⟨x, hx⟩).property ht).elim
+    · intro hs
+      exact (hx hs).elim
+
+
 /-- The order-preserving extension is coherent under composition whenever the
 range of the first partial equivalence is exactly the domain of the second. -/
 theorem orderedExtension_trans' (p q : PartialEquiv α α)

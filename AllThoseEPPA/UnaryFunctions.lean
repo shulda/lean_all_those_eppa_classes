@@ -1838,14 +1838,19 @@ theorem physicalFunctionValueVertex_transport
         (PhysicalWitnessVertex.transport act A B₀ h w)
         (act.onFunc h.lang F) (h y) hy' := by
   rw [physicalWitnessEquiv_apply]
-  apply Sigma.ext rfl
-  apply heq_of_eq
   change
-    PhysicalValuation.transport act A B₀ h
-        (PhysicalValuation.restrict act A B₀ w.valuation y _) =
+    (⟨h y,
+        PhysicalValuation.transport act A B₀ h
+          (PhysicalValuation.restrict act A B₀ w.valuation y
+            (PhysicalWitnessVertex.funcValue_mem_support
+              act A B₀ w F hy))⟩ :
+      PhysicalWitnessVertex act A B₀) =
+    ⟨h y,
       PhysicalValuation.restrict act A B₀
         (PhysicalValuation.transport act A B₀ h w.valuation)
-        (h y) _
+        (h y) _⟩
+  apply Sigma.ext rfl
+  apply heq_of_eq
   exact
     PhysicalValuation.transport_restrict
       act A B₀ h w.valuation y
@@ -1888,9 +1893,16 @@ theorem physicalWitnessFunction_transport
         act A B₀ (act.onFunc h.lang F)
         (physicalWitnessEquiv act A B₀ hA h ∘ ws) _).2
     refine ⟨h y, ?_, ?_⟩
-    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
-        using hyT
-    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
+    · have hidx :
+          unaryIndex (act.onFunc h.lang F) = unaryIndex F :=
+        unaryIndex_onFunc (act := act) h.lang F
+      rw [hidx]
+      change
+        h y ∈
+          (PhysicalWitnessVertex.transport act A B₀ h w).valuation.1.func
+            (act.onFunc h.lang F) (h w.base)
+      exact hyT
+    · simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
         using
           (physicalFunctionValueVertex_transport
             act A B₀ hA h w F y hy hyT)
@@ -1900,10 +1912,14 @@ theorem physicalWitnessFunction_transport
           act A B₀ (act.onFunc h.lang F)
           (physicalWitnessEquiv act A B₀ hA h ∘ ws) z).1 hz with
       ⟨y', hy', rfl⟩
+    have hidx :
+        unaryIndex (act.onFunc h.lang F) = unaryIndex F :=
+      unaryIndex_onFunc (act := act) h.lang F
+    rw [hidx] at hy'
     have hyT :
         y' ∈ wt.valuation.1.func
           (act.onFunc h.lang F) (h w.base) := by
-      simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply, unaryIndex_onFunc]
+      simpa [w, wt, Function.comp_def, physicalWitnessEquiv_apply]
         using hy'
     rw [PhysicalWitnessVertex.transport_center_func] at hyT
     rcases hyT with ⟨y, hy, hyy'⟩

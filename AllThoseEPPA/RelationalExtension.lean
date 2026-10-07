@@ -314,6 +314,78 @@ noncomputable def flipCorrection
   F2Completion.evenCompletion_of_mem p.source xs
     (sourceCorrection act A p R xs) hx
 
+
+/-- Completed flip corrections add under composition.  This is the central
+affine coherence identity. -/
+theorem flipCorrection_comp
+    (p q : RelPartialAutomorphism act A)
+    (htg : p.target = q.source)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → α) (x : α) :
+    flipCorrection act A (q.comp p htg) R xs x =
+      flipCorrection act A p R xs x +
+        flipCorrection act A q (act.onRel p.lang R)
+          (baseExtension act A p ∘ xs) (baseExtension act A p x) := by
+  classical
+  change
+    F2Completion.evenCompletion p.source xs
+        (sourceCorrection act A (q.comp p htg) R xs) x =
+      F2Completion.evenCompletion p.source xs
+          (sourceCorrection act A p R xs) x +
+        F2Completion.evenCompletion q.source
+          (baseExtension act A p ∘ xs)
+          (sourceCorrection act A q (act.onRel p.lang R)
+            (baseExtension act A p ∘ xs))
+          (baseExtension act A p x)
+  have hDE :
+      ∀ y, y ∈ p.source ↔ baseExtension act A p y ∈ q.source :=
+    fun y => (baseExtension_mem_second_source_iff act A p q htg y).symm
+  have hc :
+      ∀ y, y ∈ p.source →
+        sourceCorrection act A (q.comp p htg) R xs y =
+          sourceCorrection act A p R xs y +
+            sourceCorrection act A q (act.onRel p.lang R)
+              (baseExtension act A p ∘ xs)
+              (baseExtension act A p y) := by
+    intro y hy
+    exact sourceCorrection_comp_of_mem act A p q htg R xs hy
+  calc
+    _ =
+        F2Completion.evenCompletion p.source xs
+          (fun y =>
+            sourceCorrection act A p R xs y +
+              sourceCorrection act A q (act.onRel p.lang R)
+                (baseExtension act A p ∘ xs)
+                (baseExtension act A p y)) x := by
+          exact F2Completion.evenCompletion_congr_source
+            p.source xs
+            (sourceCorrection act A (q.comp p htg) R xs)
+            (fun y =>
+              sourceCorrection act A p R xs y +
+                sourceCorrection act A q (act.onRel p.lang R)
+                  (baseExtension act A p ∘ xs)
+                  (baseExtension act A p y))
+            hc x
+    _ =
+        F2Completion.evenCompletion p.source xs
+            (sourceCorrection act A p R xs) x +
+          F2Completion.evenCompletion p.source xs
+            (fun y =>
+              sourceCorrection act A q (act.onRel p.lang R)
+                (baseExtension act A p ∘ xs)
+                (baseExtension act A p y)) x := by
+          exact F2Completion.evenCompletion_add
+            p.source xs
+            (sourceCorrection act A p R xs)
+            (fun y =>
+              sourceCorrection act A q (act.onRel p.lang R)
+                (baseExtension act A p ∘ xs)
+                (baseExtension act A p y)) x
+    _ = _ := by
+      rw [← F2Completion.evenCompletion_equivariant
+        (baseExtension act A p) p.source q.source hDE xs
+        (sourceCorrection act A q (act.onRel p.lang R)
+          (baseExtension act A p ∘ xs)) x]
+
 /-- The completed flip vector has even total parity on the distinct base
 vertices of every tuple. -/
 theorem flipCorrection_totalParity

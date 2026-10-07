@@ -731,6 +731,11 @@ noncomputable def Valuation.transport
     have hh :=
       h.toPartialIsomorphism.map_rel_iff S
         (fun i => v.toFun (oldxs i)) hall
+    change
+      B₀.rel (act.relationalReduct.onRel h.lang S)
+          (h.toPartialIsomorphism.toPartialEquiv ∘
+            fun i => v.toFun (oldxs i)) ↔
+        B₀.rel S (fun i => v.toFun (oldxs i)) at hh
     have hsym :
         act.relationalReduct.onRel h.lang S = R := by
       change act.onRel h.lang S = R

@@ -811,6 +811,81 @@ theorem Valuation.physicalSignature_restrict_support
     exact hb.symm
 
 
+/-- On the smaller physical closure, abstract restriction leaves physical
+function values unchanged; outside that closure it has no values. -/
+theorem Valuation.physicalFunc_restrict
+    {x : β} (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center)
+    {n : ℕ} (F : L.FuncSymbol n) (a : β) :
+    Valuation.physicalFunc act A B₀
+        (Valuation.restrict act A B₀ v y hy) F a =
+      if a ∈
+          (Valuation.physicalSignature act A B₀ v).closureAtSet
+            (v.toFun ⟨y, hy⟩)
+      then Valuation.physicalFunc act A B₀ v F a
+      else ∅ := by
+  classical
+  let vr := Valuation.restrict act A B₀ v y hy
+  by_cases ha :
+      a ∈
+        (Valuation.physicalSignature act A B₀ v).closureAtSet
+          (v.toFun ⟨y, hy⟩)
+  · simp [ha]
+    have haimg :
+        a ∈ Valuation.imageClosure act A B₀ v y hy := by
+      rw [← Valuation.physicalSignature_closureAt_image
+        act A B₀ v y hy]
+      exact ha
+    rcases haimg with ⟨z, hza⟩
+    let z₀ : v.orbit.1.closureAtSet v.center :=
+      ⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩
+    have hzvr : vr.toFun z = a := by
+      simpa [vr, z₀, Valuation.restrict] using hza.symm
+    have hzv : v.toFun z₀ = a := by
+      exact hza.symm
+    ext b
+    constructor
+    · intro hb
+      have hb' :
+          b ∈ Valuation.physicalFunc act A B₀ vr F (vr.toFun z) := by
+        rw [hzvr]
+        exact hb
+      rcases
+          (Valuation.mem_physicalFunc_at_image_iff
+            act A B₀ vr z F b).1 hb' with
+        ⟨t, ht, hbt⟩
+      apply
+        (Valuation.mem_physicalFunc_at_image_iff
+          act A B₀ v z₀ F b).2
+      refine ⟨t, ?_, ?_⟩
+      · simpa [vr, Valuation.restrict] using ht
+      · simpa [vr, z₀, Valuation.restrict] using hbt
+    · intro hb
+      have hb' :
+          b ∈ Valuation.physicalFunc act A B₀ v F (v.toFun z₀) := by
+        rw [hzv]
+        exact hb
+      rcases
+          (Valuation.mem_physicalFunc_at_image_iff
+            act A B₀ v z₀ F b).1 hb' with
+        ⟨t, ht, hbt⟩
+      apply
+        (Valuation.mem_physicalFunc_at_image_iff
+          act A B₀ vr z F b).2
+      refine ⟨t, ?_, ?_⟩
+      · simpa [vr, Valuation.restrict] using ht
+      · simpa [vr, z₀, Valuation.restrict] using hbt
+  · simp [ha]
+    apply Set.eq_empty_iff_forall_not_mem.mpr
+    intro b hb
+    rcases hb with ⟨z, hza, t, ht, hbt⟩
+    apply ha
+    rw [Valuation.physicalSignature_closureAt_image
+      act A B₀ v y hy]
+    refine ⟨z, ?_⟩
+    simpa [vr, Valuation.restrict] using hza.symm
+
+
 section Transport
 
 /-- The underlying vertex permutation of a total automorphism. -/

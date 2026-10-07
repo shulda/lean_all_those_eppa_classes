@@ -688,6 +688,40 @@ def relabelClosureToOriginal
     (relabelClosureToOriginal act A g C y z).1 = z.1 :=
   rfl
 
+
+/-- The inverse change of subtype proof: view a point of the original
+one-point closure as a point of the relabelled one-point closure. -/
+def originalClosureToRelabel
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : C.1.closureAtSet y) :
+    (orbitRelabel act A g C).1.closureAtSet y :=
+  ⟨z.1, by
+    change z.1 ∈ (C.1.relabel act g).closureAtSet y
+    rw [closureAtSet_relabel act g C.1 y]
+    exact z.2⟩
+
+@[simp] theorem originalClosureToRelabel_val
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : C.1.closureAtSet y) :
+    (originalClosureToRelabel act A g C y z).1 = z.1 :=
+  rfl
+
+@[simp] theorem relabelClosureToOriginal_originalClosureToRelabel
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : C.1.closureAtSet y) :
+    relabelClosureToOriginal act A g C y
+        (originalClosureToRelabel act A g C y z) = z := by
+  apply Subtype.ext
+  rfl
+
+@[simp] theorem originalClosureToRelabel_relabelClosureToOriginal
+    (g : Γ) (C : Orbit act A) (y : α)
+    (z : (orbitRelabel act A g C).1.closureAtSet y) :
+    originalClosureToRelabel act A g C y
+        (relabelClosureToOriginal act A g C y z) = z := by
+  apply Subtype.ext
+  rfl
+
 /-- Transport an abstract finite valuation presentation along a total
 automorphism of the relational base witness.  The language component is
 absorbed by relabelling the abstract orbit structure. -/

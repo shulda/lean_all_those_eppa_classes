@@ -754,5 +754,84 @@ noncomputable def decodeEmbedding
     intro n F xs
     exact isEmptyElim F
 
+
+/-- A total automorphism of a pattern structure, viewed as an embedding of
+that structure into itself. -/
+def automorphismEmbedding
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (g : Structure.Automorphism (patternAction act A) C) :
+    Structure.Embedding (patternAction act A) C C where
+  lang := g.lang
+  toFun := g
+  injective := by
+    intro x y hxy
+    have hx : x ∈ g.toPartialIsomorphism.source := by
+      rw [g.source_eq_univ]
+      exact Set.mem_univ x
+    have hy : y ∈ g.toPartialIsomorphism.source := by
+      rw [g.source_eq_univ]
+      exact Set.mem_univ y
+    exact g.toPartialIsomorphism.toPartialEquiv.injOn hx hy hxy
+  map_rel_iff := by
+    intro n P xs
+    have hxs : ∀ i, xs i ∈ g.toPartialIsomorphism.source := by
+      intro i
+      rw [g.source_eq_univ]
+      exact Set.mem_univ _
+    exact g.toPartialIsomorphism.map_rel_iff P xs hxs
+  map_func := by
+    intro n F xs
+    exact PEmpty.elim F
+
+/-- Decoding a total pattern automorphism gives an automorphism of the
+decoded original-language structure, with exactly the same language and
+vertex components. -/
+noncomputable def decodeAutomorphism
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (g : Structure.Automorphism (patternAction act A) C) :
+    Structure.Automorphism act (decodeStructure act A C) where
+  toPartialIsomorphism :=
+    { lang := g.lang
+      toPartialEquiv := g.toPartialIsomorphism.toPartialEquiv
+      source_closed := by
+        intro n F xs hxs
+        exact isEmptyElim F
+      target_closed := by
+        intro n F xs hxs
+        exact isEmptyElim F
+      map_rel_iff := by
+        intro n R xs hxs
+        exact
+          (decodeEmbedding act A (automorphismEmbedding act A g)).map_rel_iff
+            R xs
+      map_func := by
+        intro n F xs hxs
+        exact isEmptyElim F }
+  source_eq_univ := g.source_eq_univ
+  target_eq_univ := g.target_eq_univ
+
+@[simp] theorem decodeAutomorphism_lang
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (g : Structure.Automorphism (patternAction act A) C) :
+    (decodeAutomorphism act A g).lang = g.lang :=
+  rfl
+
+@[simp] theorem decodeAutomorphism_apply
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (g : Structure.Automorphism (patternAction act A) C) (x : β) :
+    decodeAutomorphism act A g x = g x :=
+  rfl
+
+/-- Decoding commutes with composition of total automorphisms. -/
+theorem decodeAutomorphism_comp
+    {β : Type z} {C : Structure (patternLanguage act A) β}
+    (g h : Structure.Automorphism (patternAction act A) C) :
+    decodeAutomorphism act A (g.comp h) =
+      (decodeAutomorphism act A g).comp (decodeAutomorphism act A h) := by
+  apply Structure.Automorphism.ext_of_lang_apply
+  · rfl
+  · intro x
+    rfl
+
 end InfiniteRelational
 end AllThoseEPPA

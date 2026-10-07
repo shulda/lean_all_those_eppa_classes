@@ -97,6 +97,20 @@ theorem evenCompletion_of_not_mem
   classical
   simp [evenCompletion, hx, h]
 
+
+/-- If the tuple has no value outside the source, completion is zero away from
+the source. -/
+theorem evenCompletion_eq_false_of_not_mem_of_forall_mem
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (c : α → Bool) {x : α} (hx : x ∉ D)
+    (hall : ∀ i, xs i ∈ D) :
+    evenCompletion D xs c x = false := by
+  classical
+  have hout : ¬ ∃ i, xs i ∉ D := by
+    rintro ⟨i, hi⟩
+    exact hi (hall i)
+  simp [evenCompletion, hx, hout]
+
 theorem sourceParity_add
     (D : Set α) {n : ℕ} (xs : Fin n → α)
     (c₁ c₂ : α → Bool) :
@@ -381,13 +395,17 @@ theorem evenCompletion_equivariant
       rw [sourceParity_equivariant σ D E hDE xs c]
       rw [hidx]
       simp [Function.comp_apply, σ.injective.eq_iff]
-    · have houtE : ¬ ∃ i, (σ ∘ xs) i ∉ E := by
-        rintro ⟨i, hi⟩
-        apply hout
-        refine ⟨i, ?_⟩
-        intro hD
-        exact hi ((hDE (xs i)).1 hD)
-      simp [evenCompletion, hx, hσx, hout, houtE]
+    · have hallD : ∀ i, xs i ∈ D := by
+        intro i
+        by_contra hi
+        exact hout ⟨i, hi⟩
+      have hallE : ∀ i, (σ ∘ xs) i ∈ E := by
+        intro i
+        exact (hDE (xs i)).1 (hallD i)
+      rw [evenCompletion_eq_false_of_not_mem_of_forall_mem
+        E (σ ∘ xs) c hσx hallE]
+      rw [evenCompletion_eq_false_of_not_mem_of_forall_mem
+        D xs (fun y => c (σ y)) hx hallD]
 
 end F2Completion
 end AllThoseEPPA

@@ -5,6 +5,7 @@ import Mathlib.Data.Fintype.Sigma
 import Mathlib.Data.Set.Finite.Basic
 import AllThoseEPPA.Relabelling
 import AllThoseEPPA.EPPA
+import AllThoseEPPA.RelationalExtension
 
 /-!
 # Compressing an infinite relational language around a finite structure
@@ -507,6 +508,35 @@ theorem liftPartialAutomorphism_equivalent
       (liftPartialAutomorphism act A p)
       (liftPartialAutomorphism act A q) :=
   hpq
+
+
+/-- Lifting partial automorphisms to the pattern structure preserves coherent
+triples verbatim: the language component and the underlying partial
+equivalence are unchanged. -/
+theorem liftPartialAutomorphism_coherentTriple
+    {p q r : Structure.PartialAutomorphism act A}
+    (h : Structure.PartialIsomorphism.CoherentTriple p q r) :
+    Structure.PartialIsomorphism.CoherentTriple
+      (liftPartialAutomorphism act A p)
+      (liftPartialAutomorphism act A q)
+      (liftPartialAutomorphism act A r) := by
+  rcases h with ⟨htg, hr⟩
+  refine ⟨htg, ?_⟩
+  exact hr
+
+/-- The finite pattern encoding of A has a finite coherent EPPA-witness by
+the already formalized finite-language relational construction. -/
+theorem patternStructure_hasCoherentEPPA
+    (hA : A.HasFiniteRelabelOrbit act) :
+    ∃ ψ : Structure.Embedding (patternAction act A)
+        (patternStructure act A)
+        (Relational.witnessStructure (L := patternLanguage act A) α),
+      Structure.IsCoherentEPPAWitness (patternAction act A) ψ := by
+  letI : Finite (patternLanguage act A).AnyRelSymbol :=
+    patternAnyRelFinite act A hA
+  exact
+    Relational.finiteRelationalStructuresHaveCoherentEPPA
+      (act := patternAction act A) (patternStructure act A)
 
 end InfiniteRelational
 end AllThoseEPPA

@@ -187,8 +187,7 @@ theorem sourceCorrection_eq_of_equivalent
     have hbase := baseExtension_eq_of_equivalent act A hpq
     rw [hpq.1, hpx, hbase]
   · have hxq : x ∉ q.source := by
-      intro h
-      exact hx (hs ▸ h)
+      simpa [hs] using hx
     rw [sourceCorrection_of_not_mem act A p R xs hx]
     rw [sourceCorrection_of_not_mem act A q R xs hxq]
 

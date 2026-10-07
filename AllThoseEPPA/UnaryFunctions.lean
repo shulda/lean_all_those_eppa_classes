@@ -1684,6 +1684,37 @@ theorem PhysicalWitnessVertex.transport_center_func
     simp
   rw [hsym]
 
+/-- Transport carries a function-value witness vertex to the corresponding
+function-value vertex of the transported valuation. -/
+theorem physicalFunctionValueVertex_transport
+    (hA : A.HasFiniteRelabelOrbit act)
+    (h : Structure.Automorphism act.relationalReduct B₀)
+    (w : PhysicalWitnessVertex act A B₀)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : β) (hy : y ∈ w.valuation.1.func F w.base)
+    (hy' :
+      h y ∈
+        (PhysicalWitnessVertex.transport act A B₀ h w).valuation.1.func
+          (act.onFunc h.lang F) (h w.base)) :
+    physicalWitnessEquiv act A B₀ hA h
+        (physicalFunctionValueVertex act A B₀ w F y hy) =
+      physicalFunctionValueVertex act A B₀
+        (PhysicalWitnessVertex.transport act A B₀ h w)
+        (act.onFunc h.lang F) (h y) hy' := by
+  apply Sigma.ext rfl
+  apply heq_of_eq
+  change
+    PhysicalValuation.transport act A B₀ h
+        (PhysicalValuation.restrict act A B₀ w.valuation y _) =
+      PhysicalValuation.restrict act A B₀
+        (PhysicalValuation.transport act A B₀ h w.valuation)
+        (h y) _
+  exact
+    PhysicalValuation.transport_restrict
+      act A B₀ h w.valuation y
+        (PhysicalWitnessVertex.funcValue_mem_support
+          act A B₀ w F hy)
+
 /-- The lifted witness permutation preserves and reflects every relation. -/
 theorem physicalWitnessRelation_transport_iff
     (hA : A.HasFiniteRelabelOrbit act)

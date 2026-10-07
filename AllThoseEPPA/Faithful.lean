@@ -1,3 +1,4 @@
+import Mathlib.Data.Set.Finite.Powerset
 import AllThoseEPPA.Irreducible
 import AllThoseEPPA.UnaryFunctions
 

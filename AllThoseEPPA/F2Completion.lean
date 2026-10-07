@@ -277,5 +277,117 @@ theorem representatives_comp_injective
   ext i
   simp [representatives, IsFirstValue, Function.comp_apply, hf.eq_iff]
 
+
+
+/-- The prescribed parity only depends on correction values on the source. -/
+theorem sourceParity_congr_source
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (c₁ c₂ : α → Bool)
+    (hc : ∀ x, x ∈ D → c₁ x = c₂ x) :
+    sourceParity D xs c₁ = sourceParity D xs c₂ := by
+  classical
+  unfold sourceParity
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply hc
+  exact (Finset.mem_filter.mp hi).2
+
+/-- Completion only depends on the prescribed correction on the source set. -/
+theorem evenCompletion_congr_source
+    (D : Set α) {n : ℕ} (xs : Fin n → α)
+    (c₁ c₂ : α → Bool)
+    (hc : ∀ x, x ∈ D → c₁ x = c₂ x)
+    (x : α) :
+    evenCompletion D xs c₁ x = evenCompletion D xs c₂ x := by
+  classical
+  by_cases hx : x ∈ D
+  · simp [evenCompletion, hx, hc x hx]
+  · by_cases h : ∃ i, xs i ∉ D
+    · rw [evenCompletion_of_not_mem D xs c₁ hx h,
+          evenCompletion_of_not_mem D xs c₂ hx h]
+      rw [sourceParity_congr_source D xs c₁ c₂ hc]
+    · simp [evenCompletion, hx, h]
+
+/-- Source representatives are natural under an injective change of base
+vertices, provided the source set is transported along that change. -/
+theorem sourceRepresentatives_equivariant
+    {β : Type*} [DecidableEq β]
+    (σ : α ≃ β) (D : Set α) (E : Set β)
+    (hDE : ∀ x, x ∈ D ↔ σ x ∈ E)
+    {n : ℕ} (xs : Fin n → α) :
+    sourceRepresentatives E (σ ∘ xs) =
+      sourceRepresentatives D xs := by
+  classical
+  unfold sourceRepresentatives
+  rw [representatives_comp_injective σ σ.injective xs]
+  ext i
+  simp [Function.comp_apply, hDE]
+
+/-- Source parity is natural under transport by a bijection. -/
+theorem sourceParity_equivariant
+    {β : Type*} [DecidableEq β]
+    (σ : α ≃ β) (D : Set α) (E : Set β)
+    (hDE : ∀ x, x ∈ D ↔ σ x ∈ E)
+    {n : ℕ} (xs : Fin n → α) (c : β → Bool) :
+    sourceParity E (σ ∘ xs) c =
+      sourceParity D xs (fun x => c (σ x)) := by
+  classical
+  unfold sourceParity
+  rw [sourceRepresentatives_equivariant σ D E hDE xs]
+  rfl
+
+/-- The first outside coordinate is unchanged by transport when source
+membership is transported by the same bijection. -/
+theorem firstOutsideIndex_equivariant
+    {β : Type*} [DecidableEq β]
+    (σ : α ≃ β) (D : Set α) (E : Set β)
+    (hDE : ∀ x, x ∈ D ↔ σ x ∈ E)
+    {n : ℕ} (xs : Fin n → α)
+    (hD : ∃ i, xs i ∉ D)
+    (hE : ∃ i, (σ ∘ xs) i ∉ E) :
+    firstOutsideIndex E (σ ∘ xs) hE =
+      firstOutsideIndex D xs hD := by
+  classical
+  unfold firstOutsideIndex
+  apply Fin.find_congr'
+  intro i
+  exact (not_congr (hDE (xs i))).symm
+
+/-- The even-parity completion commutes with a bijective relabelling of the
+base set. -/
+theorem evenCompletion_equivariant
+    {β : Type*} [DecidableEq β]
+    (σ : α ≃ β) (D : Set α) (E : Set β)
+    (hDE : ∀ x, x ∈ D ↔ σ x ∈ E)
+    {n : ℕ} (xs : Fin n → α)
+    (c : β → Bool) (x : α) :
+    evenCompletion E (σ ∘ xs) c (σ x) =
+      evenCompletion D xs (fun y => c (σ y)) x := by
+  classical
+  by_cases hx : x ∈ D
+  · have hσx : σ x ∈ E := (hDE x).1 hx
+    simp [evenCompletion, hx, hσx]
+  · have hσx : σ x ∉ E := by
+      intro h
+      exact hx ((hDE x).2 h)
+    by_cases hout : ∃ i, xs i ∉ D
+    · have houtE : ∃ i, (σ ∘ xs) i ∉ E := by
+        rcases hout with ⟨i, hi⟩
+        exact ⟨i, fun h => hi ((hDE (xs i)).2 (by simpa using h))⟩
+      rw [evenCompletion_of_not_mem E (σ ∘ xs) c hσx houtE]
+      rw [evenCompletion_of_not_mem D xs (fun y => c (σ y)) hx hout]
+      have hidx :=
+        firstOutsideIndex_equivariant σ D E hDE xs hout houtE
+      rw [sourceParity_equivariant σ D E hDE xs c]
+      rw [hidx]
+      simp [Function.comp_apply, σ.injective.eq_iff]
+    · have houtE : ¬ ∃ i, (σ ∘ xs) i ∉ E := by
+        rintro ⟨i, hi⟩
+        apply hout
+        refine ⟨i, ?_⟩
+        intro hD
+        exact hi ((hDE (xs i)).1 hD)
+      simp [evenCompletion, hx, hσx, hout, houtE]
+
 end F2Completion
 end AllThoseEPPA

@@ -208,7 +208,7 @@ def embedding {x : β} (v : Valuation act A B₀ x) :
 @[simp] theorem embedding_apply {x : β}
     (v : Valuation act A B₀ x)
     (y : v.orbit.1.closureAtSet v.center) :
-    v.embedding y = v.toFun y :=
+    (embedding act A B₀ v) y = v.toFun y :=
   rfl
 
 /-- Restrict a valuation from the closure of its centre to the closure of a
@@ -224,9 +224,14 @@ def restrict {x : β} (v : Valuation act A B₀ x)
       ⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩
   injective := by
     intro z z' h
+    have h' :
+        (⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩ :
+            v.orbit.1.closureAtSet v.center) =
+          ⟨z'.1, v.orbit.1.closureAtSet_subset_of_mem hy z'.2⟩ :=
+      v.injective h
     apply Subtype.ext
-    apply v.injective at h
-    exact congrArg Subtype.val h
+    exact congrArg
+      (fun t : v.orbit.1.closureAtSet v.center => t.1) h'
   map_rel_iff := by
     intro n R xs
     let ys : Fin n → v.orbit.1.closureAtSet v.center :=
@@ -240,9 +245,9 @@ def restrict {x : β} (v : Valuation act A B₀ x)
 @[simp] theorem restrict_toFun {x : β}
     (v : Valuation act A B₀ x)
     (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center)
-    (z : (v.restrict y hy).orbit.1.closureAtSet
-      (v.restrict y hy).center) :
-    (v.restrict y hy).toFun z =
+    (z : (restrict act A B₀ v y hy).orbit.1.closureAtSet
+      (restrict act A B₀ v y hy).center) :
+    (restrict act A B₀ v y hy).toFun z =
       v.toFun
         ⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩ :=
   rfl
@@ -275,7 +280,12 @@ theorem finite
     Finite (Valuation act A B₀ x) := by
   classical
   letI : Fintype (Orbit act A) := orbitFintype act A hA
-  apply Finite.of_injective
+  letI (C : Orbit act A) (y : α) :
+      Finite (C.1.closureAtSet y) :=
+    Finite.of_injective Subtype.val Subtype.val_injective
+  haveI : Finite (Code act A (β := β)) := by
+    infer_instance
+  exact Finite.of_injective
     (code act A B₀ (x := x))
     (code_injective act A B₀ (x := x))
 

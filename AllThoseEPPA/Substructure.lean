@@ -112,7 +112,10 @@ theorem closureAtSet_subset_of_mem (A : Structure L V) {x y : V}
     A.closureAtSet y ⊆ A.closureAtSet x := by
   apply A.closureSet_minimal (A.isClosed_closureSet {x})
   intro z hz
-  simpa [closureAtSet] using hy
+  have hzy : z = y := by
+    simpa using hz
+  subst z
+  exact hy
 
 /-- The induced structure on the closure of a set. -/
 def closureStructure (A : Structure L V) (S : Set V) :

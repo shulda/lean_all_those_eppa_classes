@@ -537,9 +537,6 @@ theorem extendWitnessVertex_valuation_relabel
       _
   rw [preRel_relabel, preTuple_baseExtension]
 
-/-- On the generic copy and on the source of the partial automorphism, the
-affine valuation transport agrees with the given partial automorphism. -/
-
 /-- Affine witness-vertex extensions respect composition. -/
 theorem extendWitnessVertex_comp
     (p q : RelPartialAutomorphism act A)
@@ -553,11 +550,12 @@ theorem extendWitnessVertex_comp
     rw [baseExtension_comp act A p q htg]
     rfl
   · funext S zs
+    rcases S with ⟨n, S⟩
     let r : RelPartialAutomorphism act A := q.comp p htg
-    let R : L.RelSymbol S.1 := preRel act A r S.2
-    let xs : Fin S.1 → α := preTuple act A r zs
-    have hR : act.onRel r.lang R = S.2 := by
-      simpa [R] using relabel_preRel act A r S.2
+    let R : L.RelSymbol n := preRel act A r S
+    let xs : Fin n → α := preTuple act A r zs
+    have hR : act.onRel r.lang R = S := by
+      simpa [R] using relabel_preRel act A r S
     have hzs : baseExtension act A r ∘ xs = zs := by
       simpa [xs] using baseExtension_preTuple act A r zs
     have hLang :
@@ -581,6 +579,8 @@ theorem extendWitnessVertex_comp
     rw [flipCorrection_comp act A p q htg R xs v.base]
     simp [add_assoc]
 
+/-- On the generic copy and on the source of the partial automorphism, the
+affine valuation transport agrees with the given partial automorphism. -/
 theorem extendWitnessVertex_generic_of_mem
     (p : RelPartialAutomorphism act A)
     {x : α} (hx : x ∈ p.source) :

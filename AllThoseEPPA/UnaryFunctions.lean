@@ -293,5 +293,129 @@ theorem finite
 end Valuation
 end Valuations
 
+
+section Witness
+
+variable {β : Type z} [Finite β]
+variable (B₀ : Structure L.relationalReduct β)
+
+/-- The unique input coordinate of a function symbol. -/
+def unaryIndex {n : ℕ} (F : L.FuncSymbol n) : Fin n := by
+  have hn : n = 1 := Language.HasUnaryFunctions.arity_eq_one F
+  subst n
+  exact 0
+
+/-- A tuple for a unary function has only one relevant entry. -/
+theorem unaryTuple_eq_constant {X : Type*} {n : ℕ}
+    (F : L.FuncSymbol n) (xs : Fin n → X) :
+    xs = fun _ => xs (unaryIndex F) := by
+  funext i
+  have hn : n = 1 := Language.HasUnaryFunctions.arity_eq_one F
+  subst n
+  exact Fin.eq_zero i ▸ rfl
+
+/-- Vertices of the unary-function witness are the paper's pairs `(x,V)`. -/
+abbrev WitnessVertex :=
+  Σ x : β, Valuation act A B₀ x
+
+/-- Projection of a witness vertex to the relational base witness. -/
+def WitnessVertex.base (w : WitnessVertex act A B₀) : β :=
+  w.1
+
+/-- The valuation carried by a witness vertex. -/
+def WitnessVertex.valuation (w : WitnessVertex act A B₀) :
+    Valuation act A B₀ w.base :=
+  w.2
+
+/-- The centre of the orbit closure represented by a witness valuation. -/
+def WitnessVertex.center (w : WitnessVertex act A B₀) : α :=
+  w.2.center
+
+/-- Every function value of the centre lies in its one-point closure. -/
+theorem Valuation.func_mem_closure {x : β}
+    (v : Valuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n)
+    {y : α}
+    (hy : y ∈ v.orbit.1.func F (fun _ => v.center)) :
+    y ∈ v.orbit.1.closureAtSet v.center := by
+  have hclosed := v.orbit.1.isClosed_closureSet ({v.center} : Set α)
+  apply hclosed F (fun _ => v.center)
+  · intro i
+    exact v.orbit.1.mem_closureAtSet v.center
+  · exact hy
+
+/-- The witness vertex obtained from a value `y ∈ F_V(x)`: retain the image
+of `y` in the relational base and restrict the valuation to `cl_V(y)`. -/
+def functionValueVertex {x : β}
+    (v : Valuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : α) (hy : y ∈ v.orbit.1.func F (fun _ => v.center)) :
+    WitnessVertex act A B₀ :=
+  let hycl := Valuation.func_mem_closure act A B₀ v F hy
+  ⟨v.toFun ⟨y, hycl⟩,
+    Valuation.restrict act A B₀ v y hycl⟩
+
+@[simp] theorem functionValueVertex_base {x : β}
+    (v : Valuation act A B₀ x)
+    {n : ℕ} (F : L.FuncSymbol n)
+    (y : α) (hy : y ∈ v.orbit.1.func F (fun _ => v.center)) :
+    (functionValueVertex act A B₀ v F y hy).base =
+      v.toFun
+        ⟨y, Valuation.func_mem_closure act A B₀ v F hy⟩ :=
+  rfl
+
+/-- The structure `B` from Proposition `prop:eppafunctions`.
+
+Relations are pulled back from `B₀` along the base projection.  A unary
+function follows the local valuation structure and replaces it by the
+one-point closure at the chosen function value. -/
+def witnessStructure : Structure L (WitnessVertex act A B₀) where
+  rel := by
+    intro n R ws
+    exact B₀.rel R (fun i => (ws i).base)
+  func := by
+    intro n F ws
+    let w := ws (unaryIndex F)
+    exact
+      {z | ∃ (y : α)
+        (hy : y ∈ w.valuation.orbit.1.func F
+          (fun _ => w.valuation.center)),
+        z = functionValueVertex act A B₀ w.valuation F y hy}
+
+/-- Relation membership in the witness only sees the base projection. -/
+@[simp] theorem witnessStructure_rel_iff
+    {n : ℕ} (R : L.RelSymbol n)
+    (ws : Fin n → WitnessVertex act A B₀) :
+    (witnessStructure act A B₀).rel R ws ↔
+      B₀.rel R (fun i => (ws i).base) :=
+  Iff.rfl
+
+/-- A convenient membership form for function values in the witness. -/
+theorem mem_witnessStructure_func_iff
+    {n : ℕ} (F : L.FuncSymbol n)
+    (ws : Fin n → WitnessVertex act A B₀)
+    (z : WitnessVertex act A B₀) :
+    z ∈ (witnessStructure act A B₀).func F ws ↔
+      ∃ (y : α)
+        (hy : y ∈
+          (ws (unaryIndex F)).valuation.orbit.1.func F
+            (fun _ => (ws (unaryIndex F)).valuation.center)),
+        z =
+          functionValueVertex act A B₀
+            (ws (unaryIndex F)).valuation F y hy := by
+  rfl
+
+/-- The unary-function witness is finite whenever the relabelling orbit of
+`A` is finite and the relational base witness is finite. -/
+theorem witnessVertex_finite
+    (hA : A.HasFiniteRelabelOrbit act) :
+    Finite (WitnessVertex act A B₀) := by
+  letI : Fintype β := Fintype.ofFinite β
+  letI (x : β) : Finite (Valuation act A B₀ x) :=
+    Valuation.finite act A B₀ hA x
+  infer_instance
+
+end Witness
+
 end UnaryFunctions
 end AllThoseEPPA

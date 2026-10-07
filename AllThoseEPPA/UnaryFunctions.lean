@@ -952,16 +952,13 @@ noncomputable def PhysicalValuation.restrict
     rw [hv]
     exact hy
   rcases hyv with ⟨z, hz⟩
+  subst y
   refine
     ⟨Valuation.restrict act A B₀ v z.1 z.2, ?_⟩
   have hphys :=
     Valuation.physicalSignature_restrict
       act A B₀ v z.1 z.2
-  rw [hz] at hphys
-  have hsig :
-      Valuation.physicalSignature act A B₀ v = s.1 :=
-    hv
-  simpa [hsig] using hphys
+  simpa [hv] using hphys
 
 @[simp] theorem PhysicalValuation.restrict_val
     {x : β} (s : PhysicalValuation act A B₀ x)
@@ -1056,9 +1053,11 @@ theorem mem_physicalWitnessStructure_func_iff
 theorem physicalWitnessVertex_finite
     (hA : A.HasFiniteRelabelOrbit act) :
     Finite (PhysicalWitnessVertex act A B₀) := by
-  letI (x : β) : Finite (PhysicalValuation act A B₀ x) :=
-    physicalValuation_finite act A B₀ hA x
-  infer_instance
+  classical
+  letI : Fintype β := Fintype.ofFinite β
+  letI (x : β) : Fintype (PhysicalValuation act A B₀ x) :=
+    physicalValuationFintype act A B₀ hA x
+  exact Finite.of_fintype _
 
 end PhysicalWitness
 

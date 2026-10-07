@@ -163,5 +163,124 @@ theorem reductPartialAutomorphism_coherentTriple
   rcases h with ⟨htg, hr⟩
   exact ⟨htg, hr⟩
 
+
+section Valuations
+
+variable {β : Type z} [Finite β]
+variable (B₀ : Structure L.relationalReduct β)
+
+/-- A finite code for the paper's valuation structure at a base point `x`.
+
+The orbit member absorbs the language part of the isomorphism to a one-point
+closure.  The map `toFun` embeds that relational closure into `B₀` with
+the identity language permutation, and sends its centre to `x`. -/
+structure Valuation (x : β) where
+  orbit : Orbit act A
+  center : α
+  toFun : orbit.1.closureAtSet center → β
+  injective : Function.Injective toFun
+  map_rel_iff :
+    ∀ {n : ℕ} (R : L.RelSymbol n)
+      (xs : Fin n → orbit.1.closureAtSet center),
+      B₀.rel R (toFun ∘ xs) ↔
+        orbit.1.rel R (Subtype.val ∘ xs)
+  center_eq :
+    toFun ⟨center, orbit.1.mem_closureAtSet center⟩ = x
+
+namespace Valuation
+
+/-- A valuation code determines a genuine embedding of the relational
+one-point closure into the base relational witness. -/
+def embedding {x : β} (v : Valuation act A B₀ x) :
+    Structure.Embedding act.relationalReduct
+      (v.orbit.1.closureAt v.center).relationalReduct B₀ where
+  lang := 1
+  toFun := v.toFun
+  injective := v.injective
+  map_rel_iff := by
+    intro n R xs
+    rw [Language.Action.onRel_one]
+    exact v.map_rel_iff R xs
+  map_func := by
+    intro n F xs
+    exact PEmpty.elim F
+
+@[simp] theorem embedding_apply {x : β}
+    (v : Valuation act A B₀ x)
+    (y : v.orbit.1.closureAtSet v.center) :
+    v.embedding y = v.toFun y :=
+  rfl
+
+/-- Restrict a valuation from the closure of its centre to the closure of a
+point lying inside it.  This is the formal counterpart of
+`cl_V(y)` in the paper. -/
+def restrict {x : β} (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center) :
+    Valuation act A B₀ (v.toFun ⟨y, hy⟩) where
+  orbit := v.orbit
+  center := y
+  toFun := fun z =>
+    v.toFun
+      ⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩
+  injective := by
+    intro z z' h
+    apply Subtype.ext
+    apply v.injective at h
+    exact congrArg Subtype.val h
+  map_rel_iff := by
+    intro n R xs
+    let ys : Fin n → v.orbit.1.closureAtSet v.center :=
+      fun i =>
+        ⟨(xs i).1,
+          v.orbit.1.closureAtSet_subset_of_mem hy (xs i).2⟩
+    have h := v.map_rel_iff R ys
+    simpa [ys, Function.comp_def] using h
+  center_eq := rfl
+
+@[simp] theorem restrict_toFun {x : β}
+    (v : Valuation act A B₀ x)
+    (y : α) (hy : y ∈ v.orbit.1.closureAtSet v.center)
+    (z : (v.restrict y hy).orbit.1.closureAtSet
+      (v.restrict y hy).center) :
+    (v.restrict y hy).toFun z =
+      v.toFun
+        ⟨z.1, v.orbit.1.closureAtSet_subset_of_mem hy z.2⟩ :=
+  rfl
+
+/-- The finite data underlying a valuation, with all proof fields erased. -/
+abbrev Code :=
+  Σ C : Orbit act A, Σ y : α, C.1.closureAtSet y → β
+
+def code {x : β} (v : Valuation act A B₀ x) :
+    Code act A (β := β) :=
+  ⟨v.orbit, v.center, v.toFun⟩
+
+theorem code_injective {x : β} :
+    Function.Injective (code act A B₀ (x := x)) := by
+  intro v w h
+  cases v with
+  | mk Cv yv fv hiv hrv hcv =>
+    cases w with
+    | mk Cw yw fw hiw hrw hcw =>
+      change (⟨Cv, yv, fv⟩ : Code act A (β := β)) =
+        ⟨Cw, yw, fw⟩ at h
+      cases h
+      rfl
+
+/-- There are only finitely many valuation structures over a fixed base point.
+This is the finiteness argument from Proposition `prop:eppafunctions`, with
+the finite relabelling orbit used directly as part of the code. -/
+theorem finite
+    (hA : A.HasFiniteRelabelOrbit act) (x : β) :
+    Finite (Valuation act A B₀ x) := by
+  classical
+  letI : Fintype (Orbit act A) := orbitFintype act A hA
+  apply Finite.of_injective
+    (code act A B₀ (x := x))
+    (code_injective act A B₀ (x := x))
+
+end Valuation
+end Valuations
+
 end UnaryFunctions
 end AllThoseEPPA

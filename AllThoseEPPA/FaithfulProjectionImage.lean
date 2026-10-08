@@ -21,7 +21,7 @@ variable (A : Structure L α) (B₀ : Structure L β)
 variable (ψ : Structure.Embedding act A B₀)
 
 /-- Irreducibility is invariant under a surjective embedding. -/
-private theorem irreducible_target_of_surjective_embedding
+theorem irreducible_target_of_surjective_embedding
     {V : Type*} {W : Type*}
     {C : Structure L V} {D : Structure L W}
     (f : Structure.Embedding act C D)

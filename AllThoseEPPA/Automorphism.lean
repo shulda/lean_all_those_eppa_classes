@@ -157,6 +157,34 @@ noncomputable def symm (g : Automorphism act A) :
         exact Set.mem_univ x)
 
 
+
+/-- Total automorphisms preserve and reflect every relation. -/
+theorem map_rel_iff
+    (g : Automorphism act A)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → V) :
+    A.rel (act.onRel g.lang R) (g ∘ xs) ↔
+      A.rel R xs := by
+  have hsource :
+      ∀ i, xs i ∈ g.toPartialIsomorphism.source := by
+    intro i
+    rw [g.source_eq_univ]
+    exact Set.mem_univ _
+  exact g.toPartialIsomorphism.map_rel_iff R xs hsource
+
+/-- Total automorphisms map every function-value set exactly to the
+corresponding relabelled function-value set. -/
+theorem map_func
+    (g : Automorphism act A)
+    {n : ℕ} (F : L.FuncSymbol n) (xs : Fin n → V) :
+    Structure.imageSet g (A.func F xs) =
+      A.func (act.onFunc g.lang F) (g ∘ xs) := by
+  have hsource :
+      ∀ i, xs i ∈ g.toPartialIsomorphism.source := by
+    intro i
+    rw [g.source_eq_univ]
+    exact Set.mem_univ _
+  exact g.toPartialIsomorphism.map_func F xs hsource
+
 /-- The underlying permutation of the carrier of an automorphism. -/
 noncomputable def toEquiv (g : Automorphism act A) : V ≃ V where
   toFun := g

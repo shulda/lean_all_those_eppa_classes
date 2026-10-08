@@ -233,34 +233,46 @@ theorem areGeneric_of_transport [Finite β]
         valuationFunctionEquiv_apply_transport
           act A B₀ ψ p g hsource htarget hcompat
           r.1 r.2 Ir
-      have hqIndex :
-          badAtEquiv act A B₀ ψ g q.1 Iq =
-            (⟨J, hqJ⟩ :
-              BadAt act A B₀ ψ (g q.1)) := by
-        rfl
-      have hrIndex :
-          badAtEquiv act A B₀ ψ g r.1 Ir =
-            (⟨J, hrJ⟩ :
-              BadAt act A B₀ ψ (g r.1)) := by
-        rfl
-      rw [hqIndex] at hqEval
-      rw [hrIndex] at hrEval
-      calc
-        (transportValuationPoint act A B₀ ψ
-            p g hsource htarget hcompat q).2
-              ⟨J, hqJ⟩ |>.1 =
+      have hqEval' :
+          ((transportValuationPoint act A B₀ ψ
+              p g hsource htarget hcompat q).2
+                ⟨J, hqJ⟩).1 =
             (labelExtension act A B₀ ψ p g I
               hsource htarget hcompat (q.2 Iq)).1 := by
-                exact congrArg Subtype.val hqEval
+        change
+          ((valuationFunctionEquiv act A B₀ ψ
+              p g hsource htarget hcompat q.1 q.2)
+              (badAtEquiv act A B₀ ψ g q.1 Iq)).1 =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (q.2 Iq)).1
+        exact congrArg Subtype.val hqEval
+      have hrEval' :
+          ((transportValuationPoint act A B₀ ψ
+              p g hsource htarget hcompat r).2
+                ⟨J, hrJ⟩).1 =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (r.2 Ir)).1 := by
+        change
+          ((valuationFunctionEquiv act A B₀ ψ
+              p g hsource htarget hcompat r.1 r.2)
+              (badAtEquiv act A B₀ ψ g r.1 Ir)).1 =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (r.2 Ir)).1
+        exact congrArg Subtype.val hrEval
+      calc
+        ((transportValuationPoint act A B₀ ψ
+            p g hsource htarget hcompat q).2
+              ⟨J, hqJ⟩).1 =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (q.2 Iq)).1 := hqEval'
         _ =
             (labelExtension act A B₀ ψ p g I
               hsource htarget hcompat (r.2 Ir)).1 :=
           congrArg Subtype.val htargetLabelEq
         _ =
-            (transportValuationPoint act A B₀ ψ
+            ((transportValuationPoint act A B₀ ψ
               p g hsource htarget hcompat r).2
-                ⟨J, hrJ⟩ |>.1 := by
-                  exact (congrArg Subtype.val hrEval).symm
+                ⟨J, hrJ⟩).1 := hrEval'.symm
 
 /-- Faithful valuation transport preserves genericity exactly. -/
 theorem areGeneric_transport_iff [Finite β]

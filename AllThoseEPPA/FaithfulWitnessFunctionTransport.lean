@@ -92,13 +92,21 @@ theorem functionValueVertex_transport [Finite β]
   rw [Sigma.ext_iff]
   refine ⟨rfl, ?_⟩
   apply heq_of_eq
-  have hrestrict :=
+  change
+    ValuationStructure.transport act A B₀ ψ
+        p g hsource htarget hcompat
+        (w.valuation.restrict act A B₀ ψ y
+          (func_mem_closureAtSet B₀ F hy)) =
+      (ValuationStructure.transport act A B₀ ψ
+        p g hsource htarget hcompat w.valuation).restrict
+          act A B₀ ψ (g y)
+          (automorphism_maps_closureAtSet act B₀ g
+            (func_mem_closureAtSet B₀ F hy))
+  exact
     ValuationStructure.transport_restrict
       act A B₀ ψ p g hsource htarget hcompat
       w.valuation
       (func_mem_closureAtSet B₀ F hy)
-  simpa [WitnessVertex.transport, functionValueVertex,
-    WitnessVertex.valuation, WitnessVertex.base] using hrestrict
 
 /-- The lifted faithful witness permutation transports every unary
 function-value set exactly. -/

@@ -286,161 +286,19 @@ theorem labelExtension_eq_of_equivalent [Finite β]
         hsp htp hsq htq hcp hcq hpq)
 
 
-/-- The canonical total label extensions compose once the two target
-bad-irreducible indices are identified explicitly.  Abstracting this equality
-makes the dependent elimination on label types well-typed. -/
-theorem labelExtension_comp_of_transport_eq [Finite β]
-    (p q : Structure.PartialAutomorphism act
-      (witnessStructure act A B₀ ψ))
-    (gp gq : Structure.Automorphism act B₀)
-    (ht : p.target = q.source)
-    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
-    (htp : WitnessSetGeneric act A B₀ ψ p.target)
-    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
-    (htq : WitnessSetGeneric act A B₀ ψ q.target)
-    (hcp : BaseCompatible act A B₀ ψ p gp)
-    (hcq : BaseCompatible act A B₀ ψ q gq)
-    (hss :
-      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
-    (hst :
-      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
-    (hcs :
-      BaseCompatible act A B₀ ψ
-        (q.comp p ht) (gq.comp gp))
-    (I : BadIrreducible act A B₀ ψ)
-    (htransport :
-      (I.transport act A B₀ ψ gp).transport
-          act A B₀ ψ gq =
-        I.transport act A B₀ ψ (gq.comp gp)) :
-    (labelExtension act A B₀ ψ p gp I
-        hsp htp hcp).trans
-      (labelExtension act A B₀ ψ q gq
-        (I.transport act A B₀ ψ gp)
-        hsq htq hcq) =
-    (labelExtension act A B₀ ψ
-        (q.comp p ht) (gq.comp gp) I
-        hss hst hcs).trans
-      (badLabelEquivOfEq act A B₀ ψ htransport.symm) := by
-  cases htransport
-  simp only [badLabelEquivOfEq, Equiv.trans_refl]
-  let J : BadIrreducible act A B₀ ψ :=
-    I.transport act A B₀ ψ gp
-  let K : BadIrreducible act A B₀ ψ :=
-    J.transport act A B₀ ψ gq
-  letI : Fintype (BadLabel act A B₀ ψ I) :=
-    badLabelFintype act A B₀ ψ I
-  letI : Fintype (BadLabel act A B₀ ψ J) :=
-    badLabelFintype act A B₀ ψ J
-  letI : Fintype (BadLabel act A B₀ ψ K) :=
-    badLabelFintype act A B₀ ψ K
-  letI : LinearOrder (BadLabel act A B₀ ψ I) :=
-    badLabelLinearOrder act A B₀ ψ I
-  letI : LinearOrder (BadLabel act A B₀ ψ J) :=
-    badLabelLinearOrder act A B₀ ψ J
-  letI : LinearOrder (BadLabel act A B₀ ψ K) :=
-    badLabelLinearOrder act A B₀ ψ K
-  let pp :=
-    labelPartialEquiv act A B₀ ψ p gp I hsp htp hcp
-  let pq :=
-    labelPartialEquiv act A B₀ ψ q gq J hsq htq hcq
-  let ps :=
-    labelPartialEquiv act A B₀ ψ
-      (q.comp p ht) (gq.comp gp) I hss hst hcs
-  have hmid : pp.target = pq.source := by
-    exact
-      usedTargetLabels_eq_usedSourceLabels
-        act A B₀ ψ p q gp I ht
-  have hscomp : (q.comp p ht).source = p.source := by
-    rfl
-  have heq :
-      PartialEquiv.EqOnSource ps (pp.trans' pq hmid) := by
-    constructor
-    · change
-        usedSourceLabels act A B₀ ψ (q.comp p ht) I =
-          usedSourceLabels act A B₀ ψ p I
-      exact
-        usedSourceLabels_eq_of_source_eq
-          act A B₀ ψ (q.comp p ht) p I hscomp
-    · intro l hl
-      change
-        l ∈ usedSourceLabels act A B₀ ψ (q.comp p ht) I at hl
-      rcases hl with ⟨sw, hsw⟩
-      rcases sw with ⟨w, hws, hwI⟩
-      have hwp : w ∈ p.source := by
-        rw [← hscomp]
-        exact hws
-      have hpwq : p w ∈ q.source := by
-        rw [← ht]
-        exact p.map_source hwp
-      let hpwI :
-          (p w).base ∈ J.carrier :=
-        ⟨w.base, hwI, hcp.2 w hwp⟩
-      have hsact :=
-        labelPartialEquiv_centerLabel
-          act A B₀ ψ
-          (q.comp p ht) (gq.comp gp) I
-          hss hst hcs w hws hwI
-      have hpact :=
-        labelPartialEquiv_centerLabel
-          act A B₀ ψ p gp I
-          hsp htp hcp w hwp hwI
-      have hqact :=
-        labelPartialEquiv_centerLabel
-          act A B₀ ψ q gq J
-          hsq htq hcq (p w) hpwq hpwI
-      rw [← hsw]
-      change
-        ps (centerLabel act A B₀ ψ w I hwI) =
-          pq (pp (centerLabel act A B₀ ψ w I hwI))
-      calc
-        ps (centerLabel act A B₀ ψ w I hwI) =
-            centerLabel act A B₀ ψ
-              ((q.comp p ht) w) K
-              ⟨w.base, hwI, hcs.2 w hws⟩ := hsact
-        _ =
-            centerLabel act A B₀ ψ (q (p w)) K
-              ⟨(p w).base, hpwI, hcq.2 (p w) hpwq⟩ := by
-          apply centerLabel_congr act A B₀ ψ
-          · rfl
-          · exact K
-          · exact ⟨w.base, hwI, hcs.2 w hws⟩
-          · exact
-              ⟨(p w).base, hpwI, hcq.2 (p w) hpwq⟩
-        _ =
-            pq (centerLabel act A B₀ ψ (p w) J hpwI) :=
-          hqact.symm
-        _ =
-            pq (pp (centerLabel act A B₀ ψ w I hwI)) := by
-          exact congrArg pq hpact.symm
-  have hcardIJ :
-      Fintype.card (BadLabel act A B₀ ψ I) =
-        Fintype.card (BadLabel act A B₀ ψ J) := by
-    simpa only [J, Nat.card_eq_fintype_card] using
-      (badLabel_transport_card act A B₀ ψ gp I)
-  have hcardJK :
-      Fintype.card (BadLabel act A B₀ ψ J) =
-        Fintype.card (BadLabel act A B₀ ψ K) := by
-    simpa only [K, Nat.card_eq_fintype_card] using
-      (badLabel_transport_card act A B₀ ψ gq J)
-  have hcardIK :
-      Fintype.card (BadLabel act A B₀ ψ I) =
-        Fintype.card (BadLabel act A B₀ ψ K) :=
-    hcardIJ.trans hcardJK
-  change
-    (PartialEquiv.orderedExtensionOfCardEq pp hcardIJ).trans
-        (PartialEquiv.orderedExtensionOfCardEq pq hcardJK) =
-      PartialEquiv.orderedExtensionOfCardEq ps hcardIK
-  calc
-    (PartialEquiv.orderedExtensionOfCardEq pp hcardIJ).trans
-        (PartialEquiv.orderedExtensionOfCardEq pq hcardJK) =
-      PartialEquiv.orderedExtensionOfCardEq
-        (pp.trans' pq hmid) hcardIK :=
-      (PartialEquiv.orderedExtensionOfCardEq_trans'
-        pp pq hmid hcardIJ hcardJK hcardIK).symm
-    _ =
-      PartialEquiv.orderedExtensionOfCardEq ps hcardIK :=
-      (PartialEquiv.orderedExtensionOfCardEq_eq_of_eqOnSource
-        hcardIK heq).symm
+/-- Centre labels commute with equality transport of the bad-irreducible
+index. -/
+theorem centerLabel_badIrreducible_eq
+    (w : WitnessVertex act A B₀ ψ)
+    {I J : BadIrreducible act A B₀ ψ}
+    (h : I = J)
+    (hI : w.base ∈ I.carrier)
+    (hJ : w.base ∈ J.carrier) :
+    badLabelEquivOfEq act A B₀ ψ h
+        (centerLabel act A B₀ ψ w I hI) =
+      centerLabel act A B₀ ψ w J hJ := by
+  subst J
+  rfl
 
 /-- The canonical total label extensions compose for an exact composition of
 faithful partial automorphisms and compatible base automorphisms. -/
@@ -474,13 +332,176 @@ theorem labelExtension_comp [Finite β]
       (badLabelEquivOfEq act A B₀ ψ
         (BadIrreducible.transport_comp
           act A B₀ ψ gq gp I).symm) := by
-  exact
-    labelExtension_comp_of_transport_eq
-      act A B₀ ψ p q gp gq ht
-      hsp htp hsq htq hcp hcq
-      hss hst hcs I
+  let J : BadIrreducible act A B₀ ψ :=
+    I.transport act A B₀ ψ gp
+  let K : BadIrreducible act A B₀ ψ :=
+    J.transport act A B₀ ψ gq
+  let M : BadIrreducible act A B₀ ψ :=
+    I.transport act A B₀ ψ (gq.comp gp)
+  have hKM : K = M := by
+    simpa [J, K, M] using
       (BadIrreducible.transport_comp
         act A B₀ ψ gq gp I)
+  letI : Fintype (BadLabel act A B₀ ψ I) :=
+    badLabelFintype act A B₀ ψ I
+  letI : Fintype (BadLabel act A B₀ ψ J) :=
+    badLabelFintype act A B₀ ψ J
+  letI : Fintype (BadLabel act A B₀ ψ K) :=
+    badLabelFintype act A B₀ ψ K
+  letI : Fintype (BadLabel act A B₀ ψ M) :=
+    badLabelFintype act A B₀ ψ M
+  letI : LinearOrder (BadLabel act A B₀ ψ I) :=
+    badLabelLinearOrder act A B₀ ψ I
+  letI : LinearOrder (BadLabel act A B₀ ψ J) :=
+    badLabelLinearOrder act A B₀ ψ J
+  letI : LinearOrder (BadLabel act A B₀ ψ K) :=
+    badLabelLinearOrder act A B₀ ψ K
+  letI : LinearOrder (BadLabel act A B₀ ψ M) :=
+    badLabelLinearOrder act A B₀ ψ M
+  let castKM : BadLabel act A B₀ ψ M ≃o
+      BadLabel act A B₀ ψ K :=
+    badLabelOrderIsoOfEq act A B₀ ψ hKM.symm
+  let pp :=
+    labelPartialEquiv act A B₀ ψ p gp I hsp htp hcp
+  let pq :=
+    labelPartialEquiv act A B₀ ψ q gq J hsq htq hcq
+  let ps :=
+    labelPartialEquiv act A B₀ ψ
+      (q.comp p ht) (gq.comp gp) I hss hst hcs
+  have hmid : pp.target = pq.source := by
+    exact
+      usedTargetLabels_eq_usedSourceLabels
+        act A B₀ ψ p q gp I ht
+  let pc : PartialEquiv
+      (BadLabel act A B₀ ψ I)
+      (BadLabel act A B₀ ψ K) :=
+    pp.trans' pq hmid
+  have hscomp : (q.comp p ht).source = p.source := by
+    rfl
+  have hs : ps.source = pc.source := by
+    change
+      usedSourceLabels act A B₀ ψ (q.comp p ht) I =
+        usedSourceLabels act A B₀ ψ p I
+    exact
+      usedSourceLabels_eq_of_source_eq
+        act A B₀ ψ (q.comp p ht) p I hscomp
+  have hmap :
+      ∀ l, l ∈ ps.source →
+        castKM (ps l) = pc l := by
+    intro l hl
+    change
+      l ∈ usedSourceLabels act A B₀ ψ (q.comp p ht) I at hl
+    rcases hl with ⟨sw, hsw⟩
+    rcases sw with ⟨w, hws, hwI⟩
+    have hwp : w ∈ p.source := by
+      rw [← hscomp]
+      exact hws
+    have hpwq : p w ∈ q.source := by
+      rw [← ht]
+      exact p.map_source hwp
+    let hpwI :
+        (p w).base ∈ J.carrier :=
+      ⟨w.base, hwI, hcp.2 w hwp⟩
+    let hcompI :
+        ((q.comp p ht) w).base ∈ M.carrier :=
+      ⟨w.base, hwI, hcs.2 w hws⟩
+    let hqI :
+        (q (p w)).base ∈ K.carrier :=
+      ⟨(p w).base, hpwI, hcq.2 (p w) hpwq⟩
+    have hsact :=
+      labelPartialEquiv_centerLabel
+        act A B₀ ψ
+        (q.comp p ht) (gq.comp gp) I
+        hss hst hcs w hws hwI
+    have hpact :=
+      labelPartialEquiv_centerLabel
+        act A B₀ ψ p gp I
+        hsp htp hcp w hwp hwI
+    have hqact :=
+      labelPartialEquiv_centerLabel
+        act A B₀ ψ q gq J
+        hsq htq hcq (p w) hpwq hpwI
+    rw [← hsw]
+    change
+      castKM
+          (ps (centerLabel act A B₀ ψ w I hwI)) =
+        pq (pp (centerLabel act A B₀ ψ w I hwI))
+    calc
+      castKM
+          (ps (centerLabel act A B₀ ψ w I hwI)) =
+        castKM
+          (centerLabel act A B₀ ψ
+            ((q.comp p ht) w) M hcompI) :=
+        congrArg castKM hsact
+      _ =
+        centerLabel act A B₀ ψ
+          ((q.comp p ht) w) K
+          ⟨((q.comp p ht) w).base, by
+            rw [hKM]
+            exact hcompI⟩ := by
+        exact
+          centerLabel_badIrreducible_eq
+            act A B₀ ψ
+            ((q.comp p ht) w) hKM.symm
+            hcompI
+            ⟨((q.comp p ht) w).base, by
+              rw [hKM]
+              exact hcompI⟩
+      _ =
+        centerLabel act A B₀ ψ (q (p w)) K hqI := by
+        apply centerLabel_congr act A B₀ ψ
+        · rfl
+        · exact K
+        · exact
+            ⟨((q.comp p ht) w).base, by
+              rw [hKM]
+              exact hcompI⟩
+        · exact hqI
+      _ =
+        pq (centerLabel act A B₀ ψ (p w) J hpwI) :=
+        hqact.symm
+      _ =
+        pq (pp (centerLabel act A B₀ ψ w I hwI)) := by
+        exact congrArg pq hpact.symm
+  have hcardIJ :
+      Fintype.card (BadLabel act A B₀ ψ I) =
+        Fintype.card (BadLabel act A B₀ ψ J) := by
+    simpa only [J, Nat.card_eq_fintype_card] using
+      (badLabel_transport_card act A B₀ ψ gp I)
+  have hcardJK :
+      Fintype.card (BadLabel act A B₀ ψ J) =
+        Fintype.card (BadLabel act A B₀ ψ K) := by
+    simpa only [K, Nat.card_eq_fintype_card] using
+      (badLabel_transport_card act A B₀ ψ gq J)
+  have hcardIK :
+      Fintype.card (BadLabel act A B₀ ψ I) =
+        Fintype.card (BadLabel act A B₀ ψ K) :=
+    hcardIJ.trans hcardJK
+  have hcardIM :
+      Fintype.card (BadLabel act A B₀ ψ I) =
+        Fintype.card (BadLabel act A B₀ ψ M) := by
+    simpa only [M, Nat.card_eq_fintype_card] using
+      (badLabel_transport_card act A B₀ ψ
+        (gq.comp gp) I)
+  have hcompExt :
+      (PartialEquiv.orderedExtensionOfCardEq pp hcardIJ).trans
+          (PartialEquiv.orderedExtensionOfCardEq pq hcardJK) =
+        PartialEquiv.orderedExtensionOfCardEq pc hcardIK := by
+    exact
+      (PartialEquiv.orderedExtensionOfCardEq_trans'
+        pp pq hmid hcardIJ hcardJK hcardIK).symm
+  have hnatural :
+      (PartialEquiv.orderedExtensionOfCardEq ps hcardIM).trans
+          castKM.toEquiv =
+        PartialEquiv.orderedExtensionOfCardEq pc hcardIK :=
+    PartialEquiv.orderedExtensionOfCardEq_natural
+      ps pc castKM hcardIM hcardIK hs hmap
+  change
+    (PartialEquiv.orderedExtensionOfCardEq pp hcardIJ).trans
+        (PartialEquiv.orderedExtensionOfCardEq pq hcardJK) =
+      (PartialEquiv.orderedExtensionOfCardEq ps hcardIM).trans
+        castKM.toEquiv
+  exact hcompExt.trans hnatural.symm
 
 end Faithful
 end AllThoseEPPA

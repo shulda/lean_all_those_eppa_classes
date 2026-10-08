@@ -105,57 +105,50 @@ theorem canonicalPartialAutomorphism_apply
     canonicalPartialAutomorphism act A B₀ ψ p
         (canonicalVertex act A B₀ ψ a) =
       canonicalVertex act A B₀ ψ (p a) := by
-  let sourceEmb :
-      Structure.Embedding act
-        (A.induce p.source p.source_closed)
-        (witnessStructure act A B₀ ψ) :=
+  let sourceEmb :=
     canonicalSourceCopyEmbedding act A B₀ ψ p
-  let sourceSet : Set (WitnessVertex act A B₀ ψ) :=
-    canonicalPartialSourceSet act A B₀ ψ p
-  let hsourceSet :
-      (witnessStructure act A B₀ ψ).IsClosed sourceSet := by
-    simpa [sourceSet] using
-      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
-  let back :
-      Structure.Embedding act
-        ((witnessStructure act A B₀ ψ).induce
-          sourceSet hsourceSet)
-        (A.induce p.source p.source_closed) :=
+  let back :=
     embeddingInverseOnClosedSubset act sourceEmb
-      sourceSet hsourceSet
+      (canonicalPartialSourceSet act A B₀ ψ p)
+      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
       (by
         intro x hx
         exact hx)
-  let x : sourceSet :=
+  let x : canonicalPartialSourceSet act A B₀ ψ p :=
     ⟨canonicalVertex act A B₀ ψ a,
       canonicalVertex_mem_partialSource
         act A B₀ ψ p a ha⟩
   have hbackSpec :=
     embeddingInverseOnClosedSubset_apply_spec
-      act sourceEmb sourceSet hsourceSet
+      act sourceEmb
+      (canonicalPartialSourceSet act A B₀ ψ p)
+      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
       (by
         intro y hy
         exact hy)
       x
   have hsourceA :
-      sourceEmb (⟨a, ha⟩ :
-        A.induce p.source p.source_closed) =
+      sourceEmb (⟨a, ha⟩ : p.source) =
         canonicalVertex act A B₀ ψ a := by
     rfl
   have hback :
-      back x =
-        (⟨a, ha⟩ :
-          A.induce p.source p.source_closed) := by
+      back x = (⟨a, ha⟩ : p.source) := by
     apply sourceEmb.injective
     exact hbackSpec.trans hsourceA.symm
   have happly :=
     partialAutomorphismOfInducedEmbedding_apply
       act (witnessStructure act A B₀ ψ)
-      sourceSet hsourceSet
+      (canonicalPartialSourceSet act A B₀ ψ p)
+      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
       (canonicalPartialMoveEmbedding act A B₀ ψ p)
       (canonicalVertex_mem_partialSource
         act A B₀ ψ p a ha)
-  rw [happly]
+  have hstep :
+      canonicalPartialAutomorphism act A B₀ ψ p
+          (canonicalVertex act A B₀ ψ a) =
+        canonicalPartialMoveEmbedding act A B₀ ψ p x := by
+    simpa [canonicalPartialAutomorphism, x] using happly
+  rw [hstep]
   change
     canonicalMovedCopyEmbedding act A B₀ ψ p (back x) =
       canonicalVertex act A B₀ ψ (p a)

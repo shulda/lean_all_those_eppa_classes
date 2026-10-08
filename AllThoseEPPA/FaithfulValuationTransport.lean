@@ -88,7 +88,11 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         hsource htarget hcompat (χ I) := by
   simp only [valuationFunctionEquiv, Equiv.piCongr'_apply]
   apply Subtype.ext
-  simp [valuationLabelFibreEquiv]
+  have hround :
+      (badAtEquiv act A B₀ ψ g x).symm
+          (badAtEquiv act A B₀ ψ g x I) = I :=
+    (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
+  simp [valuationLabelFibreEquiv, hround]
 
 end Faithful
 end AllThoseEPPA

@@ -118,9 +118,13 @@ noncomputable def symm (g : Automorphism act A) :
           refine ⟨pe y, hgy, ?_⟩
           exact pe.left_inv hySource }
   source_eq_univ := by
-    simpa [PartialIsomorphism.source] using g.target_eq_univ
+    have h := g.target_eq_univ
+    change g.toPartialIsomorphism.toPartialEquiv.target = Set.univ at h
+    exact h
   target_eq_univ := by
-    simpa [PartialIsomorphism.target] using g.source_eq_univ
+    have h := g.source_eq_univ
+    change g.toPartialIsomorphism.toPartialEquiv.source = Set.univ at h
+    exact h
 
 @[simp] theorem symm_lang (g : Automorphism act A) :
     g.symm.lang = g.lang⁻¹ :=

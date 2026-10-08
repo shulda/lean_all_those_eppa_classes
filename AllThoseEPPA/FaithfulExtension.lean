@@ -221,6 +221,20 @@ theorem centerLabel_restrictionVertex
     rfl
   rw [hz]
 
+/-- Centre labels are insensitive to replacing a witness vertex by an equal
+one; the membership proofs are irrelevant. -/
+theorem centerLabel_congr
+    {u v : WitnessVertex act A B₀ ψ}
+    (huv : u = v)
+    (I : BadIrreducible act A B₀ ψ)
+    (hu : u.base ∈ I.carrier)
+    (hv : v.base ∈ I.carrier) :
+    centerLabel act A B₀ ψ u I hu =
+      centerLabel act A B₀ ψ v I hv := by
+  subst v
+  rfl
+
+
 /-- On a source vertex, transport of the valuation function at every point of
 its one-point closure is exactly the valuation function carried by the
 partial-automorphism image at the transported point. -/
@@ -262,34 +276,67 @@ theorem valuationFunction_transport_eq_of_mem_source [Finite β]
   have hdsrc : d ∈ p.source :=
     restrictionVertex_mem_source
       act A B₀ ψ p w hw y hy
-  have hpd :=
-    partialAutomorphism_restrictionVertex
-      act A B₀ ψ p g hcompat w hw y hy
-  have hcenter :=
-    labelExtension_centerLabel
-      act A B₀ ψ p g I.1
-      hsource htarget hcompat
-      d hdsrc I.2
+  let hy' : g y ∈ B₀.closureAtSet (p w).base := by
+    have h :=
+      automorphism_maps_closureAtSet act B₀ g hy
+    simpa [hcompat.2 w hw] using h
+  let r :=
+    restrictionVertex act A B₀ ψ
+      (p w) (g y) hy'
+  have hpd : p d = r := by
+    simpa [d, r, hy'] using
+      (partialAutomorphism_restrictionVertex
+        act A B₀ ψ p g hcompat w hw y hy)
+  let GI :=
+    I.1.transport act A B₀ ψ g
+  let hpdI : (p d).base ∈ GI.carrier :=
+    ⟨d.base, I.2, hcompat.2 d hdsrc⟩
+  let hrI : r.base ∈ GI.carrier :=
+    ⟨y, I.2, rfl⟩
+  have hcenter :
+      labelExtension act A B₀ ψ p g I.1
+          hsource htarget hcompat
+          (centerLabel act A B₀ ψ d I.1 I.2) =
+        centerLabel act A B₀ ψ (p d) GI hpdI := by
+    simpa [GI, hpdI] using
+      (labelExtension_centerLabel
+        act A B₀ ψ p g I.1
+        hsource htarget hcompat
+        d hdsrc I.2)
   have hsrc :
       centerLabel act A B₀ ψ d I.1 I.2 =
         (w.valuation.1
-          (⟨y, hy⟩ : B₀.closureAtSet w.base)) I := by
-    exact
-      centerLabel_restrictionVertex
-        act A B₀ ψ w y hy I.1 I.2
-  rw [hsrc] at hcenter
-  rw [hpd] at hcenter
-  have htgt :=
+          (⟨y, hy⟩ : B₀.closureAtSet w.base)) I :=
     centerLabel_restrictionVertex
-      act A B₀ ψ (p w) (g y)
-      (by
-        have h :=
-          automorphism_maps_closureAtSet act B₀ g hy
-        simpa [hcompat.2 w hw] using h)
-      (I.1.transport act A B₀ ψ g)
-      ⟨y, I.2, rfl⟩
-  rw [htgt] at hcenter
-  exact hcenter
+      act A B₀ ψ w y hy I.1 I.2
+  rw [hsrc] at hcenter
+  have hmove :
+      centerLabel act A B₀ ψ (p d) GI hpdI =
+        centerLabel act A B₀ ψ r GI hrI :=
+    centerLabel_congr act A B₀ ψ hpd GI hpdI hrI
+  have htgt :
+      centerLabel act A B₀ ψ r GI hrI =
+        (p w).valuation.1
+          (⟨g y, hy'⟩ :
+            B₀.closureAtSet (p w).base)
+          ⟨GI, hrI⟩ := by
+    simpa [r, GI, hrI] using
+      (centerLabel_restrictionVertex
+        act A B₀ ψ (p w) (g y) hy'
+        GI hrI)
+  calc
+    labelExtension act A B₀ ψ p g I.1
+        hsource htarget hcompat
+        ((w.valuation.1
+          (⟨y, hy⟩ : B₀.closureAtSet w.base)) I) =
+      centerLabel act A B₀ ψ (p d) GI hpdI :=
+        hcenter
+    _ = centerLabel act A B₀ ψ r GI hrI := hmove
+    _ =
+      (p w).valuation.1
+        (⟨g y, hy'⟩ :
+          B₀.closureAtSet (p w).base)
+        ⟨GI, hrI⟩ := htgt
 
 
 /-- The transported faithful witness vertex agrees with the prescribed

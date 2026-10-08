@@ -89,5 +89,71 @@ theorem valuationFunctionEquiv_comp_apply [Finite β]
         hss hst hcs I)
 
 
+/-- Valuation-function transport itself is coherent under composition. -/
+theorem valuationFunctionEquiv_comp [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    (x : β) :
+    (valuationFunctionEquiv act A B₀ ψ
+        p gp hsp htp hcp x).trans
+      (valuationFunctionEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)) =
+      valuationFunctionEquiv act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs x := by
+  apply Equiv.ext
+  intro χ
+  funext J
+  apply Subtype.ext
+  let e :=
+    (badAtEquiv act A B₀ ψ gp x).trans
+      (badAtEquiv act A B₀ ψ gq (gp x))
+  let I : BadAt act A B₀ ψ x := e.symm J
+  have hJ : e I = J := e.apply_symm_apply J
+  rw [← hJ]
+  change
+    (valuationFunctionEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)
+        (valuationFunctionEquiv act A B₀ ψ
+          p gp hsp htp hcp x χ)
+        (badAtEquiv act A B₀ ψ gq (gp x)
+          (badAtEquiv act A B₀ ψ gp x I))).1 =
+      (valuationFunctionEquiv act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs x χ
+        (badAtEquiv act A B₀ ψ gq (gp x)
+          (badAtEquiv act A B₀ ψ gp x I))).1
+  have hp :=
+    congrArg Subtype.val
+      (valuationFunctionEquiv_comp_apply
+        act A B₀ ψ p q gp gq ht
+        hsp htp hsq htq hcp hcq
+        hss hst hcs x χ I)
+  simp only [badLabelEquivOfEq_apply_val] at hp
+  have hidx :=
+    congrArg
+      (fun K : BadAt act A B₀ ψ ((gq.comp gp) x) =>
+        (valuationFunctionEquiv act A B₀ ψ
+          (q.comp p ht) (gq.comp gp)
+          hss hst hcs x χ K).1)
+      (badAtEquiv_comp act A B₀ ψ gp gq x I)
+  exact hp.trans hidx
+
+
 end Faithful
 end AllThoseEPPA

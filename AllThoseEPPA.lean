@@ -30,3 +30,4 @@ import AllThoseEPPA.FaithfulLabels
 import AllThoseEPPA.FaithfulLabelFibres
 import AllThoseEPPA.FaithfulLabelExtension
 import AllThoseEPPA.FaithfulClosureTransport
+import AllThoseEPPA.FaithfulValuationTransport

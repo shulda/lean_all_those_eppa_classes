@@ -32,3 +32,4 @@ import AllThoseEPPA.FaithfulLabelExtension
 import AllThoseEPPA.FaithfulClosureTransport
 import AllThoseEPPA.FaithfulValuationTransport
 import AllThoseEPPA.FaithfulValuationGeneric
+import AllThoseEPPA.FaithfulValuationStructureTransport

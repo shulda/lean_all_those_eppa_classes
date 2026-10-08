@@ -36,3 +36,4 @@ import AllThoseEPPA.FaithfulValuationStructureTransport
 import AllThoseEPPA.FaithfulWitnessTransport
 import AllThoseEPPA.FaithfulWitnessFunctionTransport
 import AllThoseEPPA.FaithfulWitnessAutomorphism
+import AllThoseEPPA.FaithfulExtension

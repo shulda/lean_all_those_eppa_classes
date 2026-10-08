@@ -56,8 +56,13 @@ noncomputable def valuationAssignmentEquiv [Finite β]
       ValuationAssignment act A B₀ ψ (g x) :=
   (closureTransportEquiv act B₀ g x).piCongr
     (fun y =>
-      valuationFunctionEquiv act A B₀ ψ
-        p g hsource htarget hcompat y.1)
+      show
+        ValuationFunction act A B₀ ψ y.1 ≃
+          ValuationFunction act A B₀ ψ
+            ((closureTransportEquiv act B₀ g x y).1)
+      from
+        valuationFunctionEquiv act A B₀ ψ
+          p g hsource htarget hcompat y.1)
 
 /-- Evaluation of a transported valuation assignment at the transported
 closure point. -/

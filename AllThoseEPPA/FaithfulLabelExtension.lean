@@ -272,6 +272,8 @@ theorem usedLabelEquiv_centerLabel [Finite β]
   rw [← hs]
   simp [usedLabelEquiv, sw, sourceTargetWitnessEquiv,
     targetWitnessLabelEquiv, targetLabelMap]
+  apply Subtype.ext
+  rfl
 
 /-- Consequently the canonical total label extension agrees with the partial
 witness automorphism on every centre label occurring in the source. -/

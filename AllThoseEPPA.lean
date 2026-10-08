@@ -46,3 +46,4 @@ import AllThoseEPPA.FaithfulEPPA
 import AllThoseEPPA.FaithfulCanonicalCoherence
 import AllThoseEPPA.FaithfulLabelCoherence
 import AllThoseEPPA.FaithfulValuationCoherence
+import AllThoseEPPA.FaithfulWitnessCoherence

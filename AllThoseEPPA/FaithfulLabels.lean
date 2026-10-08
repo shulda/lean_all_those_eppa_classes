@@ -76,12 +76,13 @@ def badLabelEquivCarrierNeHole
 irreducible. -/
 theorem badLabel_card [Finite β]
     (I : BadIrreducible act A B₀ ψ) :
-    Fintype.card (BadLabel act A B₀ ψ I) =
-      Fintype.card I.carrier - 1 := by
+    Nat.card (BadLabel act A B₀ ψ I) =
+      Nat.card I.carrier - 1 := by
   classical
   letI : Fintype β := Fintype.ofFinite β
   letI : Fintype I.carrier := Fintype.ofFinite _
   letI : Fintype (BadLabel act A B₀ ψ I) := Fintype.ofFinite _
+  rw [Nat.card_eq_fintype_card, Nat.card_eq_fintype_card]
   let h :
       Fintype.card (BadLabel act A B₀ ψ I) =
         Fintype.card
@@ -98,28 +99,15 @@ theorem badLabel_card [Finite β]
 theorem badLabel_transport_card [Finite β]
     (g : Structure.Automorphism act B₀)
     (I : BadIrreducible act A B₀ ψ) :
-    Fintype.card (BadLabel act A B₀ ψ I) =
-      Fintype.card
+    Nat.card (BadLabel act A B₀ ψ I) =
+      Nat.card
         (BadLabel act A B₀ ψ
           (I.transport act A B₀ ψ g)) := by
-  classical
-  letI : Fintype β := Fintype.ofFinite β
-  letI : Fintype I.carrier := Fintype.ofFinite _
-  letI :
-      Fintype (I.transport act A B₀ ψ g).carrier :=
-    Fintype.ofFinite _
-  letI : Fintype (BadLabel act A B₀ ψ I) :=
-    Fintype.ofFinite _
-  letI :
-      Fintype
-        (BadLabel act A B₀ ψ
-          (I.transport act A B₀ ψ g)) :=
-    Fintype.ofFinite _
   rw [badLabel_card act A B₀ ψ I,
     badLabel_card act A B₀ ψ
       (I.transport act A B₀ ψ g)]
   exact congrArg (fun n => n - 1)
-    (Fintype.card_congr (badCarrierEquiv act A B₀ ψ g I))
+    (Nat.card_congr (badCarrierEquiv act A B₀ ψ g I))
 
 /-- A fixed Fintype structure for each bad-label type. -/
 noncomputable def badLabelFintype [Finite β]

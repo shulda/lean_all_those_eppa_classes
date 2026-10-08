@@ -194,5 +194,85 @@ theorem faithfulnessEmbedding_range_generic
       (fun t : Bool => if t then a else b))
       true false y z)
 
+
+/-- **Faithfulness part of Proposition `prop:faithful`.**  Every irreducible
+substructure of the faithful witness can be moved into the canonical copy of
+the original structure. -/
+theorem faithfulWitness_isIrreducibleStructureFaithful [Finite β] :
+    Structure.IsIrreducibleStructureFaithful act
+      (canonicalEmbedding act A B₀ ψ) := by
+  intro S hS hirr
+  let hgen :
+      WitnessSetGeneric act A B₀ ψ S :=
+    irreducible_witnessSetGeneric act A B₀ ψ S hS hirr
+  rcases
+      irreducible_projection_not_bad
+        act A B₀ ψ S hS hirr with
+    ⟨g, hg⟩
+  let hsub :
+      movedProjection act A B₀ ψ g S ⊆ Set.range ψ :=
+    movedProjection_subset_range act A B₀ ψ S g hg
+  let f :=
+    faithfulnessEmbedding act A B₀ ψ
+      S hS hgen g hsub
+  let p :=
+    partialAutomorphismOfInducedEmbedding
+      act (witnessStructure act A B₀ ψ)
+      S hS f
+  have hsource :
+      WitnessSetGeneric act A B₀ ψ p.source := by
+    simpa [p] using hgen
+  have htarget :
+      WitnessSetGeneric act A B₀ ψ p.target := by
+    simpa [p, inducedEmbeddingRange] using
+      (faithfulnessEmbedding_range_generic
+        act A B₀ ψ S hS hgen g hsub)
+  have hcompat :
+      BaseCompatible act A B₀ ψ p g := by
+    constructor
+    · change g.lang = f.lang
+      exact
+        (faithfulnessEmbedding_lang
+          act A B₀ ψ S hS hgen g hsub).symm
+    · intro x hx
+      have hxS : x ∈ S := by
+        simpa [p] using hx
+      have hp :=
+        partialAutomorphismOfInducedEmbedding_apply
+          act (witnessStructure act A B₀ ψ)
+          S hS f hxS
+      rw [hp]
+      exact
+        (faithfulnessEmbedding_base
+          act A B₀ ψ S hS hgen g hsub
+          ⟨x, hxS⟩).symm
+  rcases
+      faithfulExtension act A B₀ ψ
+        p g hsource htarget hcompat with
+    ⟨h, hext⟩
+  refine ⟨h, ?_⟩
+  intro x hx
+  let sx : S := ⟨x, hx⟩
+  rcases
+      faithfulnessEmbedding_isCanonical
+        act A B₀ ψ S hS hgen g hsub sx with
+    ⟨a, hfa⟩
+  refine ⟨a, ?_⟩
+  have hxSource : x ∈ p.source := by
+    simpa [p] using hx
+  have hextx := hext.2 x hxSource
+  have hp :=
+    partialAutomorphismOfInducedEmbedding_apply
+      act (witnessStructure act A B₀ ψ)
+      S hS f hx
+  change h x = canonicalEmbedding act A B₀ ψ a
+  calc
+    h x = p x := by
+      simpa [Structure.Embedding.id] using hextx
+    _ = f sx := by
+      simpa [sx] using hp
+    _ = canonicalVertex act A B₀ ψ a := hfa
+    _ = canonicalEmbedding act A B₀ ψ a := rfl
+
 end Faithful
 end AllThoseEPPA

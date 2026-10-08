@@ -25,3 +25,4 @@ import AllThoseEPPA.FaithfulIrreducible
 import AllThoseEPPA.FaithfulProjectionImage
 import AllThoseEPPA.FinitePartialEquiv
 import AllThoseEPPA.Automorphism
+import AllThoseEPPA.FaithfulTransport

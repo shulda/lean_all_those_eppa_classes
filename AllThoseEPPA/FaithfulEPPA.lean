@@ -100,10 +100,10 @@ theorem canonicalPartialAutomorphism_baseCompatible
         x ∈ canonicalPartialSourceSet act A B₀ ψ p := by
       simpa [canonicalPartialAutomorphism] using hx
     rcases hxSource with ⟨a, hax⟩
-    have hax' :
-        canonicalVertex act A B₀ ψ a.1 = x := by
-      exact hax
-    subst x
+    have hxcanon :
+        x = canonicalVertex act A B₀ ψ a.1 := by
+      exact hax.symm
+    rw [hxcanon]
     rw [canonicalPartialAutomorphism_apply
       act A B₀ ψ p a.1 a.2]
     change g (ψ a.1) = ψ (p a.1)

@@ -23,3 +23,4 @@ import AllThoseEPPA.Faithful
 import AllThoseEPPA.FaithfulClosure
 import AllThoseEPPA.FaithfulIrreducible
 import AllThoseEPPA.FaithfulProjectionImage
+import AllThoseEPPA.FinitePartialEquiv

@@ -31,5 +31,63 @@ theorem badAtEquiv_comp
     (BadIrreducible.transport_comp
       act A B₀ ψ gq gp I.1).symm
 
+/-- Successive valuation-function transport agrees pointwise with transport
+along the composite, after the canonical equality transport of the final bad
+label index. -/
+theorem valuationFunctionEquiv_comp_apply [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    (x : β)
+    (χ : ValuationFunction act A B₀ ψ x)
+    (I : BadAt act A B₀ ψ x) :
+    valuationFunctionEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)
+        (valuationFunctionEquiv act A B₀ ψ
+          p gp hsp htp hcp x χ)
+        (badAtEquiv act A B₀ ψ gq (gp x)
+          (badAtEquiv act A B₀ ψ gp x I)) =
+      badLabelEquivOfEq act A B₀ ψ
+          (BadIrreducible.transport_comp
+            act A B₀ ψ gq gp I.1).symm
+        (valuationFunctionEquiv act A B₀ ψ
+          (q.comp p ht) (gq.comp gp)
+          hss hst hcs x χ
+          (badAtEquiv act A B₀ ψ (gq.comp gp) x I)) := by
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ q gq hsq htq hcq
+    (gp x)
+    (valuationFunctionEquiv act A B₀ ψ
+      p gp hsp htp hcp x χ)
+    (badAtEquiv act A B₀ ψ gp x I)]
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ p gp hsp htp hcp x χ I]
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ
+    (q.comp p ht) (gq.comp gp)
+    hss hst hcs x χ I]
+  exact
+    congrArg
+      (fun e => e (χ I))
+      (labelExtension_comp
+        act A B₀ ψ p q gp gq ht
+        hsp htp hsq htq hcp hcq
+        hss hst hcs I)
+
+
 end Faithful
 end AllThoseEPPA

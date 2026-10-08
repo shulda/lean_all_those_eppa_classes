@@ -161,6 +161,105 @@ theorem closureAt_isIrreducible
         hcl
 
 
+/-- An irreducible induced substructure of a free amalgam is contained in one
+of the two sides.  This is the basic structural fact used later for tree
+amalgamations. -/
+theorem irreducible_subset_one_side
+    (A : Structure L V)
+    (d : A.FreeDecomposition)
+    (S : Set V) (hS : A.IsClosed S)
+    (hirr : (A.induce S hS).IsIrreducible) :
+    S ⊆ d.left ∨ S ⊆ d.right := by
+  by_contra hcontain
+  have hnleft : ¬ S ⊆ d.left := by
+    intro hleft
+    exact hcontain (Or.inl hleft)
+  have hnright : ¬ S ⊆ d.right := by
+    intro hright
+    exact hcontain (Or.inr hright)
+  let leftS : Set S :=
+    {x | x.1 ∈ d.left}
+  let rightS : Set S :=
+    {x | x.1 ∈ d.right}
+  have hleftClosed :
+      (A.induce S hS).IsClosed leftS := by
+    intro n F xs hxs y hy
+    change y.1 ∈ d.left
+    apply d.left_closed F (Subtype.val ∘ xs)
+    · intro i
+      exact hxs i
+    · exact hy
+  have hrightClosed :
+      (A.induce S hS).IsClosed rightS := by
+    intro n F xs hxs y hy
+    change y.1 ∈ d.right
+    apply d.right_closed F (Subtype.val ∘ xs)
+    · intro i
+      exact hxs i
+    · exact hy
+  have hcover : leftS ∪ rightS = Set.univ := by
+    apply Set.eq_univ_of_forall
+    intro x
+    have hx : x.1 ∈ d.left ∪ d.right := by
+      rw [d.cover]
+      exact Set.mem_univ x.1
+    simpa [leftS, rightS] using hx
+  have hleftProper : leftS ≠ Set.univ := by
+    rcases Set.not_subset.mp hnleft with ⟨x, hxS, hxL⟩
+    intro hall
+    have hx : (⟨x, hxS⟩ : S) ∈ leftS := by
+      rw [hall]
+      exact Set.mem_univ _
+    exact hxL hx
+  have hrightProper : rightS ≠ Set.univ := by
+    rcases Set.not_subset.mp hnright with ⟨x, hxS, hxR⟩
+    intro hall
+    have hx : (⟨x, hxS⟩ : S) ∈ rightS := by
+      rw [hall]
+      exact Set.mem_univ _
+    exact hxR hx
+  let dec : (A.induce S hS).FreeDecomposition :=
+    { left := leftS
+      right := rightS
+      left_closed := hleftClosed
+      right_closed := hrightClosed
+      cover := hcover
+      left_proper := hleftProper
+      right_proper := hrightProper
+      rel_local := by
+        intro n R xs hrel
+        have h :=
+          d.rel_local R (Subtype.val ∘ xs) hrel
+        rcases h with hl | hr
+        · left
+          intro i
+          exact hl i
+        · right
+          intro i
+          exact hr i
+      func_cross_empty := by
+        intro n F xs hcross
+        have hamb :
+            A.func F (Subtype.val ∘ xs) = ∅ := by
+          apply d.func_cross_empty F (Subtype.val ∘ xs)
+          intro hside
+          apply hcross
+          rcases hside with hl | hr
+          · left
+            intro i
+            exact hl i
+          · right
+            intro i
+            exact hr i
+        ext y
+        change
+          (y.1 ∈ A.func F (Subtype.val ∘ xs)) ↔
+            y ∈ (∅ : Set S)
+        rw [hamb]
+        simp }
+  exact hirr.false dec
+
+
 section Maps
 
 variable {Γ : Type z} [Group Γ]

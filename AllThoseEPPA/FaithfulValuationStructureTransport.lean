@@ -168,5 +168,51 @@ theorem ValuationStructure.transport_injective [Finite β]
       p g hsource htarget hcompat x).injective
   exact congrArg Subtype.val hVW
 
+
+/-- Transport commutes with restricting a valuation structure to a nested
+one-point closure. -/
+theorem ValuationStructure.transport_restrict [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    {x y : β}
+    (V : ValuationStructure act A B₀ ψ x)
+    (hy : y ∈ B₀.closureAtSet x) :
+    ValuationStructure.transport act A B₀ ψ
+        p g hsource htarget hcompat
+        (V.restrict act A B₀ ψ y hy) =
+      (ValuationStructure.transport act A B₀ ψ
+        p g hsource htarget hcompat V).restrict
+          act A B₀ ψ (g y)
+          (automorphism_maps_closureAtSet act B₀ g hy) := by
+  apply Subtype.ext
+  funext z
+  let eY := closureTransportEquiv act B₀ g y
+  let z0 := eY.symm z
+  have hz : eY z0 = z := eY.apply_symm_apply z
+  rw [← hz]
+  change
+    valuationAssignmentEquiv act A B₀ ψ
+        p g hsource htarget hcompat y
+        (V.restrict act A B₀ ψ y hy).1
+        (eY z0) =
+      valuationAssignmentEquiv act A B₀ ψ
+        p g hsource htarget hcompat x V.1
+        (closureInclusion B₀
+          (automorphism_maps_closureAtSet act B₀ g hy)
+          (eY z0))
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ p g hsource htarget hcompat
+    y (V.restrict act A B₀ ψ y hy).1 z0]
+  rw [← closureTransportEquiv_closureInclusion
+    act A B₀ ψ g hy z0]
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ p g hsource htarget hcompat
+    x V.1 (closureInclusion B₀ hy z0)]
+  rfl
+
 end Faithful
 end AllThoseEPPA

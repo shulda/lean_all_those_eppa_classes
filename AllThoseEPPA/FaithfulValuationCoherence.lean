@@ -243,5 +243,98 @@ theorem valuationAssignmentEquiv_comp_apply [Finite β]
         hss hst hcs y.1)
 
 
+/-- Valuation-assignment transport is coherent under composition. -/
+theorem valuationAssignmentEquiv_comp [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    (x : β) :
+    (valuationAssignmentEquiv act A B₀ ψ
+        p gp hsp htp hcp x).trans
+      (valuationAssignmentEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)) =
+      valuationAssignmentEquiv act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs x := by
+  apply Equiv.ext
+  intro V
+  funext z
+  let y : B₀.closureAtSet x :=
+    (closureTransportEquiv act B₀ gp x).symm
+      ((closureTransportEquiv act B₀ gq (gp x)).symm z)
+  have hz :
+      closureTransportEquiv act B₀ gq (gp x)
+          (closureTransportEquiv act B₀ gp x y) = z := by
+    simp [y]
+  rw [← hz]
+  have hp :=
+    valuationAssignmentEquiv_comp_apply
+      act A B₀ ψ p q gp gq ht
+      hsp htp hsq htq hcp hcq
+      hss hst hcs x V y
+  rw [closureTransportEquiv_comp
+    act B₀ gp gq x y] at hp
+  exact hp
+
+/-- Transport of complete valuation structures is coherent under composition. -/
+theorem ValuationStructure.transport_comp [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    {x : β}
+    (V : ValuationStructure act A B₀ ψ x) :
+    ValuationStructure.transport act A B₀ ψ
+        q gq hsq htq hcq
+        (ValuationStructure.transport act A B₀ ψ
+          p gp hsp htp hcp V) =
+      ValuationStructure.transport act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs V := by
+  apply Subtype.ext
+  change
+    valuationAssignmentEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)
+        (valuationAssignmentEquiv act A B₀ ψ
+          p gp hsp htp hcp x V.1) =
+      valuationAssignmentEquiv act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs x V.1
+  exact
+    congrArg
+      (fun e => e V.1)
+      (valuationAssignmentEquiv_comp
+        act A B₀ ψ p q gp gq ht
+        hsp htp hsq htq hcp hcq
+        hss hst hcs x)
+
+
 end Faithful
 end AllThoseEPPA

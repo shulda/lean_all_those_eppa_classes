@@ -176,5 +176,72 @@ theorem valuationFunctionEquiv_comp [Finite β]
   exact hp'.trans hidx
 
 
+/-- Closure-point transport is coherent under composition of base
+automorphisms. -/
+theorem closureTransportEquiv_comp
+    (gp gq : Structure.Automorphism act B₀)
+    (x : β)
+    (y : B₀.closureAtSet x) :
+    closureTransportEquiv act B₀ (gq.comp gp) x y =
+      closureTransportEquiv act B₀ gq (gp x)
+        (closureTransportEquiv act B₀ gp x y) := by
+  apply Subtype.ext
+  rfl
+
+/-- Successive valuation-assignment transport agrees at every transported
+closure point with transport along the composite. -/
+theorem valuationAssignmentEquiv_comp_apply [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    (x : β)
+    (V : ValuationAssignment act A B₀ ψ x)
+    (y : B₀.closureAtSet x) :
+    valuationAssignmentEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)
+        (valuationAssignmentEquiv act A B₀ ψ
+          p gp hsp htp hcp x V)
+        (closureTransportEquiv act B₀ gq (gp x)
+          (closureTransportEquiv act B₀ gp x y)) =
+      valuationAssignmentEquiv act A B₀ ψ
+        (q.comp p ht) (gq.comp gp)
+        hss hst hcs x V
+        (closureTransportEquiv act B₀
+          (gq.comp gp) x y) := by
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ q gq hsq htq hcq
+    (gp x)
+    (valuationAssignmentEquiv act A B₀ ψ
+      p gp hsp htp hcp x V)
+    (closureTransportEquiv act B₀ gp x y)]
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ p gp hsp htp hcp x V y]
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ
+    (q.comp p ht) (gq.comp gp)
+    hss hst hcs x V y]
+  exact
+    congrArg
+      (fun e => e (V y))
+      (valuationFunctionEquiv_comp
+        act A B₀ ψ p q gp gq ht
+        hsp htp hsq htq hcp hcq
+        hss hst hcs y.1)
+
+
 end Faithful
 end AllThoseEPPA

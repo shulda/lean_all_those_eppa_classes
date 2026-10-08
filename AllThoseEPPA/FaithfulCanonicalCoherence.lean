@@ -266,6 +266,11 @@ theorem canonicalPartialAutomorphism_coherentTriple
           (mem_canonicalPartialAutomorphism_source_iff
             act A B₀ ψ p x).2
             ⟨a, hap, hxa⟩
+        change x ∈ P.toPartialEquiv.source
+        change
+          x ∈
+            (canonicalPartialAutomorphism
+              act A B₀ ψ p).toPartialEquiv.source at hxP
         simpa [P] using hxP
       · intro hx
         have hxP : x ∈ P.source := by
@@ -285,6 +290,11 @@ theorem canonicalPartialAutomorphism_coherentTriple
           (mem_canonicalPartialAutomorphism_source_iff
             act A B₀ ψ r x).2
             ⟨a, har, hxa⟩
+        change x ∈ R.toPartialEquiv.source
+        change
+          x ∈
+            (canonicalPartialAutomorphism
+              act A B₀ ψ r).toPartialEquiv.source at hxR
         simpa [R] using hxR
     · intro x hx
       have hxR : x ∈ R.source := by

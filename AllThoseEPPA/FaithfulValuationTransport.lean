@@ -86,20 +86,8 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         (badAtEquiv act A B₀ ψ g x I) =
       labelExtension act A B₀ ψ p g I.1
         hsource htarget hcompat (χ I) := by
-  change
-    valuationLabelFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x
-        (badAtEquiv act A B₀ ψ g x I)
-        (χ ((badAtEquiv act A B₀ ψ g x).symm
-          (badAtEquiv act A B₀ ψ g x I))) =
-      labelExtension act A B₀ ψ p g I.1
-        hsource htarget hcompat (χ I)
-  have hround :
-      (badAtEquiv act A B₀ ψ g x).symm
-          (badAtEquiv act A B₀ ψ g x I) = I :=
-    (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
-  rw [hround]
-  rfl
+  simp [valuationFunctionEquiv, Equiv.piCongr'_apply,
+    valuationLabelFibreEquiv]
 
 end Faithful
 end AllThoseEPPA

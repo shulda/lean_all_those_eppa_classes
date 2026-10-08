@@ -100,7 +100,8 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
       (χ I')).1 =
         ((labelExtension act A B₀ ψ p g I'.1
           hsource htarget hcompat) (χ I')).1 := by
-      simp [valuationLabelFibreEquiv, e, I']
+      simp only [valuationLabelFibreEquiv, Equiv.trans_apply]
+      exact badLabelEquivOfEq_apply_val act A B₀ ψ _ _
     _ =
         ((labelExtension act A B₀ ψ p g I.1
           hsource htarget hcompat) (χ I)).1 := by

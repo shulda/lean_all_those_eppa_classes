@@ -105,13 +105,22 @@ theorem canonicalPartialAutomorphism_apply
     canonicalPartialAutomorphism act A B₀ ψ p
         (canonicalVertex act A B₀ ψ a) =
       canonicalVertex act A B₀ ψ (p a) := by
-  let sourceEmb :=
+  let sourceEmb :
+      Structure.Embedding act
+        (A.induce p.source p.source_closed)
+        (witnessStructure act A B₀ ψ) :=
     canonicalSourceCopyEmbedding act A B₀ ψ p
-  let sourceSet :=
+  let sourceSet : Set (WitnessVertex act A B₀ ψ) :=
     canonicalPartialSourceSet act A B₀ ψ p
-  let hsourceSet :=
-    canonicalPartialSourceSet_isClosed act A B₀ ψ p
-  let back :=
+  let hsourceSet :
+      (witnessStructure act A B₀ ψ).IsClosed sourceSet := by
+    simpa [sourceSet] using
+      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
+  let back :
+      Structure.Embedding act
+        ((witnessStructure act A B₀ ψ).induce
+          sourceSet hsourceSet)
+        (A.induce p.source p.source_closed) :=
     embeddingInverseOnClosedSubset act sourceEmb
       sourceSet hsourceSet
       (by

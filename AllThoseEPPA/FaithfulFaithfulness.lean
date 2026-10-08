@@ -89,9 +89,8 @@ theorem faithfulnessEmbedding_lang
       movedProjection act A B₀ ψ g S ⊆ Set.range ψ) :
     (faithfulnessEmbedding act A B₀ ψ
       S hS hgen g hsub).lang = g.lang := by
-  simp [faithfulnessEmbedding,
-    Structure.Embedding.comp,
-    embeddingInverseOnClosedSubset]
+  change ψ.lang * (ψ.lang⁻¹ * (g.lang * 1)) = g.lang
+  simp [mul_assoc]
 
 /-- Every point of the final embedding lands at a canonical witness vertex. -/
 theorem faithfulnessEmbedding_isCanonical
@@ -151,9 +150,26 @@ theorem faithfulnessEmbedding_base
       (movedProjection_isClosed act A B₀ ψ g S hS)
       hsub (move (proj x))
   change ψ (back (move (proj x))) = g x.1.base
-  simpa [back, move, proj, movedProjection,
-    WitnessVertex.base] using hback
+  calc
+    ψ (back (move (proj x))) = (move (proj x)).1 := hback
+    _ = g x.1.base := rfl
 
+
+/-- A family consisting pointwise of canonical vertices is generic. -/
+theorem witnessFamilyGeneric_of_pointwise_canonical
+    {ι : Type*}
+    (ws : ι → WitnessVertex act A B₀ ψ)
+    (hcanon :
+      ∀ i, ∃ a : α,
+        ws i = canonicalVertex act A B₀ ψ a) :
+    WitnessFamilyGeneric act A B₀ ψ ws := by
+  choose as has using hcanon
+  have hws :
+      ws = fun i => canonicalVertex act A B₀ ψ (as i) := by
+    funext i
+    exact has i
+  rw [hws]
+  exact canonicalFamilyGeneric act A B₀ ψ as
 
 /-- The range of the final faithful embedding is generic because every one
 of its vertices is canonical. -/
@@ -168,32 +184,16 @@ theorem faithfulnessEmbedding_range_generic
       (Set.range
         (faithfulnessEmbedding act A B₀ ψ
           S hS hgen g hsub)) := by
-  intro i j y z
+  apply witnessFamilyGeneric_of_pointwise_canonical
+    act A B₀ ψ
+  intro i
   rcases i with ⟨u, hu⟩
-  rcases j with ⟨v, hv⟩
   rcases hu with ⟨x, hxu⟩
-  rcases hv with ⟨x', hxv⟩
   rcases
       faithfulnessEmbedding_isCanonical
         act A B₀ ψ S hS hgen g hsub x with
     ⟨a, hca⟩
-  rcases
-      faithfulnessEmbedding_isCanonical
-        act A B₀ ψ S hS hgen g hsub x' with
-    ⟨b, hcb⟩
-  have huCanon :
-      u = canonicalVertex act A B₀ ψ a :=
-    hxu.symm.trans hca
-  have hvCanon :
-      v = canonicalVertex act A B₀ ψ b :=
-    hxv.symm.trans hcb
-  subst u
-  subst v
-  simpa using
-    ((canonicalFamilyGeneric act A B₀ ψ
-      (fun t : Bool => if t then a else b))
-      true false y z)
-
+  exact ⟨a, hxu.symm.trans hca⟩
 
 /-- **Faithfulness part of Proposition `prop:faithful`.**  Every irreducible
 substructure of the faithful witness can be moved into the canonical copy of

@@ -63,7 +63,8 @@ theorem WitnessVertex.transport_pointAt [Finite β]
       transportValuationPoint act A B₀ ψ
         p g hsource htarget hcompat
         (w.pointAt act A B₀ ψ y) := by
-  apply Sigma.ext rfl
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
   exact heq_of_eq
     (valuationAssignmentEquiv_apply_transport
       act A B₀ ψ p g hsource htarget hcompat
@@ -197,7 +198,7 @@ theorem witnessRelation_transport_iff [Finite β]
       WitnessFamilyGeneric act A B₀ ψ ws)
   exact and_congr
     (Structure.Automorphism.map_rel_iff
-      act g R (fun i => (ws i).base))
+      (g := g) R (fun i => (ws i).base))
     (witnessFamilyGeneric_transport_iff
       act A B₀ ψ p g hsource htarget hcompat ws)
 

@@ -60,10 +60,10 @@ noncomputable def valuationFunctionEquiv [Finite β]
     (x : β) :
     ValuationFunction act A B₀ ψ x ≃
       ValuationFunction act A B₀ ψ (g x) :=
-  (badAtEquiv act A B₀ ψ g x).piCongr'
-    (fun J =>
-      valuationLabelFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x J)
+  (badAtEquiv act A B₀ ψ g x).piCongr
+    (fun I =>
+      labelExtension act A B₀ ψ p g I.1
+        hsource htarget hcompat)
 
 /-- Evaluation of transported valuation functions at a transported bad
 irreducible is the corresponding total label extension. -/
@@ -82,34 +82,13 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         (badAtEquiv act A B₀ ψ g x I) =
       labelExtension act A B₀ ψ p g I.1
         hsource htarget hcompat (χ I) := by
-  simp only [valuationFunctionEquiv, Equiv.piCongr'_apply]
-  apply Subtype.ext
-  let e := badAtEquiv act A B₀ ψ g x
-  let I' : BadAt act A B₀ ψ x := e.symm (e I)
-  have hround : I' = I := by
-    exact e.symm_apply_apply I
-  change
-    ((valuationLabelFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x (e I))
-      (χ I')).1 =
-      ((labelExtension act A B₀ ψ p g I.1
-        hsource htarget hcompat) (χ I)).1
-  calc
-    ((valuationLabelFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x (e I))
-      (χ I')).1 =
-        ((labelExtension act A B₀ ψ p g I'.1
-          hsource htarget hcompat) (χ I')).1 := by
-      simp only [valuationLabelFibreEquiv, Equiv.trans_apply]
-      exact badLabelEquivOfEq_apply_val act A B₀ ψ _ _
-    _ =
-        ((labelExtension act A B₀ ψ p g I.1
-          hsource htarget hcompat) (χ I)).1 := by
-      exact congrArg
-        (fun K : BadAt act A B₀ ψ x =>
-          ((labelExtension act A B₀ ψ p g K.1
-            hsource htarget hcompat) (χ K)).1)
-        hround
+  exact
+    Equiv.piCongr_apply_apply
+      (badAtEquiv act A B₀ ψ g x)
+      (fun K =>
+        labelExtension act A B₀ ψ p g K.1
+          hsource htarget hcompat)
+      χ I
 
 end Faithful
 end AllThoseEPPA

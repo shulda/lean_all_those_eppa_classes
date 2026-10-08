@@ -168,16 +168,26 @@ theorem centerValuationPoint_restrictionVertex
         (restrictionVertex act A B₀ ψ w y hy) =
       w.pointAt act A B₀ ψ
         (⟨y, hy⟩ : B₀.closureAtSet w.base) := by
-  unfold centerValuationPoint centerPoint
-  rw [restrictionVertex_pointAt]
-  have hz :
-      closureInclusion B₀ hy
+  change
+    valuationPointAt act A B₀ ψ
+        (w.valuation.restrict act A B₀ ψ y hy).1
+        (⟨y, B₀.mem_closureAtSet y⟩ :
+          B₀.closureAtSet y) =
+      valuationPointAt act A B₀ ψ w.valuation.1
+        (⟨y, hy⟩ : B₀.closureAtSet w.base)
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
+  rw [heq_iff_eq]
+  change
+    w.valuation.1
+        (closureInclusion B₀ hy
           (⟨y, B₀.mem_closureAtSet y⟩ :
-            B₀.closureAtSet y) =
-        (⟨y, hy⟩ : B₀.closureAtSet w.base) := by
-    apply Subtype.ext
-    rfl
-  rw [hz]
+            B₀.closureAtSet y)) =
+      w.valuation.1
+        (⟨y, hy⟩ : B₀.closureAtSet w.base)
+  congr 1
+  apply Subtype.ext
+  rfl
 
 /-- The centre label of a restriction-descendant is the corresponding
 component of the ancestor valuation assignment. -/
@@ -192,10 +202,24 @@ theorem centerLabel_restrictionVertex
       (w.valuation.1
         (⟨y, hy⟩ : B₀.closureAtSet w.base))
         ⟨I, hyI⟩ := by
-  unfold centerLabel
-  rw [centerValuationPoint_restrictionVertex
-    act A B₀ ψ w y hy]
-  rfl
+  apply Subtype.ext
+  change
+    ((w.valuation.1
+        (closureInclusion B₀ hy
+          (⟨y, B₀.mem_closureAtSet y⟩ :
+            B₀.closureAtSet y)))
+        ⟨I, hyI⟩).1 =
+      ((w.valuation.1
+        (⟨y, hy⟩ : B₀.closureAtSet w.base))
+        ⟨I, hyI⟩).1
+  have hz :
+      closureInclusion B₀ hy
+          (⟨y, B₀.mem_closureAtSet y⟩ :
+            B₀.closureAtSet y) =
+        (⟨y, hy⟩ : B₀.closureAtSet w.base) := by
+    apply Subtype.ext
+    rfl
+  rw [hz]
 
 /-- On a source vertex, transport of the valuation function at every point of
 its one-point closure is exactly the valuation function carried by the
@@ -324,7 +348,8 @@ theorem faithfulWitnessAutomorphism_extends [Finite β]
       (faithfulWitnessAutomorphism act A B₀ ψ
         p g hsource htarget hcompat) := by
   constructor
-  · simpa [hcompat.1]
+  · change g.lang * (1 : Γ) = (1 : Γ) * p.lang
+    simpa [hcompat.1]
   · intro w hw
     rw [faithfulWitnessAutomorphism_apply]
     exact

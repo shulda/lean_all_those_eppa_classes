@@ -286,9 +286,10 @@ theorem labelExtension_eq_of_equivalent [Finite β]
         hsp htp hsq htq hcp hcq hpq)
 
 
-/-- The canonical total label extensions compose for an exact composition of
-faithful partial automorphisms and compatible base automorphisms. -/
-theorem labelExtension_comp [Finite β]
+/-- The canonical total label extensions compose once the two target
+bad-irreducible indices are identified explicitly.  Abstracting this equality
+makes the dependent elimination on label types well-typed. -/
+theorem labelExtension_comp_of_transport_eq [Finite β]
     (p q : Structure.PartialAutomorphism act
       (witnessStructure act A B₀ ψ))
     (gp gq : Structure.Automorphism act B₀)
@@ -306,7 +307,11 @@ theorem labelExtension_comp [Finite β]
     (hcs :
       BaseCompatible act A B₀ ψ
         (q.comp p ht) (gq.comp gp))
-    (I : BadIrreducible act A B₀ ψ) :
+    (I : BadIrreducible act A B₀ ψ)
+    (htransport :
+      (I.transport act A B₀ ψ gp).transport
+          act A B₀ ψ gq =
+        I.transport act A B₀ ψ (gq.comp gp)) :
     (labelExtension act A B₀ ψ p gp I
         hsp htp hcp).trans
       (labelExtension act A B₀ ψ q gq
@@ -315,29 +320,13 @@ theorem labelExtension_comp [Finite β]
     (labelExtension act A B₀ ψ
         (q.comp p ht) (gq.comp gp) I
         hss hst hcs).trans
-      (badLabelEquivOfEq act A B₀ ψ
-        (BadIrreducible.transport_comp
-          act A B₀ ψ gq gp I).symm) := by
+      (badLabelEquivOfEq act A B₀ ψ htransport.symm) := by
+  cases htransport
+  simp only [badLabelEquivOfEq, Equiv.trans_refl]
   let J : BadIrreducible act A B₀ ψ :=
     I.transport act A B₀ ψ gp
-  generalize hKdef :
-      J.transport act A B₀ ψ gq = K
-  have hK :
-      K = I.transport act A B₀ ψ (gq.comp gp) := by
-    exact hKdef.symm.trans
-      (BadIrreducible.transport_comp
-        act A B₀ ψ gq gp I)
-  change
-    (labelExtension act A B₀ ψ p gp I
-        hsp htp hcp).trans
-      (labelExtension act A B₀ ψ q gq J
-        hsq htq hcq) =
-    (labelExtension act A B₀ ψ
-        (q.comp p ht) (gq.comp gp) I
-        hss hst hcs).trans
-      (badLabelEquivOfEq act A B₀ ψ hK.symm)
-  cases hK
-  simp only [badLabelEquivOfEq, Equiv.trans_refl]
+  let K : BadIrreducible act A B₀ ψ :=
+    J.transport act A B₀ ψ gq
   letI : Fintype (BadLabel act A B₀ ψ I) :=
     badLabelFintype act A B₀ ψ I
   letI : Fintype (BadLabel act A B₀ ψ J) :=
@@ -431,8 +420,7 @@ theorem labelExtension_comp [Finite β]
   have hcardJK :
       Fintype.card (BadLabel act A B₀ ψ J) =
         Fintype.card (BadLabel act A B₀ ψ K) := by
-    rw [← hKdef]
-    simpa only [Nat.card_eq_fintype_card] using
+    simpa only [K, Nat.card_eq_fintype_card] using
       (badLabel_transport_card act A B₀ ψ gq J)
   have hcardIK :
       Fintype.card (BadLabel act A B₀ ψ I) =
@@ -453,6 +441,46 @@ theorem labelExtension_comp [Finite β]
       PartialEquiv.orderedExtensionOfCardEq ps hcardIK :=
       (PartialEquiv.orderedExtensionOfCardEq_eq_of_eqOnSource
         hcardIK heq).symm
+
+/-- The canonical total label extensions compose for an exact composition of
+faithful partial automorphisms and compatible base automorphisms. -/
+theorem labelExtension_comp [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (gp gq : Structure.Automorphism act B₀)
+    (ht : p.target = q.source)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p gp)
+    (hcq : BaseCompatible act A B₀ ψ q gq)
+    (hss :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).source)
+    (hst :
+      WitnessSetGeneric act A B₀ ψ (q.comp p ht).target)
+    (hcs :
+      BaseCompatible act A B₀ ψ
+        (q.comp p ht) (gq.comp gp))
+    (I : BadIrreducible act A B₀ ψ) :
+    (labelExtension act A B₀ ψ p gp I
+        hsp htp hcp).trans
+      (labelExtension act A B₀ ψ q gq
+        (I.transport act A B₀ ψ gp)
+        hsq htq hcq) =
+    (labelExtension act A B₀ ψ
+        (q.comp p ht) (gq.comp gp) I
+        hss hst hcs).trans
+      (badLabelEquivOfEq act A B₀ ψ
+        (BadIrreducible.transport_comp
+          act A B₀ ψ gq gp I).symm) := by
+  exact
+    labelExtension_comp_of_transport_eq
+      act A B₀ ψ p q gp gq ht
+      hsp htp hsq htq hcp hcq
+      hss hst hcs I
+      (BadIrreducible.transport_comp
+        act A B₀ ψ gq gp I)
 
 end Faithful
 end AllThoseEPPA

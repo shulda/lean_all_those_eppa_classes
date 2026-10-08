@@ -416,13 +416,23 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
       (valuationFunction_transport_eq_of_mem_source
         act A B₀ ψ p g hsource htarget hcompat
         w hw y.1 y.2)
+  have hgy :
+      g y.1 ∈ B₀.closureAtSet (g w.base) :=
+    automorphism_maps_closureAtSet act B₀ g y.2
+  let zy : B₀.closureAtSet (g w.base) :=
+    ⟨g y.1, hgy⟩
+  have hzy : zy = e y := by
+    apply Subtype.ext
+    exact
+      (closureTransportEquiv_apply_val
+        act B₀ g w.base y).symm
   have hval :=
     witnessValuationAt_congr
       act A B₀ ψ hpw (g y.1)
-      hy' (e y).2
+      hy' hgy
   rw [ht]
-  simpa [e, closureTransportEquiv,
-    WitnessVertex.valuation, WitnessVertex.base] using hval
+  rw [← hzy]
+  simpa [zy, WitnessVertex.valuation, WitnessVertex.base] using hval
 
 /-- The lifted automorphism extends the prescribed partial automorphism along
 the identity embedding of the faithful witness. -/

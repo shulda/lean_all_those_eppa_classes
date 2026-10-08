@@ -60,15 +60,15 @@ noncomputable def valuationFunctionEquiv [Finite β]
     (x : β) :
     ValuationFunction act A B₀ ψ x ≃
       ValuationFunction act A B₀ ψ (g x) :=
-  (badAtEquiv act A B₀ ψ g x).piCongr
+  Equiv.piCongr
+    (W := fun I : BadAt act A B₀ ψ x =>
+      BadLabel act A B₀ ψ I.1)
+    (Z := fun J : BadAt act A B₀ ψ (g x) =>
+      BadLabel act A B₀ ψ J.1)
+    (badAtEquiv act A B₀ ψ g x)
     (fun I =>
-      show
-        BadLabel act A B₀ ψ I.1 ≃
-          BadLabel act A B₀ ψ
-            ((badAtEquiv act A B₀ ψ g x I).1)
-      from
-        labelExtension act A B₀ ψ p g I.1
-          hsource htarget hcompat)
+      labelExtension act A B₀ ψ p g I.1
+        hsource htarget hcompat)
 
 /-- Evaluation of transported valuation functions at a transported bad
 irreducible is the corresponding total label extension. -/
@@ -89,6 +89,10 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         hsource htarget hcompat (χ I) := by
   exact
     Equiv.piCongr_apply_apply
+      (W := fun K : BadAt act A B₀ ψ x =>
+        BadLabel act A B₀ ψ K.1)
+      (Z := fun J : BadAt act A B₀ ψ (g x) =>
+        BadLabel act A B₀ ψ J.1)
       (badAtEquiv act A B₀ ψ g x)
       (fun K =>
         labelExtension act A B₀ ψ p g K.1

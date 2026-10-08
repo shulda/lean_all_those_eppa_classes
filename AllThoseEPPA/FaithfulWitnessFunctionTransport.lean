@@ -27,7 +27,7 @@ theorem baseFunction_mem_transport_iff
       y ∈ B₀.func F (fun _ => x) := by
   have hmap :=
     Structure.Automorphism.map_func
-      act g F (fun _ => x)
+      (g := g) F (fun _ => x)
   constructor
   · intro hy
     have hyImg :

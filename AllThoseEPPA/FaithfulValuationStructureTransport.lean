@@ -54,10 +54,10 @@ noncomputable def valuationAssignmentEquiv [Finite β]
     (x : β) :
     ValuationAssignment act A B₀ ψ x ≃
       ValuationAssignment act A B₀ ψ (g x) :=
-  (closureTransportEquiv act B₀ g x).piCongr'
-    (fun z =>
-      valuationAssignmentFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x z)
+  (closureTransportEquiv act B₀ g x).piCongr
+    (fun y =>
+      valuationFunctionEquiv act A B₀ ψ
+        p g hsource htarget hcompat y.1)
 
 /-- Evaluation of a transported valuation assignment at the transported
 closure point. -/
@@ -76,21 +76,13 @@ theorem valuationAssignmentEquiv_apply_transport [Finite β]
         (closureTransportEquiv act B₀ g x y) =
       valuationFunctionEquiv act A B₀ ψ
         p g hsource htarget hcompat y.1 (V y) := by
-  change
-    valuationAssignmentFibreEquiv act A B₀ ψ
-        p g hsource htarget hcompat x
-        (closureTransportEquiv act B₀ g x y)
-        (V
-          ((closureTransportEquiv act B₀ g x).symm
-            (closureTransportEquiv act B₀ g x y))) =
-      valuationFunctionEquiv act A B₀ ψ
-        p g hsource htarget hcompat y.1 (V y)
-  have hround :
-      (closureTransportEquiv act B₀ g x).symm
-          (closureTransportEquiv act B₀ g x y) = y :=
-    (closureTransportEquiv act B₀ g x).symm_apply_apply y
-  rw [hround]
-  rfl
+  exact
+    Equiv.piCongr_apply_apply
+      (closureTransportEquiv act B₀ g x)
+      (fun z =>
+        valuationFunctionEquiv act A B₀ ψ
+          p g hsource htarget hcompat z.1)
+      V y
 
 /-- Internal valuation points commute with assignment transport. -/
 theorem valuationPointAt_assignment_transport [Finite β]
@@ -110,7 +102,8 @@ theorem valuationPointAt_assignment_transport [Finite β]
       transportValuationPoint act A B₀ ψ
         p g hsource htarget hcompat
         (valuationPointAt act A B₀ ψ V y) := by
-  apply Sigma.ext rfl
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
   exact heq_of_eq
     (valuationAssignmentEquiv_apply_transport
       act A B₀ ψ p g hsource htarget hcompat x V y)
@@ -208,7 +201,7 @@ theorem ValuationStructure.transport_restrict [Finite β]
     act A B₀ ψ p g hsource htarget hcompat
     y (V.restrict act A B₀ ψ y hy).1 z0]
   rw [← closureTransportEquiv_closureInclusion
-    act A B₀ ψ g hy z0]
+    act B₀ g hy z0]
   rw [valuationAssignmentEquiv_apply_transport
     act A B₀ ψ p g hsource htarget hcompat
     x V.1 (closureInclusion B₀ hy z0)]

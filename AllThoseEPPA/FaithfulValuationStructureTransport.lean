@@ -54,15 +54,15 @@ noncomputable def valuationAssignmentEquiv [Finite β]
     (x : β) :
     ValuationAssignment act A B₀ ψ x ≃
       ValuationAssignment act A B₀ ψ (g x) :=
-  (closureTransportEquiv act B₀ g x).piCongr
+  Equiv.piCongr
+    (W := fun y : B₀.closureAtSet x =>
+      ValuationFunction act A B₀ ψ y.1)
+    (Z := fun z : B₀.closureAtSet (g x) =>
+      ValuationFunction act A B₀ ψ z.1)
+    (closureTransportEquiv act B₀ g x)
     (fun y =>
-      show
-        ValuationFunction act A B₀ ψ y.1 ≃
-          ValuationFunction act A B₀ ψ
-            ((closureTransportEquiv act B₀ g x y).1)
-      from
-        valuationFunctionEquiv act A B₀ ψ
-          p g hsource htarget hcompat y.1)
+      valuationFunctionEquiv act A B₀ ψ
+        p g hsource htarget hcompat y.1)
 
 /-- Evaluation of a transported valuation assignment at the transported
 closure point. -/
@@ -83,6 +83,10 @@ theorem valuationAssignmentEquiv_apply_transport [Finite β]
         p g hsource htarget hcompat y.1 (V y) := by
   exact
     Equiv.piCongr_apply_apply
+      (W := fun z : B₀.closureAtSet x =>
+        ValuationFunction act A B₀ ψ z.1)
+      (Z := fun z : B₀.closureAtSet (g x) =>
+        ValuationFunction act A B₀ ψ z.1)
       (closureTransportEquiv act B₀ g x)
       (fun z =>
         valuationFunctionEquiv act A B₀ ψ

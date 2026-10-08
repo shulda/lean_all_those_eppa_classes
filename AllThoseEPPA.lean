@@ -49,3 +49,4 @@ import AllThoseEPPA.FaithfulValuationCoherence
 import AllThoseEPPA.FaithfulWitnessCoherence
 import AllThoseEPPA.FaithfulCoherence
 import AllThoseEPPA.FaithfulProposition
+import AllThoseEPPA.UnrestrictedFaithfulEPPA

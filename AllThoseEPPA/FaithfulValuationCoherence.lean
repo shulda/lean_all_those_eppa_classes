@@ -281,14 +281,50 @@ theorem valuationAssignmentEquiv_comp [Finite β]
           (closureTransportEquiv act B₀ gp x y) = z := by
     simp [y]
   rw [← hz]
+  let tSeq :=
+    closureTransportEquiv act B₀ gq (gp x)
+      (closureTransportEquiv act B₀ gp x y)
+  let tComp :=
+    closureTransportEquiv act B₀ (gq.comp gp) x y
+  let W :=
+    valuationAssignmentEquiv act A B₀ ψ
+      (q.comp p ht) (gq.comp gp)
+      hss hst hcs x V
+  have htPoint : tComp = tSeq := by
+    exact closureTransportEquiv_comp act B₀ gp gq x y
+  have hdep : HEq (W tComp) (W tSeq) := by
+    have hsigma :
+        (⟨tComp, W tComp⟩ :
+          Σ t : B₀.closureAtSet ((gq.comp gp) x),
+            ValuationFunction act A B₀ ψ t.1) =
+        ⟨tSeq, W tSeq⟩ :=
+      congrArg
+        (fun t =>
+          (⟨t, W t⟩ :
+            Σ s : B₀.closureAtSet ((gq.comp gp) x),
+              ValuationFunction act A B₀ ψ s.1))
+        htPoint
+    exact (Sigma.mk.inj_iff.mp hsigma).2
   have hp :=
     valuationAssignmentEquiv_comp_apply
       act A B₀ ψ p q gp gq ht
       hsp htp hsq htq hcp hcq
       hss hst hcs x V y
-  rw [closureTransportEquiv_comp
-    act B₀ gp gq x y] at hp
-  exact hp
+  change
+    valuationAssignmentEquiv act A B₀ ψ
+        q gq hsq htq hcq (gp x)
+        (valuationAssignmentEquiv act A B₀ ψ
+          p gp hsp htp hcp x V) tSeq =
+      W tSeq
+  have hpheq :
+      HEq
+        (valuationAssignmentEquiv act A B₀ ψ
+          q gq hsq htq hcq (gp x)
+          (valuationAssignmentEquiv act A B₀ ψ
+            p gp hsp htp hcp x V) tSeq)
+        (W tComp) := by
+    exact heq_of_eq hp
+  exact eq_of_heq (hpheq.trans hdep)
 
 /-- Transport of complete valuation structures is coherent under composition. -/
 theorem ValuationStructure.transport_comp [Finite β]

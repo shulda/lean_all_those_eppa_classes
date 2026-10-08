@@ -341,6 +341,20 @@ theorem valuationFunction_transport_eq_of_mem_source [Finite β]
         ⟨GI, hrI⟩ := htgt
 
 
+/-- Equal witness vertices carry the same valuation function over a fixed
+base point in their one-point closures. -/
+theorem witnessValuationAt_congr
+    {u v : WitnessVertex act A B₀ ψ}
+    (huv : u = v)
+    (z : β)
+    (hu : z ∈ B₀.closureAtSet u.base)
+    (hv : z ∈ B₀.closureAtSet v.base) :
+    u.valuation.1 ⟨z, hu⟩ =
+      v.valuation.1 ⟨z, hv⟩ := by
+  subst v
+  rfl
+
+
 /-- The transported faithful witness vertex agrees with the prescribed
 partial automorphism on its source. -/
 theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
@@ -384,12 +398,39 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
   rw [valuationAssignmentEquiv_apply_transport
     act A B₀ ψ p g hsource htarget hcompat
     w.base w.valuation.1 y]
-  have ht :=
-    valuationFunction_transport_eq_of_mem_source
-      act A B₀ ψ p g hsource htarget hcompat
-      w hw y.1 y.2
-  rw [hpw] at ht
-  simpa [e, closureTransportEquiv] using ht
+  let hy' :
+      g y.1 ∈ B₀.closureAtSet (p w).base := by
+    have h :=
+      automorphism_maps_closureAtSet act B₀ g y.2
+    simpa [hcompat.2 w hw] using h
+  have ht :
+      valuationFunctionEquiv act A B₀ ψ
+          p g hsource htarget hcompat y.1
+          (w.valuation.1
+            (⟨y.1, y.2⟩ :
+              B₀.closureAtSet w.base)) =
+        (p w).valuation.1
+          (⟨g y.1, hy'⟩ :
+            B₀.closureAtSet (p w).base) := by
+    simpa [hy'] using
+      (valuationFunction_transport_eq_of_mem_source
+        act A B₀ ψ p g hsource htarget hcompat
+        w hw y.1 y.2)
+  have hval :=
+    witnessValuationAt_congr
+      act A B₀ ψ hpw (g y.1)
+      hy' (e y).2
+  calc
+    valuationFunctionEquiv act A B₀ ψ
+        p g hsource htarget hcompat y.1
+        (w.valuation.1
+          (⟨y.1, y.2⟩ :
+            B₀.closureAtSet w.base)) =
+      (p w).valuation.1
+        (⟨g y.1, hy'⟩ :
+          B₀.closureAtSet (p w).base) := ht
+    _ = Vp.1 (e y) := by
+      simpa [e, closureTransportEquiv] using hval
 
 /-- The lifted automorphism extends the prescribed partial automorphism along
 the identity embedding of the faithful witness. -/

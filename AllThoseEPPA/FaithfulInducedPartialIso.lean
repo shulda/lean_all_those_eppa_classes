@@ -38,8 +38,8 @@ noncomputable def inducedEmbeddingRangeEquiv
     ⟨by
       intro x y hxy
       apply Subtype.ext
-      apply f.injective
-      exact congrArg Subtype.val hxy,
+      exact congrArg Subtype.val
+        (f.injective (congrArg Subtype.val hxy)),
      by
       rintro ⟨y, x, rfl⟩
       exact ⟨x, rfl⟩⟩
@@ -65,8 +65,10 @@ noncomputable def partialAutomorphismOfInducedEmbedding
       target_closed := ?_
       map_rel_iff := ?_
       map_func := ?_ }
-  · simpa [pe] using hS
-  · simpa [T, inducedEmbeddingRange] using
+  · change B.IsClosed S
+    exact hS
+  · change B.IsClosed T
+    exact
       (embedding_range_isClosed
         act (B.induce S hS) B f)
   · intro n R xs hxs

@@ -94,8 +94,11 @@ noncomputable def badLabelOrderIsoOfEq [Finite β]
       badLabelLinearOrder act A B₀ ψ J
     BadLabel act A B₀ ψ I ≃o
       BadLabel act A B₀ ψ J := by
+  refine
+    { toEquiv := badLabelEquivOfEq act A B₀ ψ h
+      map_rel_iff' := ?_ }
   subst J
-  exact OrderIso.refl _
+  rfl
 
 @[simp] theorem badLabelEquivOfEq_apply_val
     {I J : BadIrreducible act A B₀ ψ}

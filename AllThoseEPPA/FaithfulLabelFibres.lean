@@ -123,7 +123,9 @@ theorem targetLabelMap_injective
       (targetLabelMap act A B₀ ψ p g I) := by
   intro x y hlabel
   have hg :=
-    hgen x y
+    hgen
+      ⟨x.1, x.2.1⟩
+      ⟨y.1, y.2.1⟩
       (centerPoint act A B₀ ψ x.1)
       (centerPoint act A B₀ ψ y.1)
   rcases hg with heq | ⟨hbase, hlabels⟩

@@ -76,7 +76,7 @@ def sourceLabelMap
       BadLabel act A B₀ ψ I :=
   fun x => centerLabel act A B₀ ψ x.1 I x.2.2
 
-def targetLabelMap
+noncomputable def targetLabelMap
     (p : Structure.PartialAutomorphism act
       (witnessStructure act A B₀ ψ))
     (g : Structure.Automorphism act B₀)
@@ -97,7 +97,8 @@ theorem sourceLabelMap_injective
       (sourceLabelMap act A B₀ ψ p I) := by
   intro x y hlabel
   have hg :=
-    hgen x y
+    hgen
+      ⟨x.1, x.2.1⟩ ⟨y.1, y.2.1⟩
       (centerPoint act A B₀ ψ x.1)
       (centerPoint act A B₀ ψ y.1)
   rcases hg with heq | ⟨hbase, hlabels⟩
@@ -155,29 +156,30 @@ noncomputable def sourceTargetWitnessEquiv
       by
         change (p x.1).base ∈ g '' I.carrier
         refine ⟨x.1.base, x.2.2, ?_⟩
-        exact (hcompat.2 x.1 x.2.1).symm⟩
+        exact hcompat.2 x.1 x.2.1⟩
   invFun := fun y => by
     let x : WitnessVertex act A B₀ ψ :=
       p.toPartialEquiv.symm y.1
     have hxSource : x ∈ p.source :=
       p.toPartialEquiv.symm.map_source y.2.1
-    have hpx : p x = y.1 :=
-      p.toPartialEquiv.right_inv y.2.1
-    have hgbase :
-        g x.base = y.1.base := by
-      rw [hcompat.2 x hxSource]
-      exact congrArg WitnessVertex.base hpx
-    have hyImage :
-        y.1.base ∈ g '' I.carrier :=
-      y.2.2
-    rcases hyImage with ⟨b, hbI, hgb⟩
-    have hxb : x.base = b := by
-      have h :=
-        congrArg
-          (fun t => Structure.Automorphism.symm g t)
-          (hgbase.trans hgb.symm)
-      simpa using h
-    exact ⟨x, hxSource, hxb ▸ hbI⟩
+    exact
+      ⟨x, hxSource, by
+        have hpx : p x = y.1 :=
+          p.toPartialEquiv.right_inv y.2.1
+        have hgbase :
+            g x.base = y.1.base := by
+          rw [hcompat.2 x hxSource]
+          exact
+            congrArg
+              (fun w : WitnessVertex act A B₀ ψ => w.base) hpx
+        rcases y.2.2 with ⟨b, hbI, hgb⟩
+        have hxb : x.base = b := by
+          have h :=
+            congrArg
+              (fun t => Structure.Automorphism.symm g t)
+              (hgbase.trans hgb.symm)
+          simpa using h
+        exact hxb ▸ hbI⟩
   left_inv := by
     intro x
     apply Subtype.ext

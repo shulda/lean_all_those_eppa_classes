@@ -408,6 +408,10 @@ theorem labelExtension_comp [Finite β]
     let hqI :
         (q (p w)).base ∈ K.carrier :=
       ⟨(p w).base, hpwI, hcq.2 (p w) hpwq⟩
+    let hcompK :
+        ((q.comp p ht) w).base ∈ K.carrier := by
+      change (q (p w)).base ∈ K.carrier
+      exact hqI
     have hsact :=
       labelPartialEquiv_centerLabel
         act A B₀ ψ
@@ -435,28 +439,17 @@ theorem labelExtension_comp [Finite β]
         congrArg castKM hsact
       _ =
         centerLabel act A B₀ ψ
-          ((q.comp p ht) w) K
-          ⟨((q.comp p ht) w).base, by
-            rw [hKM]
-            exact hcompI⟩ := by
+          ((q.comp p ht) w) K hcompK := by
         exact
           centerLabel_badIrreducible_eq
             act A B₀ ψ
             ((q.comp p ht) w) hKM.symm
-            hcompI
-            ⟨((q.comp p ht) w).base, by
-              rw [hKM]
-              exact hcompI⟩
+            hcompI hcompK
       _ =
         centerLabel act A B₀ ψ (q (p w)) K hqI := by
-        apply centerLabel_congr act A B₀ ψ
-        · rfl
-        · exact K
-        · exact
-            ⟨((q.comp p ht) w).base, by
-              rw [hKM]
-              exact hcompI⟩
-        · exact hqI
+        exact
+          centerLabel_congr act A B₀ ψ
+            (by rfl) K hcompK hqI
       _ =
         pq (centerLabel act A B₀ ψ (p w) J hpwI) :=
         hqact.symm

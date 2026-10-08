@@ -96,5 +96,26 @@ noncomputable def embeddingInverseOnClosedSubset
       · exact himg
       · exact f.injective (hpreimage x)
 
+
+@[simp] theorem embeddingInverseOnClosedSubset_lang
+    (f : Structure.Embedding act A B)
+    (T : Set W) (hT : B.IsClosed T)
+    (hsub : T ⊆ Set.range f) :
+    (embeddingInverseOnClosedSubset act f T hT hsub).lang =
+      f.lang⁻¹ :=
+  rfl
+
+/-- The inverse-on-range embedding is a genuine left inverse on the selected
+target subset. -/
+theorem embeddingInverseOnClosedSubset_apply_spec
+    (f : Structure.Embedding act A B)
+    (T : Set W) (hT : B.IsClosed T)
+    (hsub : T ⊆ Set.range f)
+    (x : T) :
+    f (embeddingInverseOnClosedSubset act f T hT hsub x) =
+      x.1 := by
+  unfold embeddingInverseOnClosedSubset
+  exact Classical.choose_spec (hsub x.2)
+
 end Faithful
 end AllThoseEPPA

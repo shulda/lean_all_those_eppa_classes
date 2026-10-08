@@ -320,12 +320,13 @@ theorem labelExtension_comp [Finite β]
           act A B₀ ψ gq gp I).symm) := by
   let J : BadIrreducible act A B₀ ψ :=
     I.transport act A B₀ ψ gp
-  let K : BadIrreducible act A B₀ ψ :=
-    J.transport act A B₀ ψ gq
+  generalize hKdef :
+      J.transport act A B₀ ψ gq = K
   have hK :
       K = I.transport act A B₀ ψ (gq.comp gp) := by
-    exact BadIrreducible.transport_comp
-      act A B₀ ψ gq gp I
+    exact hKdef.symm.trans
+      (BadIrreducible.transport_comp
+        act A B₀ ψ gq gp I)
   change
     (labelExtension act A B₀ ψ p gp I
         hsp htp hcp).trans
@@ -430,7 +431,8 @@ theorem labelExtension_comp [Finite β]
   have hcardJK :
       Fintype.card (BadLabel act A B₀ ψ J) =
         Fintype.card (BadLabel act A B₀ ψ K) := by
-    simpa only [K, Nat.card_eq_fintype_card] using
+    rw [← hKdef]
+    simpa only [Nat.card_eq_fintype_card] using
       (badLabel_transport_card act A B₀ ψ gq J)
   have hcardIK :
       Fintype.card (BadLabel act A B₀ ψ I) =

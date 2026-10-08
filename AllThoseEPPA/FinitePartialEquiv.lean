@@ -172,6 +172,139 @@ theorem orderedExtensionOfCardEq_eq_of_eqOnSource
             ⟨x, hxq⟩ : β) := by
         congr 1
 
+/-- Canonical ordered completion is natural under an order isomorphism of
+the codomain, provided the two partial equivalences have the same source and
+agree there after applying the order isomorphism. -/
+theorem orderedExtensionOfCardEq_natural
+    [Fintype α] [LinearOrder α]
+    [Fintype β] [LinearOrder β]
+    [Fintype γ] [LinearOrder γ]
+    (p : PartialEquiv α β)
+    (q : PartialEquiv α γ)
+    (e : β ≃o γ)
+    (hαβ : Fintype.card α = Fintype.card β)
+    (hαγ : Fintype.card α = Fintype.card γ)
+    (hs : p.source = q.source)
+    (hmap : ∀ x, x ∈ p.source → e (p x) = q x) :
+    (orderedExtensionOfCardEq p hαβ).trans e.toEquiv =
+      orderedExtensionOfCardEq q hαγ := by
+  classical
+  have htarget : ∀ y : β, e y ∈ q.target ↔ y ∈ p.target := by
+    intro y
+    constructor
+    · intro hey
+      let x : α := q.symm (e y)
+      have hxq : x ∈ q.source := q.map_target hey
+      have hxp : x ∈ p.source := by
+        rw [hs]
+        exact hxq
+      have hqy : q x = e y := q.right_inv hey
+      have heq : e (p x) = e y :=
+        (hmap x hxp).trans hqy
+      have hpx : p x = y := e.injective heq
+      have hpt : p x ∈ p.target := p.map_source hxp
+      simpa [hpx] using hpt
+    · intro hy
+      let x : α := p.symm y
+      have hxp : x ∈ p.source := p.map_target hy
+      have hxq : x ∈ q.source := by
+        rw [← hs]
+        exact hxp
+      have hpy : p x = y := p.right_inv hy
+      have hqt : q x ∈ q.target := q.map_source hxq
+      have hqx : q x = e y := by
+        calc
+          q x = e (p x) := (hmap x hxp).symm
+          _ = e y := congrArg e hpy
+      simpa [hqx] using hqt
+  have hsCompl :
+      {x : α | x ∉ p.source} =
+        {x : α | x ∉ q.source} := by
+    rw [hs]
+  let sourceBridge :
+      {x : α // x ∉ p.source} ≃o
+        {x : α // x ∉ q.source} :=
+    Set.orderIsoOfEq _ _ hsCompl
+  let targetBridge :
+      {y : β // y ∉ p.target} ≃o
+        {z : γ // z ∉ q.target} where
+    toEquiv :=
+      { toFun := fun y =>
+          ⟨e y.1, by
+            intro hy
+            exact y.2 ((htarget y.1).1 hy)⟩
+        invFun := fun z =>
+          ⟨e.symm z.1, by
+            intro hy
+            apply z.2
+            have hmem :
+                e (e.symm z.1) ∈ q.target :=
+              (htarget (e.symm z.1)).2 hy
+            simpa using hmem⟩
+        left_inv := by
+          intro y
+          apply Subtype.ext
+          simp
+        right_inv := by
+          intro z
+          apply Subtype.ext
+          simp }
+    map_rel_iff' := by
+      intro y z
+      change e y.1 ≤ e z.1 ↔ y.1 ≤ z.1
+      exact e.le_iff_le
+  ext x
+  by_cases hx : x ∈ p.source
+  · have hxq : x ∈ q.source := by
+      rw [← hs]
+      exact hx
+    rw [Equiv.trans_apply,
+      orderedExtensionOfCardEq_apply_of_mem p hαβ hx,
+      orderedExtensionOfCardEq_apply_of_mem q hαγ hxq]
+    exact hmap x hx
+  · have hxq : x ∉ q.source := by
+      intro hxq
+      apply hx
+      rw [hs]
+      exact hxq
+    rw [Equiv.trans_apply,
+      orderedExtensionOfCardEq_apply_of_not_mem p hαβ hx,
+      orderedExtensionOfCardEq_apply_of_not_mem q hαγ hxq]
+    let leftIso :
+        {x : α // x ∉ p.source} ≃o
+          {z : γ // z ∉ q.target} :=
+      (orderedComplementOrderIsoOfCardEq p hαβ).trans
+        targetBridge
+    let rightIso :
+        {x : α // x ∉ p.source} ≃o
+          {z : γ // z ∉ q.target} :=
+      sourceBridge.trans
+        (orderedComplementOrderIsoOfCardEq q hαγ)
+    have he : leftIso = rightIso :=
+      Subsingleton.elim _ _
+    have happ :=
+      congrArg (fun e' => (e' ⟨x, hx⟩ : γ)) he
+    change
+      (targetBridge
+          (orderedComplementOrderIsoOfCardEq p hαβ
+            ⟨x, hx⟩) : γ) =
+        (orderedComplementOrderIsoOfCardEq q hαγ
+          (sourceBridge ⟨x, hx⟩) : γ) at happ
+    calc
+      e (orderedComplementOrderIsoOfCardEq p hαβ
+          ⟨x, hx⟩ : β) =
+          (targetBridge
+            (orderedComplementOrderIsoOfCardEq p hαβ
+              ⟨x, hx⟩) : γ) := by
+        rfl
+      _ =
+          (orderedComplementOrderIsoOfCardEq q hαγ
+            (sourceBridge ⟨x, hx⟩) : γ) := happ
+      _ =
+          (orderedComplementOrderIsoOfCardEq q hαγ
+            ⟨x, hxq⟩ : γ) := by
+        congr 1
+
 /-- Heterogeneous order-preserving completion is coherent under composition. -/
 theorem orderedExtensionOfCardEq_trans'
     [Fintype α] [LinearOrder α]

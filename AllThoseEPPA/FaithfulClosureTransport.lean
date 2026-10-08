@@ -100,5 +100,21 @@ noncomputable def closureTransportEquiv
       g.symm y.1 :=
   rfl
 
+
+/-- Transport of one-point closures commutes with the natural inclusion of a
+nested closure. -/
+theorem closureTransportEquiv_closureInclusion
+    (g : Structure.Automorphism act B₀)
+    {x y : β}
+    (hy : y ∈ B₀.closureAtSet x)
+    (z : B₀.closureAtSet y) :
+    closureTransportEquiv act B₀ g x
+        (closureInclusion B₀ hy z) =
+      closureInclusion B₀
+        (automorphism_maps_closureAtSet act B₀ g hy)
+        (closureTransportEquiv act B₀ g y z) := by
+  apply Subtype.ext
+  rfl
+
 end Faithful
 end AllThoseEPPA

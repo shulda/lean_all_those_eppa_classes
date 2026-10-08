@@ -42,3 +42,4 @@ import AllThoseEPPA.FaithfulEmbeddingInverse
 import AllThoseEPPA.FaithfulFaithfulness
 import AllThoseEPPA.FaithfulPartialSourceEmbedding
 import AllThoseEPPA.FaithfulCanonicalPartialAuto
+import AllThoseEPPA.FaithfulEPPA

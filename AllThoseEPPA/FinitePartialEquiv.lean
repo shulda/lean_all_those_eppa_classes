@@ -227,32 +227,32 @@ theorem orderedExtensionOfCardEq_natural
     Set.orderIsoOfEq _ _ hsCompl
   let targetBridge :
       {y : β // y ∉ p.target} ≃o
-        {z : γ // z ∉ q.target} where
-    toEquiv :=
-      { toFun := fun y =>
-          ⟨e y.1, by
-            intro hy
-            exact y.2 ((htarget y.1).1 hy)⟩
-        invFun := fun z =>
-          ⟨e.symm z.1, by
-            intro hy
-            apply z.2
-            have hmem :
-                e (e.symm z.1) ∈ q.target :=
-              (htarget (e.symm z.1)).2 hy
-            simpa using hmem⟩
-        left_inv := by
-          intro y
-          apply Subtype.ext
-          simp
-        right_inv := by
-          intro z
-          apply Subtype.ext
-          simp }
-    map_rel_iff' := by
-      intro y z
-      change e y.1 ≤ e z.1 ↔ y.1 ≤ z.1
-      exact e.le_iff_le
+        {z : γ // z ∉ q.target} :=
+    { toEquiv :=
+        { toFun := fun y =>
+            ⟨e y.1, by
+              intro hy
+              exact y.2 ((htarget y.1).1 hy)⟩
+          invFun := fun z =>
+            ⟨e.symm z.1, by
+              intro hy
+              apply z.2
+              have hmem :
+                  e (e.symm z.1) ∈ q.target :=
+                (htarget (e.symm z.1)).2 hy
+              simpa using hmem⟩
+          left_inv := by
+            intro y
+            apply Subtype.ext
+            simp
+          right_inv := by
+            intro z
+            apply Subtype.ext
+            simp }
+      map_rel_iff' := by
+        intro y z
+        change e y.1 ≤ e z.1 ↔ y.1 ≤ z.1
+        exact e.le_iff_le }
   ext x
   by_cases hx : x ∈ p.source
   · have hxq : x ∈ q.source := by

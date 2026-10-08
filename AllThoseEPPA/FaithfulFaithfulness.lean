@@ -154,5 +154,45 @@ theorem faithfulnessEmbedding_base
   simpa [back, move, proj, movedProjection,
     WitnessVertex.base] using hback
 
+
+/-- The range of the final faithful embedding is generic because every one
+of its vertices is canonical. -/
+theorem faithfulnessEmbedding_range_generic
+    (S : Set (WitnessVertex act A B₀ ψ))
+    (hS : (witnessStructure act A B₀ ψ).IsClosed S)
+    (hgen : WitnessSetGeneric act A B₀ ψ S)
+    (g : Structure.Automorphism act B₀)
+    (hsub :
+      movedProjection act A B₀ ψ g S ⊆ Set.range ψ) :
+    WitnessSetGeneric act A B₀ ψ
+      (Set.range
+        (faithfulnessEmbedding act A B₀ ψ
+          S hS hgen g hsub)) := by
+  intro i j y z
+  rcases i with ⟨u, hu⟩
+  rcases j with ⟨v, hv⟩
+  rcases hu with ⟨x, hxu⟩
+  rcases hv with ⟨x', hxv⟩
+  rcases
+      faithfulnessEmbedding_isCanonical
+        act A B₀ ψ S hS hgen g hsub x with
+    ⟨a, hca⟩
+  rcases
+      faithfulnessEmbedding_isCanonical
+        act A B₀ ψ S hS hgen g hsub x' with
+    ⟨b, hcb⟩
+  have huCanon :
+      u = canonicalVertex act A B₀ ψ a :=
+    hxu.symm.trans hca
+  have hvCanon :
+      v = canonicalVertex act A B₀ ψ b :=
+    hxv.symm.trans hcb
+  subst u
+  subst v
+  simpa using
+    ((canonicalFamilyGeneric act A B₀ ψ
+      (fun t : Bool => if t then a else b))
+      true false y z)
+
 end Faithful
 end AllThoseEPPA

@@ -48,3 +48,4 @@ import AllThoseEPPA.FaithfulLabelCoherence
 import AllThoseEPPA.FaithfulValuationCoherence
 import AllThoseEPPA.FaithfulWitnessCoherence
 import AllThoseEPPA.FaithfulCoherence
+import AllThoseEPPA.FaithfulProposition

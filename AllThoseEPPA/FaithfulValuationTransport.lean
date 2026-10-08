@@ -98,7 +98,7 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
       (badAtEquiv act A B₀ ψ g x).symm
           (badAtEquiv act A B₀ ψ g x I) = I :=
     (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
-  subst hround
+  rw [hround]
   rfl
 
 end Faithful

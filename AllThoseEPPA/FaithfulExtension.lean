@@ -267,5 +267,91 @@ theorem valuationFunction_transport_eq_of_mem_source [Finite β]
   rw [htgt] at hcenter
   exact hcenter
 
+
+/-- The transported faithful witness vertex agrees with the prescribed
+partial automorphism on its source. -/
+theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (w : WitnessVertex act A B₀ ψ)
+    (hw : w ∈ p.source) :
+    WitnessVertex.transport act A B₀ ψ
+        p g hsource htarget hcompat w =
+      p w := by
+  have hbase :
+      g w.base = (p w).base :=
+    hcompat.2 w hw
+  rw [Sigma.ext_iff]
+  refine ⟨hbase, ?_⟩
+  cases hbase
+  apply heq_of_eq
+  apply Subtype.ext
+  funext z
+  let e := closureTransportEquiv act B₀ g w.base
+  let y := e.symm z
+  have hz : e y = z := e.apply_symm_apply z
+  rw [← hz]
+  change
+    valuationAssignmentEquiv act A B₀ ψ
+        p g hsource htarget hcompat w.base
+        w.valuation.1 (e y) =
+      (p w).valuation.1 (e y)
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ p g hsource htarget hcompat
+    w.base w.valuation.1 y]
+  exact
+    valuationFunction_transport_eq_of_mem_source
+      act A B₀ ψ p g hsource htarget hcompat
+      w hw y.1 y.2
+
+/-- The lifted automorphism extends the prescribed partial automorphism along
+the identity embedding of the faithful witness. -/
+theorem faithfulWitnessAutomorphism_extends [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g) :
+    Structure.ExtendsAlong act
+      (Structure.Embedding.id
+        (witnessStructure act A B₀ ψ))
+      p
+      (faithfulWitnessAutomorphism act A B₀ ψ
+        p g hsource htarget hcompat) := by
+  constructor
+  · simpa [hcompat.1]
+  · intro w hw
+    rw [faithfulWitnessAutomorphism_apply]
+    exact
+      WitnessVertex.transport_eq_of_mem_source
+        act A B₀ ψ p g hsource htarget hcompat
+        w hw
+
+/-- **Lemma `lem:faithful-extension` (extension part).**  Any partial
+automorphism with generic source and target whose projection extends to a base
+automorphism extends to an automorphism of the faithful witness. -/
+theorem faithfulExtension [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g) :
+    ∃ h : Structure.Automorphism act
+        (witnessStructure act A B₀ ψ),
+      Structure.ExtendsAlong act
+        (Structure.Embedding.id
+          (witnessStructure act A B₀ ψ))
+        p h :=
+  ⟨faithfulWitnessAutomorphism act A B₀ ψ
+      p g hsource htarget hcompat,
+    faithfulWitnessAutomorphism_extends
+      act A B₀ ψ p g hsource htarget hcompat⟩
+
 end Faithful
 end AllThoseEPPA

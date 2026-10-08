@@ -44,3 +44,4 @@ import AllThoseEPPA.FaithfulPartialSourceEmbedding
 import AllThoseEPPA.FaithfulCanonicalPartialAuto
 import AllThoseEPPA.FaithfulEPPA
 import AllThoseEPPA.FaithfulCanonicalCoherence
+import AllThoseEPPA.FaithfulLabelCoherence

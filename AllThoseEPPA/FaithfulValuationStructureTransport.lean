@@ -209,13 +209,45 @@ theorem ValuationStructure.transport_restrict [Finite β]
   rw [valuationAssignmentEquiv_apply_transport
     act A B₀ ψ p g hsource htarget hcompat
     y (V.restrict act A B₀ ψ y hy).1 z0]
+  let W :=
+    valuationAssignmentEquiv act A B₀ ψ
+      p g hsource htarget hcompat x V.1
+  let t₂ :=
+    closureTransportEquiv act B₀ g x
+      (closureInclusion B₀ hy z0)
+  let t₁ :=
+    closureInclusion B₀
+      (automorphism_maps_closureAtSet act B₀ g hy)
+      (eY z0)
+  have ht : t₂ = t₁ := by
+    exact
+      closureTransportEquiv_closureInclusion
+        act B₀ g hy z0
+  have hdep : HEq (W t₂) (W t₁) := by
+    have hp :
+        (⟨t₂, W t₂⟩ :
+          Σ t : B₀.closureAtSet (g x),
+            ValuationFunction act A B₀ ψ t.1) =
+        ⟨t₁, W t₁⟩ :=
+      congrArg
+        (fun t =>
+          (⟨t, W t⟩ :
+            Σ s : B₀.closureAtSet (g x),
+              ValuationFunction act A B₀ ψ s.1))
+        ht
+    exact (Sigma.mk.inj_iff.mp hp).2
   have hr :=
     valuationAssignmentEquiv_apply_transport
       act A B₀ ψ p g hsource htarget hcompat
       x V.1 (closureInclusion B₀ hy z0)
-  convert hr.symm using 1
-  apply Subtype.ext
-  rfl
+  have hleft :
+      HEq
+        (valuationFunctionEquiv act A B₀ ψ
+          p g hsource htarget hcompat z0.1
+          ((V.restrict act A B₀ ψ y hy).1 z0))
+        (W t₂) := by
+    exact heq_of_eq hr.symm
+  exact eq_of_heq (hleft.trans hdep)
 
 end Faithful
 end AllThoseEPPA

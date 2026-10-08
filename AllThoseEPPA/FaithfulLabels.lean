@@ -73,6 +73,24 @@ def badLabelEquivCarrierNeHole
     apply Subtype.ext
     rfl
 
+/-- Transport labels along equality of bad irreducible indices without
+hiding the underlying vertex behind an opaque type cast. -/
+def badLabelEquivOfEq
+    {I J : BadIrreducible act A B₀ ψ}
+    (h : I = J) :
+    BadLabel act A B₀ ψ I ≃
+      BadLabel act A B₀ ψ J := by
+  cases h
+  exact Equiv.refl _
+
+@[simp] theorem badLabelEquivOfEq_apply_val
+    {I J : BadIrreducible act A B₀ ψ}
+    (h : I = J)
+    (a : BadLabel act A B₀ ψ I) :
+    (badLabelEquivOfEq act A B₀ ψ h a).1 = a.1 := by
+  cases h
+  rfl
+
 /-- The label type has one fewer element than the carrier of the bad
 irreducible. -/
 theorem badLabel_card [Finite β]

@@ -80,13 +80,24 @@ theorem mem_canonicalPartialAutomorphism_target_iff
           act A B₀ ψ p
           (canonicalVertex act A B₀ ψ b)).2
           ⟨b, hb, rfl⟩
-    have htgt := P.map_source hsrc
+    have htgt :
+        P (canonicalVertex act A B₀ ψ b) ∈ P.target :=
+      P.map_source hsrc
     have hba : p b = a :=
       p.right_inv ha
-    simpa [P, b, hba] using
-      (show
-        P (canonicalVertex act A B₀ ψ b) ∈ P.target from
-        htgt)
+    have hPba :
+        P (canonicalVertex act A B₀ ψ b) =
+          canonicalVertex act A B₀ ψ a := by
+      calc
+        P (canonicalVertex act A B₀ ψ b) =
+            canonicalVertex act A B₀ ψ (p b) := by
+          simpa [P] using
+            (canonicalPartialAutomorphism_apply
+              act A B₀ ψ p b hb)
+        _ = canonicalVertex act A B₀ ψ a :=
+          congrArg (canonicalVertex act A B₀ ψ) hba
+    rw [hPba] at htgt
+    exact htgt
 
 /-- Equivalent partial automorphisms remain equivalent after pushing them to
 the canonical copy. -/
@@ -109,6 +120,8 @@ theorem canonicalPartialAutomorphism_equivalent
               act A B₀ ψ p x).1 hx with
           ⟨a, ha, hxa⟩
         have haq : a ∈ q.source := by
+          change a ∈ q.toPartialEquiv.source
+          change a ∈ p.toPartialEquiv.source at ha
           rw [← hpq.2.1]
           exact ha
         exact
@@ -121,6 +134,8 @@ theorem canonicalPartialAutomorphism_equivalent
               act A B₀ ψ q x).1 hx with
           ⟨a, ha, hxa⟩
         have hap : a ∈ p.source := by
+          change a ∈ p.toPartialEquiv.source
+          change a ∈ q.toPartialEquiv.source at ha
           rw [hpq.2.1]
           exact ha
         exact
@@ -133,6 +148,8 @@ theorem canonicalPartialAutomorphism_equivalent
             act A B₀ ψ p x).1 hx with
         ⟨a, ha, hxa⟩
       have haq : a ∈ q.source := by
+        change a ∈ q.toPartialEquiv.source
+        change a ∈ p.toPartialEquiv.source at ha
         rw [← hpq.2.1]
         exact ha
       have hpqa : p a = q a :=
@@ -230,10 +247,13 @@ theorem canonicalPartialAutomorphism_coherentTriple
       ext x
       constructor
       · intro hx
+        have hxR : x ∈ R.source := by
+          change x ∈ R.toPartialEquiv.source
+          exact hx
         rcases
             (mem_canonicalPartialAutomorphism_source_iff
               act A B₀ ψ r x).1
-              (by simpa [R] using hx) with
+              (by simpa [R] using hxR) with
           ⟨a, ha, hxa⟩
         have hap : a ∈ p.source := by
           rw [← hrs]
@@ -246,8 +266,10 @@ theorem canonicalPartialAutomorphism_coherentTriple
           PartialEquiv.trans'] using hxP
       · intro hx
         have hxP : x ∈ P.source := by
-          simpa [Structure.PartialIsomorphism.comp,
-            PartialEquiv.trans'] using hx
+          change x ∈ P.toPartialEquiv.source
+          change x ∈
+            (P.toPartialEquiv.trans' Q.toPartialEquiv ht').source at hx
+          simpa [PartialEquiv.trans'] using hx
         rcases
             (mem_canonicalPartialAutomorphism_source_iff
               act A B₀ ψ p x).1
@@ -263,6 +285,7 @@ theorem canonicalPartialAutomorphism_coherentTriple
         simpa [R] using hxR
     · intro x hx
       have hxR : x ∈ R.source := by
+        change x ∈ R.toPartialEquiv.source
         exact hx
       rcases
           (mem_canonicalPartialAutomorphism_source_iff

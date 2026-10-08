@@ -38,6 +38,19 @@ theorem movedProjection_isClosed
     automorphism_image_isClosed act B₀ g
       (projectionImage_isClosed act A B₀ ψ S hS)
 
+/-- A pointwise move of the projection of `S` into the distinguished copy
+is exactly the subset condition needed by the inverse embedding. -/
+theorem movedProjection_subset_range
+    (S : Set (WitnessVertex act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hg :
+      ∀ w, w ∈ S → ∃ a : α, g w.base = ψ a) :
+    movedProjection act A B₀ ψ g S ⊆ Set.range ψ := by
+  rintro y ⟨b, hb, rfl⟩
+  rcases hb with ⟨w, hw, rfl⟩
+  rcases hg w hw with ⟨a, ha⟩
+  exact ⟨a, ha.symm⟩
+
 /-- Compose projection, a base automorphism, inverse projection to `A` on
 the moved image, and the canonical embedding back into the faithful witness. -/
 noncomputable def faithfulnessEmbedding

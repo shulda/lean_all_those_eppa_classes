@@ -227,5 +227,79 @@ theorem labelExtension_apply_of_used [Finite β]
       (labelFallbackEquiv act A B₀ ψ g I)
       hl
 
+
+/-- On a source witness vertex, the prescribed used-label bijection sends its
+centre label to the centre label of its partial-automorphism image. -/
+theorem usedLabelEquiv_centerLabel [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (I : BadIrreducible act A B₀ ψ)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (w : WitnessVertex act A B₀ ψ)
+    (hw : w ∈ p.source)
+    (hwI : w.base ∈ I.carrier) :
+    let htI :
+        (p w).base ∈
+          (I.transport act A B₀ ψ g).carrier :=
+      ⟨w.base, hwI, (hcompat.2 w hw).symm⟩
+    let hused :
+        centerLabel act A B₀ ψ w I hwI ∈
+          usedSourceLabels act A B₀ ψ p I :=
+      ⟨⟨w, hw, hwI⟩, rfl⟩
+    (usedLabelEquiv act A B₀ ψ p g I
+        hsource htarget hcompat
+        ⟨centerLabel act A B₀ ψ w I hwI, hused⟩).1 =
+      centerLabel act A B₀ ψ (p w)
+        (I.transport act A B₀ ψ g) htI := by
+  dsimp
+  let sw : SourceWitness act A B₀ ψ p I :=
+    ⟨w, hw, hwI⟩
+  have hs :
+      sourceWitnessLabelEquiv act A B₀ ψ p I hsource sw =
+        ⟨centerLabel act A B₀ ψ w I hwI,
+          ⟨sw, rfl⟩⟩ := by
+    apply Subtype.ext
+    rfl
+  rw [← hs]
+  simp [usedLabelEquiv, sw, sourceTargetWitnessEquiv,
+    targetWitnessLabelEquiv, targetLabelMap]
+
+/-- Consequently the canonical total label extension agrees with the partial
+witness automorphism on every centre label occurring in the source. -/
+theorem labelExtension_centerLabel [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (I : BadIrreducible act A B₀ ψ)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (w : WitnessVertex act A B₀ ψ)
+    (hw : w ∈ p.source)
+    (hwI : w.base ∈ I.carrier) :
+    let htI :
+        (p w).base ∈
+          (I.transport act A B₀ ψ g).carrier :=
+      ⟨w.base, hwI, (hcompat.2 w hw).symm⟩
+    labelExtension act A B₀ ψ p g I
+        hsource htarget hcompat
+        (centerLabel act A B₀ ψ w I hwI) =
+      centerLabel act A B₀ ψ (p w)
+        (I.transport act A B₀ ψ g) htI := by
+  dsimp
+  let hused :
+      centerLabel act A B₀ ψ w I hwI ∈
+        usedSourceLabels act A B₀ ψ p I :=
+    ⟨⟨w, hw, hwI⟩, rfl⟩
+  rw [labelExtension_apply_of_used
+    act A B₀ ψ p g I hsource htarget hcompat hused]
+  exact
+    usedLabelEquiv_centerLabel
+      act A B₀ ψ p g I hsource htarget hcompat
+      w hw hwI
+
 end Faithful
 end AllThoseEPPA

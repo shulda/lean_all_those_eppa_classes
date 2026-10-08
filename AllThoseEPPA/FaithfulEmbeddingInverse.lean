@@ -81,12 +81,12 @@ noncomputable def embeddingInverseOnClosedSubset
       rcases hpxB with ⟨b, hb, hfb⟩
       have hbpre : b = preimage x :=
         f.injective hfb
-      simpa [F₀, as, hbpre] using hb
+      simpa [F₀, as, hbpre, Function.comp_def] using hb
     · intro ha
       have himg :
           f a ∈
             Structure.imageSet f.toFun (A.func F₀ as) :=
-        ⟨a, by simpa [F₀, as] using ha, rfl⟩
+        ⟨a, by simpa [F₀, as, Function.comp_def] using ha, rfl⟩
       rw [hf] at himg
       have hfaT : f a ∈ T :=
         hT F (Subtype.val ∘ xs)

@@ -92,7 +92,9 @@ noncomputable def labelFallbackEquiv [Finite β]
       (I.transport act A B₀ ψ g)
   exact
     Fintype.equivOfCardEq
-      (badLabel_transport_card act A B₀ ψ g I)
+      ((by
+        simpa only [Nat.card_eq_fintype_card] using
+          (badLabel_transport_card act A B₀ ψ g I)))
 
 /-- The paper's partial permutation `τ_I^φ`, with heterogeneous source and
 target label types. -/
@@ -173,7 +175,9 @@ noncomputable def labelExtension [Finite β]
     PartialEquiv.orderedExtensionOfCardEq
       (labelPartialEquiv act A B₀ ψ p g I
         hsource htarget hcompat)
-      (badLabel_transport_card act A B₀ ψ g I)
+      ((by
+        simpa only [Nat.card_eq_fintype_card] using
+          (badLabel_transport_card act A B₀ ψ g I)))
 
 /-- The total label extension agrees with the prescribed used-label
 bijection. -/
@@ -216,7 +220,9 @@ theorem labelExtension_apply_of_used [Finite β]
       PartialEquiv.orderedExtensionOfCardEq_apply_of_mem
         (labelPartialEquiv act A B₀ ψ p g I
           hsource htarget hcompat)
-        (badLabel_transport_card act A B₀ ψ g I)
+        ((by
+        simpa only [Nat.card_eq_fintype_card] using
+          (badLabel_transport_card act A B₀ ψ g I)))
         hl]
   exact
     partialEquivOfSubtypeEquiv_apply_of_mem

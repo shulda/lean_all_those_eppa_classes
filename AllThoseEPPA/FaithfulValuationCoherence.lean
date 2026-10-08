@@ -120,11 +120,13 @@ theorem valuationFunctionEquiv_comp [Finite β]
   intro χ
   funext J
   apply Subtype.ext
-  let e :=
-    (badAtEquiv act A B₀ ψ gp x).trans
-      (badAtEquiv act A B₀ ψ gq (gp x))
-  let I : BadAt act A B₀ ψ x := e.symm J
-  have hJ : e I = J := e.apply_symm_apply J
+  let I : BadAt act A B₀ ψ x :=
+    (badAtEquiv act A B₀ ψ gp x).symm
+      ((badAtEquiv act A B₀ ψ gq (gp x)).symm J)
+  have hJ :
+      badAtEquiv act A B₀ ψ gq (gp x)
+          (badAtEquiv act A B₀ ψ gp x I) = J := by
+    simp [I]
   rw [← hJ]
   have hp :=
     congrArg Subtype.val
@@ -171,7 +173,7 @@ theorem valuationFunctionEquiv_comp [Finite β]
           (q.comp p ht) (gq.comp gp)
           hss hst hcs x χ K).1)
       (badAtEquiv_comp act A B₀ ψ gp gq x I)
-  simpa [e] using hp'.trans hidx
+  exact hp'.trans hidx
 
 
 end Faithful

@@ -84,13 +84,31 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         hsource htarget hcompat (χ I) := by
   simp only [valuationFunctionEquiv, Equiv.piCongr'_apply]
   apply Subtype.ext
-  simp only [valuationLabelFibreEquiv, Equiv.trans_apply,
-    badLabelEquivOfEq_apply_val]
-  have hround :
-      (badAtEquiv act A B₀ ψ g x).symm
-          (badAtEquiv act A B₀ ψ g x I) = I :=
-    (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
-  rw [hround]
+  let e := badAtEquiv act A B₀ ψ g x
+  let I' : BadAt act A B₀ ψ x := e.symm (e I)
+  have hround : I' = I := by
+    exact e.symm_apply_apply I
+  change
+    ((valuationLabelFibreEquiv act A B₀ ψ
+        p g hsource htarget hcompat x (e I))
+      (χ I')).1 =
+      ((labelExtension act A B₀ ψ p g I.1
+        hsource htarget hcompat) (χ I)).1
+  calc
+    ((valuationLabelFibreEquiv act A B₀ ψ
+        p g hsource htarget hcompat x (e I))
+      (χ I')).1 =
+        ((labelExtension act A B₀ ψ p g I'.1
+          hsource htarget hcompat) (χ I')).1 := by
+      simp [valuationLabelFibreEquiv, e, I']
+    _ =
+        ((labelExtension act A B₀ ψ p g I.1
+          hsource htarget hcompat) (χ I)).1 := by
+      exact congrArg
+        (fun K : BadAt act A B₀ ψ x =>
+          ((labelExtension act A B₀ ψ p g K.1
+            hsource htarget hcompat) (χ K)).1)
+        hround
 
 end Faithful
 end AllThoseEPPA

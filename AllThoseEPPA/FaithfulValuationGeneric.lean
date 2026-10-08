@@ -135,5 +135,152 @@ theorem areGeneric_transport [Finite β]
         (hlabels I hqI hrI)
           (congrArg Subtype.val hsourceLabelEq)
 
+
+/-- The transport of valuation points is itself an equivalence of the whole
+sigma type. -/
+noncomputable def valuationPointEquiv [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g) :
+    ValuationPoint act A B₀ ψ ≃
+      ValuationPoint act A B₀ ψ :=
+  g.toEquiv.sigmaCongr
+    (fun x =>
+      valuationFunctionEquiv act A B₀ ψ
+        p g hsource htarget hcompat x)
+
+/-- The sigma equivalence agrees definitionally with the explicit transport
+map used above. -/
+theorem valuationPointEquiv_apply [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (q : ValuationPoint act A B₀ ψ) :
+    valuationPointEquiv act A B₀ ψ
+        p g hsource htarget hcompat q =
+      transportValuationPoint act A B₀ ψ
+        p g hsource htarget hcompat q := by
+  rfl
+
+/-- Genericity is also reflected by faithful valuation transport. -/
+theorem areGeneric_of_transport [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    {q r : ValuationPoint act A B₀ ψ}
+    (hqr :
+      AreGeneric act A B₀ ψ
+        (transportValuationPoint act A B₀ ψ
+          p g hsource htarget hcompat q)
+        (transportValuationPoint act A B₀ ψ
+          p g hsource htarget hcompat r)) :
+    AreGeneric act A B₀ ψ q r := by
+  classical
+  rcases hqr with hEq | ⟨hbase, hlabels⟩
+  · left
+    apply
+      (valuationPointEquiv act A B₀ ψ
+        p g hsource htarget hcompat).injective
+    simpa [valuationPointEquiv_apply] using hEq
+  · right
+    refine ⟨?_, ?_⟩
+    · intro hqrBase
+      apply hbase
+      change g q.1 = g r.1
+      rw [hqrBase]
+    · intro I hqI hrI
+      let Iq : BadAt act A B₀ ψ q.1 :=
+        ⟨I, hqI⟩
+      let Ir : BadAt act A B₀ ψ r.1 :=
+        ⟨I, hrI⟩
+      let J : BadIrreducible act A B₀ ψ :=
+        I.transport act A B₀ ψ g
+      let hqJ : g q.1 ∈ J.carrier :=
+        ⟨q.1, hqI, rfl⟩
+      let hrJ : g r.1 ∈ J.carrier :=
+        ⟨r.1, hrI, rfl⟩
+      have hneq :=
+        hlabels J hqJ hrJ
+      intro hsourceEq
+      have hsourceLabelEq :
+          q.2 Iq = r.2 Ir := by
+        apply Subtype.ext
+        exact hsourceEq
+      have htargetLabelEq :
+          labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (q.2 Iq) =
+            labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (r.2 Ir) :=
+        congrArg
+          (labelExtension act A B₀ ψ p g I
+            hsource htarget hcompat)
+          hsourceLabelEq
+      apply hneq
+      have hqEval :=
+        valuationFunctionEquiv_apply_transport
+          act A B₀ ψ p g hsource htarget hcompat
+          q.1 q.2 Iq
+      have hrEval :=
+        valuationFunctionEquiv_apply_transport
+          act A B₀ ψ p g hsource htarget hcompat
+          r.1 r.2 Ir
+      have hqIndex :
+          badAtEquiv act A B₀ ψ g q.1 Iq =
+            (⟨J, hqJ⟩ :
+              BadAt act A B₀ ψ (g q.1)) := by
+        rfl
+      have hrIndex :
+          badAtEquiv act A B₀ ψ g r.1 Ir =
+            (⟨J, hrJ⟩ :
+              BadAt act A B₀ ψ (g r.1)) := by
+        rfl
+      rw [hqIndex] at hqEval
+      rw [hrIndex] at hrEval
+      calc
+        (transportValuationPoint act A B₀ ψ
+            p g hsource htarget hcompat q).2
+              ⟨J, hqJ⟩ |>.1 =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (q.2 Iq)).1 := by
+                exact congrArg Subtype.val hqEval
+        _ =
+            (labelExtension act A B₀ ψ p g I
+              hsource htarget hcompat (r.2 Ir)).1 :=
+          congrArg Subtype.val htargetLabelEq
+        _ =
+            (transportValuationPoint act A B₀ ψ
+              p g hsource htarget hcompat r).2
+                ⟨J, hrJ⟩ |>.1 := by
+                  exact (congrArg Subtype.val hrEval).symm
+
+/-- Faithful valuation transport preserves genericity exactly. -/
+theorem areGeneric_transport_iff [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (q r : ValuationPoint act A B₀ ψ) :
+    AreGeneric act A B₀ ψ
+      (transportValuationPoint act A B₀ ψ
+        p g hsource htarget hcompat q)
+      (transportValuationPoint act A B₀ ψ
+        p g hsource htarget hcompat r) ↔
+    AreGeneric act A B₀ ψ q r :=
+  ⟨areGeneric_of_transport act A B₀ ψ
+      p g hsource htarget hcompat,
+    areGeneric_transport act A B₀ ψ
+      p g hsource htarget hcompat⟩
+
 end Faithful
 end AllThoseEPPA

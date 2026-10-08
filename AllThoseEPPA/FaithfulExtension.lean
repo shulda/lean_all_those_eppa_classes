@@ -158,5 +158,114 @@ theorem partialAutomorphism_restrictionVertex
         act A B₀ ψ (p w))
       hpdcl hrcl hbase
 
+
+/-- The centre valuation point of a restriction-descendant is exactly the
+corresponding internal valuation point of its ancestor. -/
+theorem centerValuationPoint_restrictionVertex
+    (w : WitnessVertex act A B₀ ψ)
+    (y : β) (hy : y ∈ B₀.closureAtSet w.base) :
+    centerValuationPoint act A B₀ ψ
+        (restrictionVertex act A B₀ ψ w y hy) =
+      w.pointAt act A B₀ ψ
+        (⟨y, hy⟩ : B₀.closureAtSet w.base) := by
+  unfold centerValuationPoint centerPoint
+  rw [restrictionVertex_pointAt]
+  have hz :
+      closureInclusion B₀ hy
+          (⟨y, B₀.mem_closureAtSet y⟩ :
+            B₀.closureAtSet y) =
+        (⟨y, hy⟩ : B₀.closureAtSet w.base) := by
+    apply Subtype.ext
+    rfl
+  rw [hz]
+
+/-- The centre label of a restriction-descendant is the corresponding
+component of the ancestor valuation assignment. -/
+theorem centerLabel_restrictionVertex
+    (w : WitnessVertex act A B₀ ψ)
+    (y : β) (hy : y ∈ B₀.closureAtSet w.base)
+    (I : BadIrreducible act A B₀ ψ)
+    (hyI : y ∈ I.carrier) :
+    centerLabel act A B₀ ψ
+        (restrictionVertex act A B₀ ψ w y hy)
+        I hyI =
+      (w.valuation.1
+        (⟨y, hy⟩ : B₀.closureAtSet w.base))
+        ⟨I, hyI⟩ := by
+  unfold centerLabel
+  rw [centerValuationPoint_restrictionVertex
+    act A B₀ ψ w y hy]
+  rfl
+
+/-- On a source vertex, transport of the valuation function at every point of
+its one-point closure is exactly the valuation function carried by the
+partial-automorphism image at the transported point. -/
+theorem valuationFunction_transport_eq_of_mem_source [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcompat : BaseCompatible act A B₀ ψ p g)
+    (w : WitnessVertex act A B₀ ψ)
+    (hw : w ∈ p.source)
+    (y : β) (hy : y ∈ B₀.closureAtSet w.base) :
+    let hy' :
+        g y ∈ B₀.closureAtSet (p w).base := by
+      have h :=
+        automorphism_maps_closureAtSet act B₀ g hy
+      simpa [hcompat.2 w hw] using h
+    valuationFunctionEquiv act A B₀ ψ
+        p g hsource htarget hcompat y
+        (w.valuation.1
+          (⟨y, hy⟩ : B₀.closureAtSet w.base)) =
+      (p w).valuation.1
+        (⟨g y, hy'⟩ :
+          B₀.closureAtSet (p w).base) := by
+  dsimp
+  funext J
+  rcases
+      (badAtEquiv act A B₀ ψ g y).surjective J with
+    ⟨I, rfl⟩
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ p g hsource htarget hcompat
+    y
+    (w.valuation.1
+      (⟨y, hy⟩ : B₀.closureAtSet w.base))
+    I]
+  let d :=
+    restrictionVertex act A B₀ ψ w y hy
+  have hdsrc : d ∈ p.source :=
+    restrictionVertex_mem_source
+      act A B₀ ψ p w hw y hy
+  have hpd :=
+    partialAutomorphism_restrictionVertex
+      act A B₀ ψ p g hcompat w hw y hy
+  have hcenter :=
+    labelExtension_centerLabel
+      act A B₀ ψ p g I.1
+      hsource htarget hcompat
+      d hdsrc I.2
+  have hsrc :
+      centerLabel act A B₀ ψ d I.1 I.2 =
+        (w.valuation.1
+          (⟨y, hy⟩ : B₀.closureAtSet w.base)) I := by
+    exact
+      centerLabel_restrictionVertex
+        act A B₀ ψ w y hy I.1 I.2
+  rw [hsrc] at hcenter
+  rw [hpd] at hcenter
+  have htgt :=
+    centerLabel_restrictionVertex
+      act A B₀ ψ (p w) (g y)
+      (by
+        have h :=
+          automorphism_maps_closureAtSet act B₀ g hy
+        simpa [hcompat.2 w hw] using h)
+      (I.1.transport act A B₀ ψ g)
+      ⟨y, I.2, rfl⟩
+  rw [htgt] at hcenter
+  exact hcenter
+
 end Faithful
 end AllThoseEPPA

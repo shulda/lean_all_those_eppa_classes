@@ -431,7 +431,7 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
       act A B₀ ψ hpw (g y.1)
       hy' hgy
   rw [ht]
-  rw [← hzy]
+  cases hzy
   simpa [zy, WitnessVertex.valuation, WitnessVertex.base] using hval
 
 /-- The lifted automorphism extends the prescribed partial automorphism along

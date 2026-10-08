@@ -364,6 +364,11 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
   rw [Sigma.ext_iff]
   refine ⟨hbase, ?_⟩
   cases hbase
+  change
+    HEq
+      (ValuationStructure.transport act A B₀ ψ
+        p g hsource htarget hcompat w.valuation)
+      Vp
   rw [heq_iff_eq]
   apply Subtype.ext
   funext z

@@ -372,5 +372,114 @@ theorem ValuationStructure.transport_comp [Finite β]
         hss hst hcs x)
 
 
+/-- Equivalent faithful partial automorphisms induce the same transport on
+valuation functions when paired with the same compatible base automorphism. -/
+theorem valuationFunctionEquiv_eq_of_equivalent [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p g)
+    (hcq : BaseCompatible act A B₀ ψ q g)
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    (x : β) :
+    valuationFunctionEquiv act A B₀ ψ
+        p g hsp htp hcp x =
+      valuationFunctionEquiv act A B₀ ψ
+        q g hsq htq hcq x := by
+  apply Equiv.ext
+  intro χ
+  funext J
+  let I : BadAt act A B₀ ψ x :=
+    (badAtEquiv act A B₀ ψ g x).symm J
+  have hJ :
+      badAtEquiv act A B₀ ψ g x I = J := by
+    simp [I]
+  rw [← hJ]
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ p g hsp htp hcp x χ I]
+  rw [valuationFunctionEquiv_apply_transport
+    act A B₀ ψ q g hsq htq hcq x χ I]
+  exact
+    congrArg
+      (fun e => e (χ I))
+      (labelExtension_eq_of_equivalent
+        act A B₀ ψ p q g I.1
+        hsp htp hsq htq hcp hcq hpq)
+
+/-- Equivalent faithful partial automorphisms induce the same transport on
+valuation assignments. -/
+theorem valuationAssignmentEquiv_eq_of_equivalent [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p g)
+    (hcq : BaseCompatible act A B₀ ψ q g)
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    (x : β) :
+    valuationAssignmentEquiv act A B₀ ψ
+        p g hsp htp hcp x =
+      valuationAssignmentEquiv act A B₀ ψ
+        q g hsq htq hcq x := by
+  apply Equiv.ext
+  intro V
+  funext z
+  let y : B₀.closureAtSet x :=
+    (closureTransportEquiv act B₀ g x).symm z
+  have hz :
+      closureTransportEquiv act B₀ g x y = z := by
+    simp [y]
+  rw [← hz]
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ p g hsp htp hcp x V y]
+  rw [valuationAssignmentEquiv_apply_transport
+    act A B₀ ψ q g hsq htq hcq x V y]
+  exact
+    congrArg
+      (fun e => e (V y))
+      (valuationFunctionEquiv_eq_of_equivalent
+        act A B₀ ψ p q g
+        hsp htp hsq htq hcp hcq hpq y.1)
+
+/-- Complete valuation-structure transport depends only on the mathematical
+partial map represented by the faithful partial automorphism. -/
+theorem ValuationStructure.transport_eq_of_equivalent [Finite β]
+    (p q : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g : Structure.Automorphism act B₀)
+    (hsp : WitnessSetGeneric act A B₀ ψ p.source)
+    (htp : WitnessSetGeneric act A B₀ ψ p.target)
+    (hsq : WitnessSetGeneric act A B₀ ψ q.source)
+    (htq : WitnessSetGeneric act A B₀ ψ q.target)
+    (hcp : BaseCompatible act A B₀ ψ p g)
+    (hcq : BaseCompatible act A B₀ ψ q g)
+    (hpq : Structure.PartialIsomorphism.Equivalent p q)
+    {x : β}
+    (V : ValuationStructure act A B₀ ψ x) :
+    ValuationStructure.transport act A B₀ ψ
+        p g hsp htp hcp V =
+      ValuationStructure.transport act A B₀ ψ
+        q g hsq htq hcq V := by
+  apply Subtype.ext
+  change
+    valuationAssignmentEquiv act A B₀ ψ
+        p g hsp htp hcp x V.1 =
+      valuationAssignmentEquiv act A B₀ ψ
+        q g hsq htq hcq x V.1
+  exact
+    congrArg
+      (fun e => e V.1)
+      (valuationAssignmentEquiv_eq_of_equivalent
+        act A B₀ ψ p q g
+        hsp htp hsq htq hcp hcq hpq x)
+
+
 end Faithful
 end AllThoseEPPA

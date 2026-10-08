@@ -126,33 +126,52 @@ theorem valuationFunctionEquiv_comp [Finite β]
   let I : BadAt act A B₀ ψ x := e.symm J
   have hJ : e I = J := e.apply_symm_apply J
   rw [← hJ]
-  change
-    (valuationFunctionEquiv act A B₀ ψ
-        q gq hsq htq hcq (gp x)
-        (valuationFunctionEquiv act A B₀ ψ
-          p gp hsp htp hcp x χ)
-        (badAtEquiv act A B₀ ψ gq (gp x)
-          (badAtEquiv act A B₀ ψ gp x I))).1 =
-      (valuationFunctionEquiv act A B₀ ψ
-        (q.comp p ht) (gq.comp gp)
-        hss hst hcs x χ
-        (badAtEquiv act A B₀ ψ gq (gp x)
-          (badAtEquiv act A B₀ ψ gp x I))).1
   have hp :=
     congrArg Subtype.val
       (valuationFunctionEquiv_comp_apply
         act A B₀ ψ p q gp gq ht
         hsp htp hsq htq hcp hcq
         hss hst hcs x χ I)
-  simp only [badLabelEquivOfEq_apply_val] at hp
+  have hp' :
+      (valuationFunctionEquiv act A B₀ ψ
+          q gq hsq htq hcq (gp x)
+          (valuationFunctionEquiv act A B₀ ψ
+            p gp hsp htp hcp x χ)
+          (badAtEquiv act A B₀ ψ gq (gp x)
+            (badAtEquiv act A B₀ ψ gp x I))).1 =
+        (valuationFunctionEquiv act A B₀ ψ
+          (q.comp p ht) (gq.comp gp)
+          hss hst hcs x χ
+          (badAtEquiv act A B₀ ψ (gq.comp gp) x I)).1 := by
+    calc
+      _ =
+          (badLabelEquivOfEq act A B₀ ψ
+            (BadIrreducible.transport_comp
+              act A B₀ ψ gq gp I.1).symm
+            (valuationFunctionEquiv act A B₀ ψ
+              (q.comp p ht) (gq.comp gp)
+              hss hst hcs x χ
+              (badAtEquiv act A B₀ ψ
+                (gq.comp gp) x I))).1 := hp
+      _ =
+          (valuationFunctionEquiv act A B₀ ψ
+            (q.comp p ht) (gq.comp gp)
+            hss hst hcs x χ
+            (badAtEquiv act A B₀ ψ
+              (gq.comp gp) x I)).1 :=
+        badLabelEquivOfEq_apply_val
+          act A B₀ ψ
+          (BadIrreducible.transport_comp
+            act A B₀ ψ gq gp I.1).symm
+          _
   have hidx :=
     congrArg
-      (fun K : BadAt act A B₀ ψ ((gq.comp gp) x) =>
+      (fun K =>
         (valuationFunctionEquiv act A B₀ ψ
           (q.comp p ht) (gq.comp gp)
           hss hst hcs x χ K).1)
       (badAtEquiv_comp act A B₀ ψ gp gq x I)
-  exact hp.trans hidx
+  simpa [e] using hp'.trans hidx
 
 
 end Faithful

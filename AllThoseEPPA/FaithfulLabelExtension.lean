@@ -250,7 +250,7 @@ theorem usedLabelEquiv_centerLabel [Finite β]
     let htI :
         (p w).base ∈
           (I.transport act A B₀ ψ g).carrier :=
-      ⟨w.base, hwI, (hcompat.2 w hw).symm⟩
+      ⟨w.base, hwI, hcompat.2 w hw⟩
     let hused :
         centerLabel act A B₀ ψ w I hwI ∈
           usedSourceLabels act A B₀ ψ p I :=
@@ -289,7 +289,7 @@ theorem labelExtension_centerLabel [Finite β]
     let htI :
         (p w).base ∈
           (I.transport act A B₀ ψ g).carrier :=
-      ⟨w.base, hwI, (hcompat.2 w hw).symm⟩
+      ⟨w.base, hwI, hcompat.2 w hw⟩
     labelExtension act A B₀ ψ p g I
         hsource htarget hcompat
         (centerLabel act A B₀ ψ w I hwI) =

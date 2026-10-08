@@ -421,7 +421,8 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
       act A B₀ ψ hpw (g y.1)
       hy' (e y).2
   rw [ht]
-  simpa [e, closureTransportEquiv] using hval
+  simpa [e, closureTransportEquiv,
+    WitnessVertex.valuation, WitnessVertex.base] using hval
 
 /-- The lifted automorphism extends the prescribed partial automorphism along
 the identity embedding of the faithful witness. -/

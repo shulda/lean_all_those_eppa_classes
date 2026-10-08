@@ -95,6 +95,83 @@ theorem orderedExtensionOfCardEq_apply_of_not_mem
   classical
   simp [orderedExtensionOfCardEq, hx]
 
+/-- The heterogeneous canonical ordered extension depends only on the
+mathematical partial map, not on irrelevant values outside its source. -/
+theorem orderedExtensionOfCardEq_eq_of_eqOnSource
+    [Fintype α] [LinearOrder α]
+    [Fintype β] [LinearOrder β]
+    {p q : PartialEquiv α β}
+    (hcard : Fintype.card α = Fintype.card β)
+    (hpq : PartialEquiv.EqOnSource p q) :
+    orderedExtensionOfCardEq p hcard =
+      orderedExtensionOfCardEq q hcard := by
+  classical
+  ext x
+  by_cases hx : x ∈ p.source
+  · have hxq : x ∈ q.source := by
+      rw [← hpq.1]
+      exact hx
+    rw [orderedExtensionOfCardEq_apply_of_mem p hcard hx,
+      orderedExtensionOfCardEq_apply_of_mem q hcard hxq]
+    exact hpq.2 hx
+  · have hxq : x ∉ q.source := by
+      intro hxq
+      exact hx (hpq.1 ▸ hxq)
+    rw [orderedExtensionOfCardEq_apply_of_not_mem p hcard hx,
+      orderedExtensionOfCardEq_apply_of_not_mem q hcard hxq]
+    have hs :
+        {x : α | x ∉ p.source} =
+          {x : α | x ∉ q.source} := by
+      rw [hpq.1]
+    have ht0 : p.target = q.target :=
+      PartialEquiv.EqOnSource.target_eq hpq
+    have ht :
+        {y : β | y ∉ p.target} =
+          {y : β | y ∉ q.target} := by
+      rw [ht0]
+    let sourceBridge :
+        {x : α // x ∉ p.source} ≃o
+          {x : α // x ∉ q.source} :=
+      Set.orderIsoOfEq _ _ hs
+    let targetBridge :
+        {y : β // y ∉ p.target} ≃o
+          {y : β // y ∉ q.target} :=
+      Set.orderIsoOfEq _ _ ht
+    let leftIso :
+        {x : α // x ∉ p.source} ≃o
+          {y : β // y ∉ q.target} :=
+      (orderedComplementOrderIsoOfCardEq p hcard).trans
+        targetBridge
+    let rightIso :
+        {x : α // x ∉ p.source} ≃o
+          {y : β // y ∉ q.target} :=
+      sourceBridge.trans
+        (orderedComplementOrderIsoOfCardEq q hcard)
+    have he : leftIso = rightIso :=
+      Subsingleton.elim _ _
+    have happ :=
+      congrArg (fun e' => (e' ⟨x, hx⟩ : β)) he
+    change
+      (targetBridge
+          (orderedComplementOrderIsoOfCardEq p hcard
+            ⟨x, hx⟩) : β) =
+        (orderedComplementOrderIsoOfCardEq q hcard
+          (sourceBridge ⟨x, hx⟩) : β) at happ
+    calc
+      (orderedComplementOrderIsoOfCardEq p hcard
+          ⟨x, hx⟩ : β) =
+          (targetBridge
+            (orderedComplementOrderIsoOfCardEq p hcard
+              ⟨x, hx⟩) : β) := by
+        rfl
+      _ =
+          (orderedComplementOrderIsoOfCardEq q hcard
+            (sourceBridge ⟨x, hx⟩) : β) := happ
+      _ =
+          (orderedComplementOrderIsoOfCardEq q hcard
+            ⟨x, hxq⟩ : β) := by
+        congr 1
+
 /-- Heterogeneous order-preserving completion is coherent under composition. -/
 theorem orderedExtensionOfCardEq_trans'
     [Fintype α] [LinearOrder α]

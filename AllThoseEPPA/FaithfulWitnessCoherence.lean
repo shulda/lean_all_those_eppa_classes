@@ -153,5 +153,25 @@ theorem faithfulWitnessAutomorphism_eq_of_equivalent [Finite β]
         hsp htp hsq htq hcp hcq hpq x
 
 
+/-- Changing a compatible base automorphism along an equality does not change
+faithful witness transport. -/
+theorem WitnessVertex.transport_eq_of_base_eq [Finite β]
+    (p : Structure.PartialAutomorphism act
+      (witnessStructure act A B₀ ψ))
+    (g h : Structure.Automorphism act B₀)
+    (hgh : g = h)
+    (hsource : WitnessSetGeneric act A B₀ ψ p.source)
+    (htarget : WitnessSetGeneric act A B₀ ψ p.target)
+    (hcg : BaseCompatible act A B₀ ψ p g)
+    (hch : BaseCompatible act A B₀ ψ p h)
+    (x : WitnessVertex act A B₀ ψ) :
+    WitnessVertex.transport act A B₀ ψ
+        p g hsource htarget hcg x =
+      WitnessVertex.transport act A B₀ ψ
+        p h hsource htarget hch x := by
+  subst h
+  rfl
+
+
 end Faithful
 end AllThoseEPPA

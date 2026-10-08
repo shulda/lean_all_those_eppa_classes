@@ -209,11 +209,12 @@ theorem ValuationStructure.transport_restrict [Finite β]
   rw [valuationAssignmentEquiv_apply_transport
     act A B₀ ψ p g hsource htarget hcompat
     y (V.restrict act A B₀ ψ y hy).1 z0]
-  rw [← closureTransportEquiv_closureInclusion
-    act B₀ g hy z0]
-  rw [valuationAssignmentEquiv_apply_transport
-    act A B₀ ψ p g hsource htarget hcompat
-    x V.1 (closureInclusion B₀ hy z0)]
+  have hr :=
+    valuationAssignmentEquiv_apply_transport
+      act A B₀ ψ p g hsource htarget hcompat
+      x V.1 (closureInclusion B₀ hy z0)
+  convert hr.symm using 1
+  apply Subtype.ext
   rfl
 
 end Faithful

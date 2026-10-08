@@ -156,6 +156,24 @@ noncomputable def symm (g : Automorphism act A) :
             simpa [PartialIsomorphism.target] using g.target_eq_univ]
         exact Set.mem_univ x)
 
+
+/-- The underlying permutation of the carrier of an automorphism. -/
+noncomputable def toEquiv (g : Automorphism act A) : V ≃ V where
+  toFun := g
+  invFun := g.symm
+  left_inv := symm_apply_apply g
+  right_inv := apply_symm_apply g
+
+@[simp] theorem toEquiv_apply
+    (g : Automorphism act A) (x : V) :
+    g.toEquiv x = g x :=
+  rfl
+
+@[simp] theorem toEquiv_symm_apply
+    (g : Automorphism act A) (x : V) :
+    g.toEquiv.symm x = g.symm x :=
+  rfl
+
 end Automorphism
 end Structure
 end AllThoseEPPA

@@ -69,6 +69,16 @@ noncomputable def valuationFunctionEquiv [Finite β]
       valuationLabelFibreEquiv act A B₀ ψ
         p g hsource htarget hcompat x J)
 
+/-- Casting between equal subtype types does not change the underlying
+ambient value. -/
+private theorem subtype_cast_val
+    {P Q : β → Prop}
+    (h : Subtype P = Subtype Q)
+    (a : Subtype P) :
+    (cast h a : Subtype Q).1 = a.1 := by
+  cases h
+  rfl
+
 /-- Evaluation of transported valuation functions at a transported bad
 irreducible is the corresponding total label extension. -/
 theorem valuationFunctionEquiv_apply_transport [Finite β]
@@ -92,7 +102,8 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
       (badAtEquiv act A B₀ ψ g x).symm
           (badAtEquiv act A B₀ ψ g x I) = I :=
     (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
-  simp [valuationLabelFibreEquiv, hround]
+  simp [valuationLabelFibreEquiv, subtype_cast_val]
+  rw [hround]
 
 end Faithful
 end AllThoseEPPA

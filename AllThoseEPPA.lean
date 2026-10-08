@@ -33,3 +33,4 @@ import AllThoseEPPA.FaithfulClosureTransport
 import AllThoseEPPA.FaithfulValuationTransport
 import AllThoseEPPA.FaithfulValuationGeneric
 import AllThoseEPPA.FaithfulValuationStructureTransport
+import AllThoseEPPA.FaithfulWitnessTransport

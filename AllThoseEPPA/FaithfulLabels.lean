@@ -83,6 +83,20 @@ def badLabelEquivOfEq
   cases h
   exact Equiv.refl _
 
+/-- Equality of bad-irreducible indices induces an order isomorphism on
+the corresponding canonical finite label orders. -/
+noncomputable def badLabelOrderIsoOfEq [Finite β]
+    {I J : BadIrreducible act A B₀ ψ}
+    (h : I = J) :
+    letI : LinearOrder (BadLabel act A B₀ ψ I) :=
+      badLabelLinearOrder act A B₀ ψ I
+    letI : LinearOrder (BadLabel act A B₀ ψ J) :=
+      badLabelLinearOrder act A B₀ ψ J
+    BadLabel act A B₀ ψ I ≃o
+      BadLabel act A B₀ ψ J := by
+  subst J
+  exact OrderIso.refl _
+
 @[simp] theorem badLabelEquivOfEq_apply_val
     {I J : BadIrreducible act A B₀ ψ}
     (h : I = J)

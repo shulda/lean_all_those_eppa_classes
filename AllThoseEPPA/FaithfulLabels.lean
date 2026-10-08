@@ -1,6 +1,7 @@
 import AllThoseEPPA.FaithfulTransport
 import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Fintype.Sort
+import Mathlib.SetTheory.Cardinal.NatCard
 
 /-!
 # Finite label types for the faithful construction

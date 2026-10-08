@@ -45,11 +45,7 @@ noncomputable def valuationLabelFibreEquiv [Finite β]
   exact
     (labelExtension act A B₀ ψ p g I.1
       hsource htarget hcompat).trans
-      (Equiv.cast
-        (congrArg
-          (fun K : BadIrreducible act A B₀ ψ =>
-            BadLabel act A B₀ ψ K)
-          hIJ))
+      (badLabelEquivOfEq act A B₀ ψ hIJ)
 
 /-- Transport of an entire valuation function along a compatible base
 automorphism.  This is a dependent product of the corresponding label
@@ -69,22 +65,6 @@ noncomputable def valuationFunctionEquiv [Finite β]
       valuationLabelFibreEquiv act A B₀ ψ
         p g hsource htarget hcompat x J)
 
-/-- Casting a bad label along equality of its bad-irreducible index
-does not change the underlying base vertex. -/
-private theorem badLabel_cast_val
-    {I J : BadIrreducible act A B₀ ψ}
-    (h : I = J)
-    (a : BadLabel act A B₀ ψ I) :
-    (cast
-        (congrArg
-          (fun K : BadIrreducible act A B₀ ψ =>
-            BadLabel act A B₀ ψ K)
-          h)
-        a :
-      BadLabel act A B₀ ψ J).1 = a.1 := by
-  cases h
-  rfl
-
 /-- Evaluation of transported valuation functions at a transported bad
 irreducible is the corresponding total label extension. -/
 theorem valuationFunctionEquiv_apply_transport [Finite β]
@@ -102,9 +82,8 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         (badAtEquiv act A B₀ ψ g x I) =
       labelExtension act A B₀ ψ p g I.1
         hsource htarget hcompat (χ I) := by
-  simp only [valuationFunctionEquiv, Equiv.piCongr'_apply]
-  apply Subtype.ext
-  simp [valuationLabelFibreEquiv, badLabel_cast_val]
+  simp [valuationFunctionEquiv, Equiv.piCongr'_apply,
+    valuationLabelFibreEquiv]
 
 end Faithful
 end AllThoseEPPA

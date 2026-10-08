@@ -38,3 +38,4 @@ import AllThoseEPPA.FaithfulWitnessFunctionTransport
 import AllThoseEPPA.FaithfulWitnessAutomorphism
 import AllThoseEPPA.FaithfulExtension
 import AllThoseEPPA.FaithfulInducedPartialIso
+import AllThoseEPPA.FaithfulEmbeddingInverse

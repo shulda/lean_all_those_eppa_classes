@@ -43,6 +43,12 @@ theorem automorphism_image_isClosed
     exact Set.mem_univ _
   have hmap :=
     g.toPartialIsomorphism.map_func F₀ as hsource
+  change
+    Structure.imageSet
+        g.toPartialIsomorphism.toPartialEquiv
+        (B₀.func F₀ as) =
+      B₀.func (act.onFunc g.lang F₀)
+        (g.toPartialIsomorphism.toPartialEquiv ∘ as) at hmap
   rw [hsym, htuple] at hmap
   have hyimg :
       y ∈
@@ -90,6 +96,11 @@ noncomputable def automorphismInducedEmbedding
         R (fun i => (xs i).1) hsource
     change
       B₀.rel (act.onRel g.lang R)
+          (g.toPartialIsomorphism.toPartialEquiv ∘
+            fun i => (xs i).1) ↔
+        B₀.rel R (fun i => (xs i).1) at hg
+    change
+      B₀.rel (act.onRel g.lang R)
           (fun i => g (xs i).1) ↔
         B₀.rel R (fun i => (xs i).1)
     simpa [Function.comp_def] using hg
@@ -103,6 +114,13 @@ noncomputable def automorphismInducedEmbedding
     have hg :=
       g.toPartialIsomorphism.map_func
         F (fun i => (xs i).1) hsource
+    change
+      Structure.imageSet
+          g.toPartialIsomorphism.toPartialEquiv
+          (B₀.func F (fun i => (xs i).1)) =
+        B₀.func (act.onFunc g.lang F)
+          (g.toPartialIsomorphism.toPartialEquiv ∘
+            fun i => (xs i).1) at hg
     ext y
     constructor
     · rintro ⟨z, hz, rfl⟩

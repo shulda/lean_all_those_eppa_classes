@@ -353,13 +353,17 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
     WitnessVertex.transport act A B₀ ψ
         p g hsource htarget hcompat w =
       p w := by
-  have hbase :
-      g w.base = (p w).base :=
-    hcompat.2 w hw
+  generalize hpw : p w = pw
+  rcases pw with ⟨b, Vp⟩
+  have hbase : g w.base = b := by
+    have hb := hcompat.2 w hw
+    rw [hpw] at hb
+    exact hb
+  rw [hpw]
   rw [Sigma.ext_iff]
   refine ⟨hbase, ?_⟩
   cases hbase
-  apply heq_of_eq
+  rw [heq_iff_eq]
   apply Subtype.ext
   funext z
   let e := closureTransportEquiv act B₀ g w.base
@@ -370,14 +374,16 @@ theorem WitnessVertex.transport_eq_of_mem_source [Finite β]
     valuationAssignmentEquiv act A B₀ ψ
         p g hsource htarget hcompat w.base
         w.valuation.1 (e y) =
-      (p w).valuation.1 (e y)
+      Vp.1 (e y)
   rw [valuationAssignmentEquiv_apply_transport
     act A B₀ ψ p g hsource htarget hcompat
     w.base w.valuation.1 y]
-  exact
+  have ht :=
     valuationFunction_transport_eq_of_mem_source
       act A B₀ ψ p g hsource htarget hcompat
       w hw y.1 y.2
+  rw [hpw] at ht
+  simpa [e, closureTransportEquiv] using ht
 
 /-- The lifted automorphism extends the prescribed partial automorphism along
 the identity embedding of the faithful witness. -/

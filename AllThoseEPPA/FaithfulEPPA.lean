@@ -48,24 +48,12 @@ theorem canonicalPartialMoveEmbedding_isCanonical
     ∃ a : α,
       canonicalPartialMoveEmbedding act A B₀ ψ p x =
         canonicalVertex act A B₀ ψ a := by
-  let sourceEmb :
-      Structure.Embedding act
-        (A.induce p.source p.source_closed)
-        (witnessStructure act A B₀ ψ) :=
+  let sourceEmb :=
     canonicalSourceCopyEmbedding act A B₀ ψ p
-  let sourceSet : Set (WitnessVertex act A B₀ ψ) :=
-    canonicalPartialSourceSet act A B₀ ψ p
-  let hsourceSet :
-      (witnessStructure act A B₀ ψ).IsClosed sourceSet := by
-    simpa [sourceSet] using
-      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
-  let back :
-      Structure.Embedding act
-        ((witnessStructure act A B₀ ψ).induce
-          sourceSet hsourceSet)
-        (A.induce p.source p.source_closed) :=
+  let back :=
     embeddingInverseOnClosedSubset act sourceEmb
-      sourceSet hsourceSet
+      (canonicalPartialSourceSet act A B₀ ψ p)
+      (canonicalPartialSourceSet_isClosed act A B₀ ψ p)
       (by
         intro y hy
         exact hy)

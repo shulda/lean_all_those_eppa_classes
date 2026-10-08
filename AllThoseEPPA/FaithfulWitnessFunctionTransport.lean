@@ -89,7 +89,8 @@ theorem functionValueVertex_transport [Finite β]
         (act.onFunc g.lang F) (g y)
         (baseFunction_mem_transport act B₀ g F hy) := by
   rw [witnessEquiv_apply]
-  apply Sigma.ext rfl
+  rw [Sigma.ext_iff]
+  refine ⟨rfl, ?_⟩
   apply heq_of_eq
   have hrestrict :=
     ValuationStructure.transport_restrict

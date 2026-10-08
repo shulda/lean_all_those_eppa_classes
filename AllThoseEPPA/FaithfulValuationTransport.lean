@@ -69,13 +69,19 @@ noncomputable def valuationFunctionEquiv [Finite β]
       valuationLabelFibreEquiv act A B₀ ψ
         p g hsource htarget hcompat x J)
 
-/-- Casting between equal subtype types does not change the underlying
-ambient value. -/
-private theorem subtype_cast_val
-    {P Q : β → Prop}
-    (h : Subtype P = Subtype Q)
-    (a : Subtype P) :
-    (cast h a : Subtype Q).1 = a.1 := by
+/-- Casting a bad label along equality of its bad-irreducible index
+does not change the underlying base vertex. -/
+private theorem badLabel_cast_val
+    {I J : BadIrreducible act A B₀ ψ}
+    (h : I = J)
+    (a : BadLabel act A B₀ ψ I) :
+    (cast
+        (congrArg
+          (fun K : BadIrreducible act A B₀ ψ =>
+            BadLabel act A B₀ ψ K)
+          h)
+        a :
+      BadLabel act A B₀ ψ J).1 = a.1 := by
   cases h
   rfl
 
@@ -98,12 +104,7 @@ theorem valuationFunctionEquiv_apply_transport [Finite β]
         hsource htarget hcompat (χ I) := by
   simp only [valuationFunctionEquiv, Equiv.piCongr'_apply]
   apply Subtype.ext
-  have hround :
-      (badAtEquiv act A B₀ ψ g x).symm
-          (badAtEquiv act A B₀ ψ g x I) = I :=
-    (badAtEquiv act A B₀ ψ g x).symm_apply_apply I
-  simp [valuationLabelFibreEquiv, subtype_cast_val]
-  rw [hround]
+  simp [valuationLabelFibreEquiv, badLabel_cast_val]
 
 end Faithful
 end AllThoseEPPA

@@ -27,3 +27,4 @@ import AllThoseEPPA.FinitePartialEquiv
 import AllThoseEPPA.Automorphism
 import AllThoseEPPA.FaithfulTransport
 import AllThoseEPPA.FaithfulLabels
+import AllThoseEPPA.FaithfulLabelFibres

@@ -28,8 +28,7 @@ theorem centerGeneric_of_edge
     WitnessFamilyGeneric B₀ E (Structure.pairTuple u v) at hedge
   have hh := hedge.2 (0 : Fin 2) (1 : Fin 2)
     (centerPoint B₀ E u) (centerPoint B₀ E v)
-  simpa only [Structure.pairTuple_zero, Structure.pairTuple_one,
-    centerValuationPoint] using hh
+  simpa [Structure.pairTuple, centerValuationPoint] using hh
 
 /-- An induced bad E-cycle of the base witness cannot lift to a cycle of
 the sparsening witness while preserving all its consecutive edges. -/

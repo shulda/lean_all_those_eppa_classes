@@ -28,7 +28,7 @@ in the remaining induced graph. -/
 theorem neighbor_deleted_isolated
     (G : SimpleGraph V) (u : V) :
     (G.induce (G.neighborSet u)ᶜ).neighborSet
-      (⟨u, G.irrefl⟩ : (G.neighborSet u)ᶜ) = ∅ := by
+      (⟨u, G.irrefl⟩ : {z : V // z ∈ (G.neighborSet u)ᶜ}) = ∅ := by
   ext w
   change G.Adj u w.1 ↔ False
   constructor
@@ -44,12 +44,12 @@ theorem different_components_outside_neighborSet
     (hne : u ≠ v)
     (hnonadj : ¬ G.Adj u v) :
     (G.induce (G.neighborSet u)ᶜ).connectedComponentMk
-      (⟨u, G.irrefl⟩ : (G.neighborSet u)ᶜ) ≠
+      (⟨u, G.irrefl⟩ : {z : V // z ∈ (G.neighborSet u)ᶜ}) ≠
     (G.induce (G.neighborSet u)ᶜ).connectedComponentMk
-      (⟨v, hnonadj⟩ : (G.neighborSet u)ᶜ) := by
+      (⟨v, hnonadj⟩ : {z : V // z ∈ (G.neighborSet u)ᶜ}) := by
   let H := G.induce (G.neighborSet u)ᶜ
-  let u₀ : (G.neighborSet u)ᶜ := ⟨u, G.irrefl⟩
-  let v₀ : (G.neighborSet u)ᶜ := ⟨v, hnonadj⟩
+  let u₀ : {z : V // z ∈ (G.neighborSet u)ᶜ} := ⟨u, G.irrefl⟩
+  let v₀ : {z : V // z ∈ (G.neighborSet u)ᶜ} := ⟨v, hnonadj⟩
   have hne₀ : u₀ ≠ v₀ := by
     intro h
     exact hne (congrArg Subtype.val h)

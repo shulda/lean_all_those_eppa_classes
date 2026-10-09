@@ -31,7 +31,7 @@ variable {L : Language.{u}} [L.HasUnaryFunctions] {V : Type v}
 sides gives a free decomposition of the entire structure.
 The distinguished E must be symmetric; no completeness or
 looplessness assumption is needed at this stage. -/
-theorem freeDecomposition_of_closed_edge_separator
+noncomputable def freeDecomposition_of_closed_edge_separator
     (B : Structure L V) (E : L.RelSymbol 2)
     (hIrred : IrreduciblesAreCliques B E)
     (hSymm : B.EdgeSymmetric E)

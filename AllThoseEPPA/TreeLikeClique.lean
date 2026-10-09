@@ -91,8 +91,9 @@ theorem cliqueClosure_isIrreducible
       exact hne (Subtype.ext heq)
     have hedge : B.Edge E (x : V) (y : V) :=
       hC hx hy hxy
-    simpa [Structure.Edge, Structure.induce, Structure.pairTuple,
-      Function.comp_def] using hedge
+    change B.rel E (Subtype.val ∘ Structure.pairTuple x y)
+    rw [Structure.pairTuple_map]
+    exact hedge
   have absorb (T : Set S)
       (hT : (B.induce S hS).IsClosed T)
       (hct : CS ⊆ T) : T = Set.univ := by

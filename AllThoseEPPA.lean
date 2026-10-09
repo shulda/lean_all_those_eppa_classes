@@ -121,3 +121,5 @@ import AllThoseEPPA.TreeLikeGraphInterface
 import AllThoseEPPA.TreeLikeInducedCycles
 import AllThoseEPPA.TreeLikeComponentCut
 import AllThoseEPPA.TreeLikeComponentFree
+import AllThoseEPPA.TreeLikeFunctionEdge
+import AllThoseEPPA.TreeLikeTwoSidedClosure

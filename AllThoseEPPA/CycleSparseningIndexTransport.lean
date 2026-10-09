@@ -56,4 +56,61 @@ theorem wrapPair_transport_iff
 
 end BadCycleSequence
 end Structure
+namespace Sparsening
+
+universe u v w
+
+variable {L : Language.{u}} {Γ : Type v} [Group Γ]
+variable {V : Type w}
+variable (act : L.Action Γ) (A : Structure L V) (E : L.RelSymbol 2)
+
+/-- Base automorphisms reindex valuation functions by their induced
+permutation of the bad cycle sequences, without changing Boolean values. -/
+noncomputable def valuationFunctionTransportEquiv
+    (g : Structure.Automorphism act A)
+    (hfix : act.FixesRel E) (x : V) :
+    ValuationFunction A E x ≃ ValuationFunction A E (g x) :=
+  Equiv.piCongr
+    (W := fun _ : BadCyclesAt A E x => Bool)
+    (Z := fun _ : BadCyclesAt A E (g x) => Bool)
+    (badCyclesAtEquiv act A E g hfix x)
+    (fun _ => Equiv.refl Bool)
+
+theorem valuationFunctionTransportEquiv_apply_transport
+    (g : Structure.Automorphism act A)
+    (hfix : act.FixesRel E) (x : V)
+    (χ : ValuationFunction A E x)
+    (I : BadCyclesAt A E x) :
+    valuationFunctionTransportEquiv act A E g hfix x χ
+        (badCyclesAtEquiv act A E g hfix x I) = χ I := by
+  exact Equiv.piCongr_apply_apply
+    (W := fun _ : BadCyclesAt A E x => Bool)
+    (Z := fun _ : BadCyclesAt A E (g x) => Bool)
+    (badCyclesAtEquiv act A E g hfix x)
+    (fun _ => Equiv.refl Bool) χ I
+
+/-- Lift the base automorphism to valuation points, before introducing flips. -/
+noncomputable def valuationPointTransport
+    (g : Structure.Automorphism act A)
+    (hfix : act.FixesRel E)
+    (p : ValuationPoint A E) : ValuationPoint A E :=
+  Sigma.map g
+    (fun x => valuationFunctionTransportEquiv act A E g hfix x) p
+
+@[simp] theorem valuationPointTransport_base
+    (g : Structure.Automorphism act A)
+    (hfix : act.FixesRel E)
+    (p : ValuationPoint A E) :
+    (valuationPointTransport act A E g hfix p).1 = g p.1 :=
+  rfl
+
+theorem valuationPointTransport_injective
+    (g : Structure.Automorphism act A)
+    (hfix : act.FixesRel E) :
+    Function.Injective (valuationPointTransport act A E g hfix) :=
+  g.toEquiv.injective.sigma_map
+    (fun x => (valuationFunctionTransportEquiv act A E g hfix x).injective)
+
+end Sparsening
+
 end AllThoseEPPA

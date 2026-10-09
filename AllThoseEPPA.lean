@@ -126,3 +126,4 @@ import AllThoseEPPA.TreeLikeNeighborSeparator
 import AllThoseEPPA.TreeLikeMinimalSeparator
 import AllThoseEPPA.TreeLikeFunctionEdge
 import AllThoseEPPA.TreeLikeTwoSidedClosure
+import AllThoseEPPA.TreeLikeWalkClosure

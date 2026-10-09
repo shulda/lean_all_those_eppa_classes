@@ -29,8 +29,13 @@ noncomputable def projectedEdgeMap
     EdgePairs B₀ E (Set.image (fun w => w.base B₀ E) S) := by
   intro q
   rcases q with ⟨⟨x,y⟩,hx,hy,hxy⟩
+  have hedge : B₀.Edge E (x.base B₀ E) (y.base B₀ E) := by
+    change B₀.rel E
+      (Structure.pairTuple (x.base B₀ E) (y.base B₀ E))
+    rw [← Structure.pairTuple_map]
+    exact hxy.1
   exact ⟨(x.base B₀ E, y.base B₀ E),
-    ⟨x,hx,rfl⟩, ⟨y,hy,rfl⟩, hxy.1⟩
+    ⟨x,hx,rfl⟩, ⟨y,hy,rfl⟩, hedge⟩
 
 /-- On a subset on which the vertex projection is injective, the map on
 ordered edges is injective as well. -/

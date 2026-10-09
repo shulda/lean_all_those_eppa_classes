@@ -30,7 +30,7 @@ theorem edgePairs_card_le_square
   letI : Fintype S := Fintype.ofFinite _
   letI : Fintype (Sparsening.EdgePairs B E S) := Fintype.ofFinite _
   let f : Sparsening.EdgePairs B E S → S × S := fun p =>
-    (⟨p.1.1, p.2.1⟩, ⟨p.1.2, p.2.2⟩)
+    (⟨p.1.1, p.2.1⟩, ⟨p.1.2, p.2.2.1⟩)
   have hf : Function.Injective f := by
     intro p q hpq
     apply Subtype.ext

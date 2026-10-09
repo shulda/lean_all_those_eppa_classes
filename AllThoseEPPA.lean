@@ -81,3 +81,4 @@ import AllThoseEPPA.CycleSparseningPartialSwitch
 import AllThoseEPPA.CycleSparseningDiscrepancyConsistency
 import AllThoseEPPA.CycleSparseningRequiredSwitch
 import AllThoseEPPA.CycleSparseningPartialClosure
+import AllThoseEPPA.CycleSparseningPartialBits

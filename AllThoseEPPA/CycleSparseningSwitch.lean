@@ -53,10 +53,18 @@ def valuationPointFlip
     valuationPointFlip B₀ E switch
         (valuationPointFlip B₀ E switch p) = p := by
   rcases p with ⟨x, χ⟩
-  apply Sigma.ext rfl
-  apply heq_of_eq
-  funext c
-  exact bitFlip_involutive (switch c.1) (χ c)
+  have hχ :
+      valuationFunctionFlip B₀ E switch
+          (valuationFunctionFlip B₀ E switch χ) = χ := by
+    funext c
+    exact bitFlip_involutive (switch c.1) (χ c)
+  change
+    (⟨x, valuationFunctionFlip B₀ E switch
+        (valuationFunctionFlip B₀ E switch χ)⟩ :
+      ValuationPoint B₀ E) = ⟨x, χ⟩
+  exact congrArg
+    (fun f : ValuationFunction B₀ E x =>
+      (⟨x, f⟩ : ValuationPoint B₀ E)) hχ
 
 
 /-- Switching every cycle simultaneously preserves exactly the generic pairs. -/

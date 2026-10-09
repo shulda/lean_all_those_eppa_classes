@@ -96,3 +96,7 @@ import AllThoseEPPA.CycleSparseningExtraEdge
 import AllThoseEPPA.CycleSparseningEdgeCount
 import AllThoseEPPA.CycleSparseningTrichotomy
 import AllThoseEPPA.CycleSparseningSwitchSupport
+import AllThoseEPPA.CycleSparseningDiscrepancyCocycle
+import AllThoseEPPA.CycleSparseningRequiredSwitchComp
+import AllThoseEPPA.CycleSparseningSwitchEquivalent
+import AllThoseEPPA.CycleSparseningCanonicalLift

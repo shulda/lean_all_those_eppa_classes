@@ -112,3 +112,4 @@ import AllThoseEPPA.CycleSparseningTheorem
 
 import AllThoseEPPA.TreeLikeDescent
 import AllThoseEPPA.TreeLikeEdgeBudget
+import AllThoseEPPA.TreeLikeClosedProjection

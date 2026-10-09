@@ -1,4 +1,5 @@
 import AllThoseEPPA.Examples.Hypergraph3K4Faithful
+import AllThoseEPPA.Examples.Hypergraph3
 
 /-!
 # Ordinary EPPA for K₄³-free 3-uniform hypergraphs

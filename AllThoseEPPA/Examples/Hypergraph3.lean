@@ -89,8 +89,18 @@ theorem Hypergraph3.eppa
         simpa only [Bridge.action_on_triple] using
           (AllThoseEPPA.Structure.Automorphism.map_rel_iff
             g Bridge.RelSymbol.triple xs).symm
-      simpa [xs, Bridge.range_triple, Function.comp_def,
-        AllThoseEPPA.Structure.Automorphism.toEquiv_apply] using h
+      have hrangeX : Set.range xs = ({x, y, z} : Set β) := by
+        ext t
+        simp [xs, Bridge.range_triple, or_assoc, or_comm, or_left_comm]
+      have hrangeG :
+          Set.range (g ∘ xs) =
+            ({g.toEquiv x, g.toEquiv y, g.toEquiv z} : Set β) := by
+        ext t
+        simp [xs, Bridge.range_triple, Function.comp_def,
+          AllThoseEPPA.Structure.Automorphism.toEquiv_apply,
+          or_assoc, or_comm, or_left_comm]
+      rw [hrangeX, hrangeG] at h
+      exact h
     · intro a
       have ha : a.1 ∈ q.source := a.2
       have h := hg.2 a.1 ha

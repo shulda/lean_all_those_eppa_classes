@@ -46,6 +46,11 @@ theorem no_induced_cycle_of_projection_E_embedding
           exact (c.edge_iff i j).1 he
         · intro h
           have he := (c.edge_iff i j).2 h
+          change
+            B₀.rel E (Structure.pairTuple
+              ((c.vertex i).base B₀ E)
+              ((c.vertex j).base B₀ E))
+          rw [← Structure.pairTuple_map]
           exact he.1 }
   let ws : Fin d.length → WitnessVertex B₀ E := c.vertex
   have hbase : ∀ i, (ws i).base B₀ E = d.vertex i := by

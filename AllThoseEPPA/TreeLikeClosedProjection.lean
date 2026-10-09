@@ -76,8 +76,9 @@ theorem sparsening_projection_image_isClosed
     intro n F xs
     simpa [f, Sparsening.projection] using
       (Sparsening.projection_map_func_eq act B₀ E F xs)
-  exact Structure.imageSet_isClosed_of_exact_func
-    (Sparsening.witnessStructure B₀ E) B₀ f hf S hS
+  intro n F xs hxs
+  exact (Structure.imageSet_isClosed_of_exact_func
+    (Sparsening.witnessStructure B₀ E) B₀ f hf S hS) F xs hxs
 
 end TreeLike
 end AllThoseEPPA

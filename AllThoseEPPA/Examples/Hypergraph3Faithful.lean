@@ -22,6 +22,8 @@ variable (A : Hypergraph3 α) (B : AllThoseEPPA.Structure language β)
 variable (ψ : AllThoseEPPA.Structure.Embedding action (toStructure A) B)
 variable (hfaith : AllThoseEPPA.Structure.IsIrreducibleStructureFaithful action ψ)
 
+include hfaith
+
 /-- Every realised triple can be moved into the distinguished embedded copy,
 where it is necessarily a hyperedge. -/
 theorem relationTriple_movable

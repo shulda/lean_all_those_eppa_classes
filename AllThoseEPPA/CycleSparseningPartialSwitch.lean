@@ -53,7 +53,7 @@ abbrev SourceWitness
 
 /-- The Boolean discrepancy of the source and its image on a bad cycle.
 Coherence requires choosing this bit consistently across source vertices. -/
-def bitDiscrepancy
+noncomputable def bitDiscrepancy
     (p : Structure.PartialAutomorphism act (witnessStructure B₀ E))
     (g : Structure.Automorphism act B₀)
     (hfix : act.FixesRel E)
@@ -130,7 +130,10 @@ theorem generic_centerBits_eq_iff_nonWrap
     (centerBit B₀ E w c hwc = centerBit B₀ E z c hzc) ↔
       c.NonWrapPair (w.base B₀ E) (z.base B₀ E) := by
   rcases hgen with heq | ⟨_, hcycles⟩
-  · exact (hne (congrArg Sigma.fst heq)).elim
+  · have hbase : w.base B₀ E = z.base B₀ E := by
+      exact congrArg
+        (fun t : ValuationPoint B₀ E => t.1) heq
+    exact (hne hbase).elim
   · rcases hcycles c hwc hzc with ⟨hnw, heq⟩ | ⟨hw, hneq⟩
     · exact ⟨fun _ => hnw, fun _ => heq⟩
     · constructor

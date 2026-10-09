@@ -181,13 +181,19 @@ theorem canonicalBits_wrap
     have hfirstB : c.firstVertex ≠ ψ b := by
       intro h
       exact c.firstVertex_ne_lastVertex (h.trans hlb)
-    simp [canonicalValuationFunction, hlast, hfirstA, hfirstB]
+    have hab' : ψ a ≠ ψ b := by
+      intro h
+      exact hfirstB (hfirstA.trans h)
+    simp [canonicalValuationFunction, hlast, hfirstA, hab']
   · have hlast : c.lastVertex ∈ Set.range ψ := ⟨a, hla⟩
     have hfirstB : c.firstVertex = ψ b := hfb.symm
     have hfirstA : c.firstVertex ≠ ψ a := by
       intro h
       exact c.firstVertex_ne_lastVertex (h.trans hla)
-    simp [canonicalValuationFunction, hlast, hfirstB, hfirstA]
+    have hba' : ψ b ≠ ψ a := by
+      intro h
+      exact hfirstA (hfirstB.trans h)
+    simp [canonicalValuationFunction, hlast, hfirstB, hba']
 
 /-- The canonical valuation points corresponding to vertices of A are
 pairwise generic, for the precise cycle-genericity predicate. -/
@@ -204,7 +210,10 @@ theorem canonical_areGeneric
       (canonicalValuationPoint act A B₀ ψ E (ψ a))
   · refine Or.inr ⟨?_, ?_⟩
     · intro h
-      exact hab (ψ.injective (congrArg Sigma.fst h))
+      have hbase : ψ a = ψ b := by
+        exact congrArg
+          (fun p : ValuationPoint B₀ E => p.1) h
+      exact hab (ψ.injective hbase)
     · intro c ha hb
       rcases (embedded_common_cycle_pair_classified
         act A B₀ ψ E hfix hcomplete c hab ha hb) with hnw | hw

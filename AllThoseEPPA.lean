@@ -100,3 +100,4 @@ import AllThoseEPPA.CycleSparseningDiscrepancyCocycle
 import AllThoseEPPA.CycleSparseningRequiredSwitchComp
 import AllThoseEPPA.CycleSparseningSwitchEquivalent
 import AllThoseEPPA.CycleSparseningCanonicalLift
+import AllThoseEPPA.CycleSparseningBaseCoherence

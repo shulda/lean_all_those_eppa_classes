@@ -70,7 +70,7 @@ end TreeLike
 
 namespace TreeLike
 
-universe w
+universe u w
 variable {L : Language.{u}} [L.HasUnaryFunctions]
 variable {V : Type w}
 

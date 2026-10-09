@@ -58,5 +58,47 @@ def valuationPointFlip
   exact bitFlip_involutive (switch c.1) (p.2 c)
 
 
+/-- Switching every cycle simultaneously preserves exactly the generic pairs. -/
+theorem areGeneric_flip
+    {L : Language} {V : Type*}
+    (B₀ : Structure L V) (E : L.RelSymbol 2)
+    (switch : Structure.BadCycleSequence B₀ E → Bool)
+    {p q : ValuationPoint B₀ E}
+    (h : AreGeneric B₀ E p q) :
+    AreGeneric B₀ E
+      (valuationPointFlip B₀ E switch p)
+      (valuationPointFlip B₀ E switch q) := by
+  rcases h with hpq | ⟨hne, hcycles⟩
+  · exact Or.inl (congrArg (valuationPointFlip B₀ E switch) hpq)
+  · refine Or.inr ⟨hne, ?_⟩
+    intro c hp hq
+    rcases hcycles c hp hq with ⟨hnw, heq⟩ | ⟨hw, hnebits⟩
+    · refine Or.inl ⟨hnw, ?_⟩
+      change bitFlip (switch c)
+          (p.2 ⟨c, hp⟩) =
+        bitFlip (switch c) (q.2 ⟨c, hq⟩)
+      exact (bitFlip_eq_iff _ _ _).2 heq
+    · refine Or.inr ⟨hw, ?_⟩
+      change bitFlip (switch c)
+          (p.2 ⟨c, hp⟩) ≠
+        bitFlip (switch c) (q.2 ⟨c, hq⟩)
+      exact (bitFlip_ne_iff _ _ _).2 hnebits
+
+theorem areGeneric_flip_iff
+    {L : Language} {V : Type*}
+    (B₀ : Structure L V) (E : L.RelSymbol 2)
+    (switch : Structure.BadCycleSequence B₀ E → Bool)
+    (p q : ValuationPoint B₀ E) :
+    AreGeneric B₀ E
+      (valuationPointFlip B₀ E switch p)
+      (valuationPointFlip B₀ E switch q) ↔
+    AreGeneric B₀ E p q := by
+  constructor
+  · intro h
+    have hh := areGeneric_flip B₀ E switch h
+    simpa only [valuationPointFlip_flip] using hh
+  · exact areGeneric_flip B₀ E switch
+
+
 end Sparsening
 end AllThoseEPPA

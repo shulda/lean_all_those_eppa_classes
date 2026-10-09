@@ -107,3 +107,5 @@ import AllThoseEPPA.CycleSparseningLiftCoherence
 import AllThoseEPPA.CycleSparseningCanonicalPartialAuto
 import AllThoseEPPA.CycleSparseningEPPA
 import AllThoseEPPA.CycleSparseningCanonicalCoherence
+import AllThoseEPPA.CycleSparseningCoherence
+import AllThoseEPPA.CycleSparseningTheorem

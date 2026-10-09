@@ -109,3 +109,5 @@ import AllThoseEPPA.CycleSparseningEPPA
 import AllThoseEPPA.CycleSparseningCanonicalCoherence
 import AllThoseEPPA.CycleSparseningCoherence
 import AllThoseEPPA.CycleSparseningTheorem
+
+import AllThoseEPPA.TreeLikeDescent

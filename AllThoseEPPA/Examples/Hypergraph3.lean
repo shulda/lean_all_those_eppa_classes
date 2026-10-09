@@ -55,8 +55,7 @@ theorem Hypergraph3.eppa
             (Bridge.toStructure A).rel Bridge.RelSymbol.triple xs :=
           Iff.rfl
         _ ↔ B.rel Bridge.RelSymbol.triple (ψ.toFun ∘ xs) := by
-          have hlang : ψ.lang = 1 := Subsingleton.elim _ _
-          simpa only [hlang, AllThoseEPPA.Language.Action.onRel_one] using
+          simpa only [Bridge.action_on_triple] using
             (ψ.map_rel_iff Bridge.RelSymbol.triple xs).symm
         _ ↔ H.edge (Set.range (ψ.toFun ∘ xs)) :=
           (Bridge.fromFaithfulStructure_edge_iff
@@ -74,8 +73,7 @@ theorem Hypergraph3.eppa
             H.edge (Set.range (g ∘ xs)) := by
         rw [Bridge.fromFaithfulStructure_edge_iff A B ψ hfaith xs,
             Bridge.fromFaithfulStructure_edge_iff A B ψ hfaith (g ∘ xs)]
-        have hlang : g.lang = 1 := Subsingleton.elim _ _
-        simpa only [hlang, AllThoseEPPA.Language.Action.onRel_one] using
+        simpa only [Bridge.action_on_triple] using
           (AllThoseEPPA.Structure.Automorphism.map_rel_iff
             g Bridge.RelSymbol.triple xs).symm
       simpa [xs, Bridge.range_triple, Function.comp_def,

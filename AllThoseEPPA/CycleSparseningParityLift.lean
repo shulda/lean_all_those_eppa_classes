@@ -74,7 +74,11 @@ theorem no_generic_edges_over_bad_cycle
       omega
     have h := generic_centerBits_eq_iff_nonWrap B₀ E
       (ws i) (ws j) c (hm i) (hm j) hne (hstep i hi)
-    exact h.mpr (c.nonWrapPair_next i hi)
+    have hnw :
+        c.NonWrapPair ((ws i).base B₀ E) ((ws j).base B₀ E) := by
+      rw [hbase i, hbase j]
+      exact c.nonWrapPair_next i hi
+    exact h.mpr hnw
   have hne :
       (ws c.firstIndex).base B₀ E ≠
         (ws c.lastIndex).base B₀ E := by
@@ -92,9 +96,15 @@ theorem no_generic_edges_over_bad_cycle
       rw [hbase c.firstIndex, hbase c.lastIndex]
       exact (c.wrapPair_iff_ends _ _).2 (Or.inl ⟨rfl, rfl⟩)
     exact (c.nonWrapPair_not_wrap hnonwrap) hwrapPair
+  have hzero : 0 < c.length := by
+    have hk := c.length_ge_four
+    omega
+  have hlast : c.length - 1 < c.length := by
+    have hk := c.length_ge_four
+    omega
   have hfinal :
-      b ⟨0, by omega⟩ ≠ b ⟨c.length - 1, by omega⟩ := by
-    exact hclosing
+      b ⟨0, hzero⟩ ≠ b ⟨c.length - 1, hlast⟩ :=
+    hclosing
   exact no_cycle_bits c.length_ge_four b hbitStep hfinal
 
 end Sparsening

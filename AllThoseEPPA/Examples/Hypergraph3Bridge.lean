@@ -80,23 +80,26 @@ theorem finiteOrbit {V : Type*} (A : Hypergraph3 V) :
 /-- Turn an actual bijection between two subsets into the library's partial
 equivalence. Values off the domain and range are irrelevant. -/
 noncomputable def partialEquiv {V : Type*}
-    (U W : Set V) (p : U ≃ W) : PartialEquiv V V where
-  toFun x := if hx : x ∈ U then (p ⟨x, hx⟩).1 else x
-  invFun y := if hy : y ∈ W then (p.symm ⟨y, hy⟩).1 else y
-  source := U
-  target := W
-  map_source' := by
-    intro x hx
-    simp [hx]
-  map_target' := by
-    intro y hy
-    simp [hy]
-  left_inv' := by
-    intro x hx
-    simp [hx]
-  right_inv' := by
-    intro y hy
-    simp [hy]
+    (U W : Set V) (p : U ≃ W) : PartialEquiv V V := by
+  classical
+  exact {
+    toFun x := if hx : x ∈ U then (p ⟨x, hx⟩).1 else x
+    invFun y := if hy : y ∈ W then (p.symm ⟨y, hy⟩).1 else y
+    source := U
+    target := W
+    map_source' := by
+      intro x hx
+      simp [hx]
+    map_target' := by
+      intro y hy
+      simp [hy]
+    left_inv' := by
+      intro x hx
+      simp [hx]
+    right_inv' := by
+      intro y hy
+      simp [hy]
+  }
 
 @[simp] theorem partialEquiv_apply_of_mem {V : Type*}
     {U W : Set V} (p : U ≃ W) {x : V} (hx : x ∈ U) :

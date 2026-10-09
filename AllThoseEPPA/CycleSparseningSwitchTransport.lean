@@ -109,6 +109,12 @@ theorem ValuationStructure.transport_flip
   let y := e.symm z
   have hy : e y = z := e.apply_symm_apply z
   rw [← hy]
+  change
+    valuationAssignmentEquiv act B₀ E g hfix x
+        (W.flip B₀ E s).1 (e y) =
+      valuationFunctionFlip B₀ E
+        (transportedSwitch act B₀ E g hfix s)
+        (valuationAssignmentEquiv act B₀ E g hfix x W.1 (e y))
   rw [valuationAssignmentEquiv_apply_transport
     act B₀ E g hfix x (W.flip B₀ E s).1 y]
   rw [valuationAssignmentEquiv_apply_transport

@@ -92,3 +92,5 @@ import AllThoseEPPA.CycleSparseningProjectionFaithfulness
 import AllThoseEPPA.CycleSparseningFaithfulnessEmbedding
 import AllThoseEPPA.CycleSparseningIrreducibleFaithfulness
 import AllThoseEPPA.CycleSparseningParityProjection
+import AllThoseEPPA.CycleSparseningExtraEdge
+import AllThoseEPPA.CycleSparseningEdgeCount

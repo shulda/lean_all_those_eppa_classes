@@ -35,7 +35,7 @@ theorem function_value_mem_neighbor_component
     (hsymm : B.EdgeSymmetric E)
     (S : Set V)
     (C : ((distinguishedGraph B E hloop hsymm).induce Sᶜ).ConnectedComponent)
-    (F : L.FuncSymbol 1)
+    {n : ℕ} (F : L.FuncSymbol n)
     (x z c : V)
     (hz : z ∈ B.func F (fun _ => x))
     (hzS : z ∈ Sᶜ)

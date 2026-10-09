@@ -91,3 +91,4 @@ import AllThoseEPPA.CycleSparseningProjectionImage
 import AllThoseEPPA.CycleSparseningProjectionFaithfulness
 import AllThoseEPPA.CycleSparseningFaithfulnessEmbedding
 import AllThoseEPPA.CycleSparseningIrreducibleFaithfulness
+import AllThoseEPPA.CycleSparseningParityProjection

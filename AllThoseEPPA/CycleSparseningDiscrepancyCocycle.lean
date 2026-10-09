@@ -17,6 +17,20 @@ variable {Γ : Type v} [Group Γ] {V : Type w}
 variable (act : L.Action Γ) (B₀ : Structure L V)
 variable (E : L.RelSymbol 2)
 
+/-- Centre bits are invariant under equal witness vertices and equal
+indexed cycles, regardless of the proofs of cycle membership. -/
+theorem centerBit_congr_vertex_cycle
+    {x y : WitnessVertex B₀ E}
+    (hxy : x = y)
+    {c d : Structure.BadCycleSequence B₀ E}
+    (hcd : c = d)
+    (hx : x.base B₀ E ∈ c.carrier)
+    (hy : y.base B₀ E ∈ d.carrier) :
+    centerBit B₀ E x c hx = centerBit B₀ E y d hy := by
+  subst y
+  subst d
+  rfl
+
 /-- Pointwise discrepancies of composable partial automorphisms satisfy
 the XOR cocycle identity, with the second discrepancy indexed by the
 transported cycle. -/
@@ -64,12 +78,30 @@ theorem bitDiscrepancy_comp_of_source
   let b : Bool := centerBit B₀ E (p x) (c.transport gp hfix) hpxc
   let d : Bool := centerBit B₀ E (q (p x))
       ((c.transport gp hfix).transport gq hfix) hqpc
+  have hcompAct : (q.comp p ht) x = q (p x) := rfl
+  have hcompCycle :
+      c.transport (gq.comp gp) hfix =
+        (c.transport gp hfix).transport gq hfix :=
+    (Structure.BadCycleSequence.transport_comp c gq gp hfix).symm
+  have hcompMem :
+      ((q.comp p ht) x).base B₀ E ∈
+        (c.transport (gq.comp gp) hfix).carrier := by
+    rw [← hcomp.2 x hxr]
+    exact (Structure.BadCycleSequence.mem_transport_carrier_iff
+      c (gq.comp gp) hfix (x.base B₀ E)).2 hxc
+  have hcenter :
+      centerBit B₀ E ((q.comp p ht) x)
+        (c.transport (gq.comp gp) hfix) hcompMem = d := by
+    exact centerBit_congr_vertex_cycle B₀ E
+      hcompAct hcompCycle hcompMem hqpc
   have hr :
       bitDiscrepancy act B₀ E (q.comp p ht) (gq.comp gp)
         hfix hcomp x hxr c hxc = (a != d) := by
-    unfold bitDiscrepancy
-    rw [← Structure.BadCycleSequence.transport_comp c gq gp hfix]
-    rfl
+    change
+      (centerBit B₀ E x c hxc !=
+        centerBit B₀ E ((q.comp p ht) x)
+          (c.transport (gq.comp gp) hfix) hcompMem) = (a != d)
+    exact congrArg (fun t : Bool => a != t) hcenter
   have hp :
       bitDiscrepancy act B₀ E p gp hfix hcp x hx c hxc =
         (a != b) := by

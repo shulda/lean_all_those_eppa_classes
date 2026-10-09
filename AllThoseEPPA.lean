@@ -11,6 +11,7 @@ import AllThoseEPPA.Examples.Graph
 import AllThoseEPPA.Examples.GraphWitness
 import AllThoseEPPA.Examples.GraphExtension
 import AllThoseEPPA.Examples.Hypergraph3
+import AllThoseEPPA.Examples.Hypergraph3K4Free
 import AllThoseEPPA.Basic
 
 import AllThoseEPPA.RelationalWitness

@@ -1,4 +1,4 @@
-import AllThoseEPPA.Examples.Hypergraph3Bridge
+import AllThoseEPPA.Examples.Hypergraph3Faithful
 
 /-!
 # Finite 3-uniform hypergraphs have EPPA

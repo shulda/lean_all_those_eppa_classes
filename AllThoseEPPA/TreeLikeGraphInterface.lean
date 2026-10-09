@@ -28,9 +28,11 @@ def distinguishedGraph
     (hsymm : B.EdgeSymmetric E) : SimpleGraph V where
   Adj := B.Edge E
   symm := by
+    refine ⟨?_⟩
     intro x y h
     exact (hsymm x y).mp h
   loopless := by
+    refine ⟨?_⟩
     intro x h
     exact hloop x h
 
@@ -48,8 +50,16 @@ theorem edgeClique_iff_graphClique
     (hloop : B.EdgeLoopless E)
     (hsymm : B.EdgeSymmetric E) (C : Set V) :
     EdgeClique B E C ↔
-      (distinguishedGraph B E hloop hsymm).IsClique C :=
-  Iff.rfl
+      (distinguishedGraph B E hloop hsymm).IsClique C := by
+  constructor
+  · intro hc
+    change C.Pairwise (B.Edge E)
+    intro x hx y hy hne
+    exact hc hx hy hne
+  · intro hg
+    change C.Pairwise (B.Edge E) at hg
+    intro x y hx hy hne
+    exact hg hx hy hne
 
 variable {Γ : Type w} [Group Γ] {α : Type z}
 

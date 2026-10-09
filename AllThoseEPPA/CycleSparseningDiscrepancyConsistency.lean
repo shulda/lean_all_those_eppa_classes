@@ -43,7 +43,7 @@ theorem bitDiscrepancy_eq_of_generic
   · have hsw :
         AreGeneric B₀ E (centerValuationPoint B₀ E w)
           (centerValuationPoint B₀ E z) :=
-      centerValuationPoints_generic_of_source B₀ E p hsource w z hw hz
+      centerValuationPoints_generic_of_source act B₀ E p hsource w z hw hz
     have htw : p w ∈ p.target := p.map_source hw
     have htz : p z ∈ p.target := p.map_source hz
     have htg :

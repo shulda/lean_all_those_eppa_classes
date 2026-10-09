@@ -37,4 +37,52 @@ theorem Hypergraph3.eppa
           (∀ a : U,
             g (ι a.1) = ι ((p a).1))
       ) := by
-  sorry
+  classical
+  letI : Fintype α := Fintype.ofFinite α
+  obtain ⟨β, hβ, B, ψ, hcoh, hfaith⟩ :=
+    AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA
+      Bridge.action (Bridge.toStructure A) (Bridge.finiteOrbit A)
+  letI : Finite β := hβ
+  let H : Hypergraph3 β := Bridge.fromFaithfulStructure A B ψ hfaith
+  refine ⟨β, hβ, H, ⟨ψ.toFun, ψ.injective⟩, ?_, ?_⟩
+  · intro a b c
+    let xs : Fin 3 → α := ![a, b, c]
+    have h :
+        A.edge (Set.range xs) ↔
+          H.edge (Set.range (ψ.toFun ∘ xs)) := by
+      calc
+        A.edge (Set.range xs) ↔
+            (Bridge.toStructure A).rel Bridge.RelSymbol.triple xs :=
+          Iff.rfl
+        _ ↔ B.rel Bridge.RelSymbol.triple (ψ.toFun ∘ xs) := by
+          have hlang : ψ.lang = 1 := Subsingleton.elim _ _
+          simpa only [hlang, AllThoseEPPA.Language.Action.onRel_one] using
+            (ψ.map_rel_iff Bridge.RelSymbol.triple xs).symm
+        _ ↔ H.edge (Set.range (ψ.toFun ∘ xs)) :=
+          (Bridge.fromFaithfulStructure_edge_iff
+            A B ψ hfaith (ψ.toFun ∘ xs)).symm
+    simpa [xs, Bridge.range_triple, Function.comp_def] using h
+  · intro U V p hp
+    rcases hcoh with ⟨e⟩
+    let q := Bridge.partialAutomorphism A U V p hp
+    obtain ⟨g, hg⟩ := e.isEPPAWitness q
+    refine ⟨g.toEquiv, ?_, ?_⟩
+    · intro x y z
+      let xs : Fin 3 → β := ![x, y, z]
+      have h :
+          H.edge (Set.range xs) ↔
+            H.edge (Set.range (g ∘ xs)) := by
+        rw [Bridge.fromFaithfulStructure_edge_iff A B ψ hfaith xs,
+            Bridge.fromFaithfulStructure_edge_iff A B ψ hfaith (g ∘ xs)]
+        have hlang : g.lang = 1 := Subsingleton.elim _ _
+        simpa only [hlang, AllThoseEPPA.Language.Action.onRel_one] using
+          (AllThoseEPPA.Structure.Automorphism.map_rel_iff
+            g Bridge.RelSymbol.triple xs).symm
+      simpa [xs, Bridge.range_triple, Function.comp_def,
+        AllThoseEPPA.Structure.Automorphism.toEquiv_apply] using h
+    · intro a
+      have ha : a.1 ∈ q.source := a.2
+      have h := hg.2 a.1 ha
+      change g (ψ a.1) = ψ (Bridge.partialEquiv U V p a.1) at h
+      simpa [Bridge.partialEquiv_apply_of_mem p a.2,
+        AllThoseEPPA.Structure.Automorphism.toEquiv_apply] using h

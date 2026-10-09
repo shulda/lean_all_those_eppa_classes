@@ -50,7 +50,8 @@ theorem ext_vertex
       c rfl
   apply heq_of_eq
   funext i
-  simp [transport, Function.comp_apply]
+  change g.symm (g (c.vertex i)) = c.vertex i
+  exact Automorphism.symm_apply_apply g (c.vertex i)
 
 /-- Transporting by the inverse and then the automorphism recovers the cycle. -/
 @[simp] theorem transport_transport_symm
@@ -64,7 +65,8 @@ theorem ext_vertex
       c rfl
   apply heq_of_eq
   funext i
-  simp [transport, Function.comp_apply]
+  change g (g.symm (c.vertex i)) = c.vertex i
+  exact Automorphism.apply_symm_apply g (c.vertex i)
 
 /-- Base automorphisms permute the bad cycle sequences. -/
 noncomputable def transportEquiv

@@ -38,8 +38,13 @@ instance : language.HasUnaryFunctions where
     intro n F
     exact F.elim
 
-def action : language.Action PUnit :=
-  Language.Action.trivial language PUnit
+def action : language.Action PUnit.{0} :=
+  Language.Action.trivial language PUnit.{0}
+
+/-- The only ternary symbol is fixed by the language action. -/
+@[simp] theorem action_on_triple (g : PUnit.{0}) :
+    action.onRel g RelSymbol.triple = RelSymbol.triple := by
+  rfl
 
 /-- Encode an unordered triple as one ternary relation. -/
 def toStructure {V : Type*} (A : Hypergraph3 V) :

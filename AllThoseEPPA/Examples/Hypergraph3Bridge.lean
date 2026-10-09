@@ -2,6 +2,7 @@ import Mathlib.Data.Set.Card
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 import AllThoseEPPA.UnrestrictedFaithfulEPPA
+import AllThoseEPPA.Examples.Hypergraph3Basic
 
 /-!
 Internal bridge between ordinary set-based 3-uniform hypergraphs and the

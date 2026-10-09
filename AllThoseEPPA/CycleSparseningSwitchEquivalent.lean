@@ -33,8 +33,21 @@ theorem bitDiscrepancy_eq_of_equivalent
     bitDiscrepancy act B₀ E p g hfix hcompatP x hxp c hxc =
       bitDiscrepancy act B₀ E q g hfix hcompatQ x hxq c hxc := by
   have heq : p x = q x := hpq.2.2 hxp
-  unfold bitDiscrepancy
-  rw [heq]
+  have hpc : (p x).base B₀ E ∈ (c.transport g hfix).carrier := by
+    rw [← hcompatP.2 x hxp]
+    exact (Structure.BadCycleSequence.mem_transport_carrier_iff
+      c g hfix (x.base B₀ E)).2 hxc
+  have hqc : (q x).base B₀ E ∈ (c.transport g hfix).carrier := by
+    rw [← hcompatQ.2 x hxq]
+    exact (Structure.BadCycleSequence.mem_transport_carrier_iff
+      c g hfix (x.base B₀ E)).2 hxc
+  change
+    (centerBit B₀ E x c hxc !=
+       centerBit B₀ E (p x) (c.transport g hfix) hpc) =
+    (centerBit B₀ E x c hxc !=
+       centerBit B₀ E (q x) (c.transport g hfix) hqc)
+  exact congrArg (fun t : Bool => centerBit B₀ E x c hxc != t)
+    (centerBit_congr B₀ E heq (c.transport g hfix) hpc hqc)
 
 /-- Equivalent partial automorphisms induce literally identical canonical
 global Boolean switch assignments when the base automorphism is fixed. -/

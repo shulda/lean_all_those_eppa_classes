@@ -44,7 +44,10 @@ theorem ext_vertex
     (g : Automorphism act A)
     (hfix : act.FixesRel E) :
     (c.transport g hfix).transport g.symm hfix = c := by
-  apply ext_vertex _ _ rfl
+  apply
+    ext_vertex
+      ((c.transport g hfix).transport g.symm hfix)
+      c rfl
   apply heq_of_eq
   funext i
   simp [transport, Function.comp_apply]
@@ -55,7 +58,10 @@ theorem ext_vertex
     (g : Automorphism act A)
     (hfix : act.FixesRel E) :
     (c.transport g.symm hfix).transport g hfix = c := by
-  apply ext_vertex _ _ rfl
+  apply
+    ext_vertex
+      ((c.transport g.symm hfix).transport g hfix)
+      c rfl
   apply heq_of_eq
   funext i
   simp [transport, Function.comp_apply]

@@ -120,3 +120,5 @@ import AllThoseEPPA.TreeLikeFaithfulGraph
 import AllThoseEPPA.TreeLikeGraphInterface
 import AllThoseEPPA.TreeLikeInducedCycles
 import AllThoseEPPA.TreeLikeSquareObstruction
+import AllThoseEPPA.TreeLikeComponentCut
+import AllThoseEPPA.TreeLikeComponentFree

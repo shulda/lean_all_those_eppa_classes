@@ -98,14 +98,18 @@ theorem correctedWitnessVertex_eq_of_mem_source [Finite V]
     Faithful.automorphism_maps_closureAtSet act B₀ g y.2
   have hval :=
     witnessValuationAt_congr B₀ E hpw (g y.1) hy' hgy
-  rw [ht]
+  -- Normalize the target fibre to the explicit base coordinate `g y`
+  -- before rewriting the equality of dependent valuation functions.
   change
-    ((p w).valuation B₀ E).1
-      (⟨g y.1, hy'⟩ :
-        B₀.closureAtSet ((p w).base B₀ E)) =
+    valuationFunctionFlip B₀ E
+      (transportedSwitch act B₀ E g hfix
+        (requiredSwitch act B₀ E p g hfix hcompat))
+      (valuationFunctionTransportEquiv act B₀ E g hfix y.1
+        ((w.valuation B₀ E).1 y)) =
       Wp.1
-      (⟨g y.1, hgy⟩ :
-        B₀.closureAtSet (g (w.base B₀ E)))
+        (⟨g y.1, hgy⟩ :
+          B₀.closureAtSet (g (w.base B₀ E)))
+  rw [ht]
   simpa [WitnessVertex.valuation, WitnessVertex.base] using hval
 
 /-- The corrected lift is an actual extension along the identity embedding. -/

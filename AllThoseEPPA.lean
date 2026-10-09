@@ -67,3 +67,5 @@ import AllThoseEPPA.CycleSparseningSwitchWitness
 import AllThoseEPPA.CycleSparseningSwitchAutomorphism
 import AllThoseEPPA.CycleSparseningIndexTransport
 import AllThoseEPPA.CycleSparseningTransportGeneric
+import AllThoseEPPA.CycleSparseningTransportGenericReflect
+import AllThoseEPPA.CycleSparseningStructureTransport

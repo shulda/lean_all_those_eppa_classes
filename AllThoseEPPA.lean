@@ -87,3 +87,4 @@ import AllThoseEPPA.CycleSparseningPartialExtension
 import AllThoseEPPA.CycleSparseningParity
 import AllThoseEPPA.CycleSparseningParityLift
 import AllThoseEPPA.CycleSparseningParityEdges
+import AllThoseEPPA.CycleSparseningProjectionImage

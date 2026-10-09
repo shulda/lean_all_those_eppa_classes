@@ -82,6 +82,70 @@ theorem isClosed_image_subtype
     hT F zs hzs_mem hzy_func
   exact ⟨zy, hzyT, rfl⟩
 
+/-- The closure of the vertices of any realized relation tuple is
+irreducible.  Indeed, in a free decomposition the whole tuple has to lie in
+one side, and closedness of that side then forces it to contain the closure
+of the tuple. -/
+theorem relationTupleClosure_isIrreducible
+    (A : Structure L V)
+    {n : ℕ} (R : L.RelSymbol n) (xs : Fin n → V)
+    (hrel : A.rel R xs) :
+    (A.closureStructure (Set.range xs)).IsIrreducible := by
+  let S : Set V := A.closureSet (Set.range xs)
+  let hS : A.IsClosed S :=
+    A.isClosed_closureSet (Set.range xs)
+  change (A.induce S hS).IsIrreducible
+  constructor
+  intro d
+  let ys : Fin n → S := fun i =>
+    ⟨xs i,
+      A.subset_closureSet (Set.range xs) ⟨i, rfl⟩⟩
+  have hrelS : (A.induce S hS).rel R ys := by
+    change A.rel R (Subtype.val ∘ ys)
+    have htuple : (Subtype.val ∘ ys) = xs := by
+      funext i
+      rfl
+    rw [htuple]
+    exact hrel
+  rcases d.rel_local R ys hrelS with hleft | hright
+  · apply d.left_proper
+    apply Set.eq_univ_of_forall
+    intro z
+    have himageClosed :
+        A.IsClosed (Subtype.val '' d.left) :=
+      isClosed_image_subtype A S hS d.left d.left_closed
+    have hgenerators :
+        Set.range xs ⊆ Subtype.val '' d.left := by
+      rintro x ⟨i, rfl⟩
+      exact ⟨ys i, hleft i, rfl⟩
+    have hzImage :
+        z.1 ∈ Subtype.val '' d.left :=
+      A.closureSet_minimal himageClosed hgenerators z.2
+    rcases hzImage with ⟨t, ht, htz⟩
+    have htz' : t = z := by
+      apply Subtype.ext
+      exact htz
+    simpa [htz'] using ht
+  · apply d.right_proper
+    apply Set.eq_univ_of_forall
+    intro z
+    have himageClosed :
+        A.IsClosed (Subtype.val '' d.right) :=
+      isClosed_image_subtype A S hS d.right d.right_closed
+    have hgenerators :
+        Set.range xs ⊆ Subtype.val '' d.right := by
+      rintro x ⟨i, rfl⟩
+      exact ⟨ys i, hright i, rfl⟩
+    have hzImage :
+        z.1 ∈ Subtype.val '' d.right :=
+      A.closureSet_minimal himageClosed hgenerators z.2
+    rcases hzImage with ⟨t, ht, htz⟩
+    have htz' : t = z := by
+      apply Subtype.ext
+      exact htz
+    simpa [htz'] using ht
+
+
 /-- Inside the induced structure on the closure of `x`, the vertex `x`
 generates the whole carrier. -/
 theorem closureAtSet_in_closureAt_eq_univ

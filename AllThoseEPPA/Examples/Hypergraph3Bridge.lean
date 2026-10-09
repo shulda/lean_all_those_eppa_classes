@@ -1,4 +1,5 @@
 import Mathlib.Data.Set.Card
+import Mathlib.Algebra.Group.PUnit
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 import AllThoseEPPA.UnrestrictedFaithfulEPPA
@@ -101,6 +102,44 @@ noncomputable def partialEquiv {V : Type*}
     {U W : Set V} (p : U ≃ W) {x : V} (hx : x ∈ U) :
     partialEquiv U W p x = (p ⟨x, hx⟩).1 := by
   simp [partialEquiv, hx]
+
+
+/-- The partial isomorphism induced by an edge-preserving bijection of
+two induced subhypergraphs. -/
+noncomputable def partialAutomorphism {V : Type*}
+    (A : Hypergraph3 V) (U W : Set V) (p : U ≃ W)
+    (hp : ∀ a b c : U,
+      A.edge {a.1, b.1, c.1} ↔
+        A.edge {(p a).1, (p b).1, (p c).1}) :
+    AllThoseEPPA.Structure.PartialAutomorphism action (toStructure A) where
+  lang := 1
+  toPartialEquiv := partialEquiv U W p
+  source_closed := by
+    intro n F xs hxs y hy
+    exact F.elim
+  target_closed := by
+    intro n F xs hxs y hy
+    exact F.elim
+  map_rel_iff := by
+    intro n R xs hxs
+    cases R with
+    | triple =>
+      have hx0 : xs 0 ∈ U := hxs 0
+      have hx1 : xs 1 ∈ U := hxs 1
+      have hx2 : xs 2 ∈ U := hxs 2
+      have he :=
+        (hp ⟨xs 0, hx0⟩ ⟨xs 1, hx1⟩ ⟨xs 2, hx2⟩).symm
+      change
+        A.edge (Set.range (partialEquiv U W p ∘ xs)) ↔
+          A.edge (Set.range xs)
+      rw [range_triple, range_triple]
+      simpa only [Function.comp_apply,
+        partialEquiv_apply_of_mem p hx0,
+        partialEquiv_apply_of_mem p hx1,
+        partialEquiv_apply_of_mem p hx2] using he
+  map_func := by
+    intro n F xs hxs
+    exact F.elim
 
 end Bridge
 end Hypergraph3

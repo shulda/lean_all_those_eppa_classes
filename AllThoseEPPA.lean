@@ -95,3 +95,4 @@ import AllThoseEPPA.CycleSparseningParityProjection
 import AllThoseEPPA.CycleSparseningExtraEdge
 import AllThoseEPPA.CycleSparseningEdgeCount
 import AllThoseEPPA.CycleSparseningTrichotomy
+import AllThoseEPPA.CycleSparseningSwitchSupport

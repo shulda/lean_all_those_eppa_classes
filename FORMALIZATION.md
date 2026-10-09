@@ -32,7 +32,7 @@ green.
 | Irreducible-structure faithfulness / Proposition `prop:faithful` | `AllThoseEPPA/FaithfulProposition.lean`; `AllThoseEPPA.Faithful.faithfulWitness_proposition` (and supporting `Faithful*.lean` files) | **Formalized** | Finite, irreducible-structure faithful coherent extension of an arbitrary finite EPPA witness; includes projection as a homomorphism-embedding. |
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
-| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeDescent.lean`, `TreeLikeEdgeBudget.lean` (feature branch) | **In progress** | Finite-descent counting verified separately on the feature branch. Missing: clique-relation expansion/reduct, chordal-cut/tree-amalgamation lemma `lem:cuts`, iterated witness API, and full theorem. Regression target: integer-valued metric spaces. |
+| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeDescent.lean`, `TreeLikeEdgeBudget.lean` (merged PR #3); `TreeLikeClosedProjection.lean` (follow-up PR #4) | **In progress** | Finite-descent counting and directed-edge budget merged into `main`. The closed-image projection lemma is in follow-up PR #4. Missing: clique-relation expansion/reduct, chordal-cut/tree-amalgamation lemma `lem:cuts`, iterated witness API, and full theorem. Regression target: integer-valued metric spaces. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -94,9 +94,12 @@ The independently checkable rank argument is in
 `TreeLikeDescent.lean`: the rank `(vertices-1)*(Q+1)+(Q-edges)`
 strictly increases at every step not satisfying the no-cycle alternative
 of the trichotomy, and stays below `n*(Q+1)`. The concrete directed
-edge-budget estimate is in `TreeLikeEdgeBudget.lean`. These files are
-on the feature branch `tree-like-counting`, not yet part of the
-trusted `main` theorem corpus.
+edge-budget estimate is in `TreeLikeEdgeBudget.lean`. Both modules were
+merged into the trusted `main` branch through PR #3, after full Lean CI
+and the axiom audit succeeded. The separate follow-up PR #4 adds the
+fact that exact unary-function projections carry closed subsets to
+closed images, allowing projections of genuine substructures to be
+iterated.
 
 **Critical next dependency**: `lem:cuts`, which upgrades a finite
 chordal E-reduct whose irreducible substructures embed into the distinguished

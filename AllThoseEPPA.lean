@@ -65,3 +65,4 @@ import AllThoseEPPA.CycleSparseningCanonicalEmbedding
 import AllThoseEPPA.CycleSparseningSwitch
 import AllThoseEPPA.CycleSparseningSwitchWitness
 import AllThoseEPPA.CycleSparseningSwitchAutomorphism
+import AllThoseEPPA.CycleSparseningIndexTransport

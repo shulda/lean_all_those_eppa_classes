@@ -70,7 +70,12 @@ theorem exists_disconnecting_neighborSet
     ∃ (S : Set V)
       (C D : (G.induce Sᶜ).ConnectedComponent), C ≠ D := by
   obtain ⟨u, v, hne, hno⟩ := hnotComplete
-  refine ⟨G.neighborSet u, _, _, ?_⟩
+  let u₀ : {z : V // z ∈ (G.neighborSet u)ᶜ} := ⟨u, G.irrefl⟩
+  let v₀ : {z : V // z ∈ (G.neighborSet u)ᶜ} := ⟨v, hno⟩
+  refine
+    ⟨G.neighborSet u,
+      (G.induce (G.neighborSet u)ᶜ).connectedComponentMk u₀,
+      (G.induce (G.neighborSet u)ᶜ).connectedComponentMk v₀, ?_⟩
   exact different_components_outside_neighborSet G u v hne hno
 
 end TreeLike

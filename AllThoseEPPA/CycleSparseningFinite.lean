@@ -1,4 +1,5 @@
 import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Fintype.Pi
 import AllThoseEPPA.CycleSparseningProjection
 
 /-!

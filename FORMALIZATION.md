@@ -32,7 +32,7 @@ green.
 | Irreducible-structure faithfulness / Proposition `prop:faithful` | `AllThoseEPPA/FaithfulProposition.lean`; `AllThoseEPPA.Faithful.faithfulWitness_proposition` (and supporting `Faithful*.lean` files) | **Formalized** | Finite, irreducible-structure faithful coherent extension of an arbitrary finite EPPA witness; includes projection as a homomorphism-embedding. |
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
-| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLike*.lean` (PRs #3–#6) | **In progress** | Counting and closed projection on `main`; clique-closure irreducibility, closed graph-cut free decomposition, faithful E symmetry/looplessness on `main` (PR #5); SimpleGraph adapter and induced-cycle transport in PR #6. Still missing the chordal clique-separator theorem, tree-amalgamation constructor, language expansion/reduct and full iterated EPPA proof. |
+| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLike*.lean` (PRs #3–#9) | **In progress** | Checked: finite sparsening descent, exact closed projections, clique closure, graph component-to-free-decomposition cut, faithful E graph, induced-cycle transport and the explicit square obstruction. PR #9 contributes existence of inclusion-minimal vertex separators and closure of two-sided separators. Not yet checked: minimal separator → two-sided neighbors → clique, tree-amalgamation constructor, E expansion/reduct, full iterated EPPA. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -141,3 +141,43 @@ substructure to a tree amalgamation of copies of A, and the entire
 restricted theorem `thm:maintree`. The graph result is a new proof
 obligation; Mathlib at the pinned version has `Walk.IsChordless`
 but no convenient all-in-one chordal clique-separator theorem.
+
+
+### Finite graph-separator progress (2026-10-09, PRs #7–#9)
+
+The following components and their dependencies have passed independent
+complete Lean builds with axiom audits, and PR #9 integrates the checked
+files onto the latest main:
+
+1. `TreeLikeSquareObstruction.lean` (merged PR #7): four distinct
+   vertices x-a-y-b-x with nonedges x-y and a-b form an actual
+   `BadCycleSequence`, so no chordal E-reduct admits them.
+2. `TreeLikeComponentCut.lean`, `TreeLikeComponentFree.lean` (merged
+   PR #8): an outside connected component yields a cut whose sides
+   cover the graph and have no cross edges. If S is closed and at least
+   two outside components remain, it constructs a *genuine*
+   `Structure.FreeDecomposition` of the irreducible-faithful witness.
+3. `TreeLikeNeighborSeparator.lean`, `TreeLikeMinimalSeparator.lean`
+   (PR #9): for any two distinct nonadjacent vertices of a finite
+   graph, deleting the neighbors of one separates them. Minimizing the
+   cardinality of a separating vertex set using `Nat.find` produces an
+   inclusion-minimal separator.
+4. `TreeLikeFunctionEdge.lean` (PR #9): if x-y is an E-edge and z is
+   in a function value at the constant tuple x, then z-y is an E-edge
+   unless z=y. This uses irreducibility of the closure of the E-tuple.
+5. `TreeLikeTwoSidedClosure.lean` (PR #9): if every vertex of S has
+   a neighbor in each of two **distinct** components of G\\S, then S
+   itself is closed under all unary functions. In particular, *once*
+   inclusion-minimality is shown to force that two-sided neighbor
+   property, the proof need not pass to the closure of the separator.
+
+The remaining chordal-graph obligations are substantive: for an
+inclusion-minimal separator of u and v, show each separator vertex has
+neighbors in both endpoint components; then show the separator is a
+clique by combining induced paths through the two components into an
+induced cycle. The already checked four-cycle lemma is the smallest
+case. After this, implement a genuine tree amalgamation and finish the
+restricted witness construction `thm:maintree`.
+
+**Do not call `lem:cuts` or `thm:maintree` proved:** these exact
+graph/path and tree-amalgamation proof obligations remain open.

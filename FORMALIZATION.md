@@ -29,8 +29,10 @@ green.
 | Proposition `prop:relstructures`: finite relational structures have coherent EPPA | `AllThoseEPPA/RelationalWitness.lean`, `AllThoseEPPA/F2Completion.lean`, `AllThoseEPPA/RelationalExtension.lean`; `AllThoseEPPA.Relational.finiteRelationalStructuresHaveCoherentEPPA` | **Formalized** | The full affine/𝔽₂ valuation construction is checked, including extensionality of partial maps and coherent composition. |
 | Proposition `prop:infinite_languages`: finite relabelling orbit in an arbitrary relational language | `AllThoseEPPA/Relabelling.lean`, `AllThoseEPPA/InfiniteRelational.lean`; `AllThoseEPPA.InfiniteRelational.finiteOrbitRelationalStructuresHaveCoherentEPPA` | **Formalized** | Uses an equivalent direct finite profile language with the original group Γ, rather than adjoining all paper symbols and then invoking `lem:redundant_groups`. The finite witness and coherent transfer through `T` and `U` are checked. |
 | Unary functions / Proposition `prop:eppafunctions` | `AllThoseEPPA/UnaryFunctions.lean`, `AllThoseEPPA/UnaryFunctionsCoherence.lean`; `AllThoseEPPA.UnaryFunctions.finiteOrbitUnaryStructuresHaveCoherentEPPA` | **Formalized** | Uses finite abstract valuation presentations only to prove realizability and finiteness, then quotients to presentation-independent physical valuation signatures. The finite witness, generic embedding, lifted automorphisms, extension square and coherent composition are checked. |
-| Irreducible-structure faithfulness / Proposition `prop:faithful` | — | **Current target** | Next layer over an arbitrary finite (coherent) EPPA witness; regression target: finite 3-uniform hypergraphs. |
-| Restricted / locally tree-like construction | — | Planned | Regression target: finite integer-valued metric spaces with distances `{0,...,D}`. |
+| Irreducible-structure faithfulness / Proposition `prop:faithful` | `AllThoseEPPA/FaithfulProposition.lean`; `AllThoseEPPA.Faithful.faithfulWitness_proposition` (and supporting `Faithful*.lean` files) | **Formalized** | Finite, irreducible-structure faithful coherent extension of an arbitrary finite EPPA witness; includes projection as a homomorphism-embedding. |
+| Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
+| Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
+| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeDescent.lean`, `TreeLikeEdgeBudget.lean` (feature branch) | **In progress** | Finite-descent counting verified separately on the feature branch. Missing: clique-relation expansion/reduct, chordal-cut/tree-amalgamation lemma `lem:cuts`, iterated witness API, and full theorem. Regression target: integer-valued metric spaces. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -67,3 +69,38 @@ physical signatures, so transport by a base automorphism is independent of
 the chosen presentation.  Restriction to one-point closures and transport
 commute, which makes both extension of the generic copy and coherent
 composition functorial.
+
+
+### Merge checkpoint and restricted EPPA work (2026-10-09)
+
+Pull request [#2](https://github.com/shulda/lean_all_those_eppa_classes/pull/2)
+merged `irreducible-faithfulness` and `cycle-sparsening` into `main` at
+commit `35de7e9`. Full Lean CI and the axiom audit succeeded on that merge.
+This closes Proposition `prop:faithful`, Theorem `thm:nreppa`, and Lemma
+`lem:sparsen`. The hypergraph regressions `Hypergraph3.eppa` and
+`Hypergraph3.eppaK4Free` were separately verified on branch
+`hypergraph3-k4-free-eppa`; they are not yet imported on `main`.
+
+The next paper target is `thm:maintree` (Section `sec:maintree`). Its
+iteration budget in the manuscript is
+`(n-1) + n * (n choose 2) + 1`, counting undirected edges. In Lean,
+`Sparsening.EdgePairs` counts *ordered* edges. A uniformly safe bound
+is therefore `Q=n*n`, giving `n*(Q+1)` steps in the first
+formalized counting argument. This larger finite bound is sufficient
+for the theorem, although optimizing it to the manuscript's formula
+can be revisited later.
+
+The independently checkable rank argument is in
+`TreeLikeDescent.lean`: the rank `(vertices-1)*(Q+1)+(Q-edges)`
+strictly increases at every step not satisfying the no-cycle alternative
+of the trichotomy, and stays below `n*(Q+1)`. The concrete directed
+edge-budget estimate is in `TreeLikeEdgeBudget.lean`. These files are
+on the feature branch `tree-like-counting`, not yet part of the
+trusted `main` theorem corpus.
+
+**Critical next dependency**: `lem:cuts`, which upgrades a finite
+chordal E-reduct whose irreducible substructures embed into the distinguished
+clique A to a substructure of a tree amalgamation of copies of A.
+The proof needs a rigorous chordal clique-separator argument compatible
+with unary-function closures; it is not implied by the existing
+cycle-sparsening trichotomy alone.

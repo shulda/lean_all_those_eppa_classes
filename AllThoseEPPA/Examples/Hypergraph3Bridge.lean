@@ -38,11 +38,11 @@ instance : language.HasUnaryFunctions where
     intro n F
     exact F.elim
 
-def action : language.Action PUnit.{0} :=
-  Language.Action.trivial language PUnit.{0}
+def action : language.Action PUnit.{1} :=
+  Language.Action.trivial language PUnit.{1}
 
 /-- The only ternary symbol is fixed by the language action. -/
-@[simp] theorem action_on_triple (g : PUnit.{0}) :
+@[simp] theorem action_on_triple (g : PUnit.{1}) :
     action.onRel g RelSymbol.triple = RelSymbol.triple := by
   rfl
 

@@ -122,3 +122,4 @@ import AllThoseEPPA.TreeLikeInducedCycles
 import AllThoseEPPA.TreeLikeComponentCut
 import AllThoseEPPA.TreeLikeComponentFree
 import AllThoseEPPA.TreeLikeNeighborSeparator
+import AllThoseEPPA.TreeLikeMinimalSeparator

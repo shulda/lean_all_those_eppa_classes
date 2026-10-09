@@ -174,6 +174,7 @@ theorem wrapPair_iff_ends (c : BadCycleSequence A E) (x y : V) :
           dsimp [lastIndex]
           omega
         rw [hlen, Nat.mod_self]
+        rfl
       · exact c.first_last_not_linear
     · refine ⟨c.lastIndex, c.firstIndex, hx.symm, hy.symm, ?_, ?_⟩
       · left
@@ -184,6 +185,7 @@ theorem wrapPair_iff_ends (c : BadCycleSequence A E) (x y : V) :
           dsimp [lastIndex]
           omega
         rw [hlen, Nat.mod_self]
+        rfl
       · exact c.last_first_not_linear
 
 /-- The two branches of the genericity condition are disjoint. -/

@@ -1,4 +1,5 @@
 import AllThoseEPPA.CycleSparseningCoherence
+import AllThoseEPPA.CycleSparseningIrreducibleFaithfulness
 
 /-!
 # The complete induced-cycle sparsening lemma

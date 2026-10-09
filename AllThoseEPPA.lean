@@ -50,3 +50,5 @@ import AllThoseEPPA.FaithfulWitnessCoherence
 import AllThoseEPPA.FaithfulCoherence
 import AllThoseEPPA.FaithfulProposition
 import AllThoseEPPA.UnrestrictedFaithfulEPPA
+
+import AllThoseEPPA.CycleSparseningBasics

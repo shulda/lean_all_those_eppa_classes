@@ -52,10 +52,11 @@ def valuationPointFlip
     (p : ValuationPoint B₀ E) :
     valuationPointFlip B₀ E switch
         (valuationPointFlip B₀ E switch p) = p := by
+  rcases p with ⟨x, χ⟩
   apply Sigma.ext rfl
   apply heq_of_eq
   funext c
-  exact bitFlip_involutive (switch c.1) (p.2 c)
+  exact bitFlip_involutive (switch c.1) (χ c)
 
 
 /-- Switching every cycle simultaneously preserves exactly the generic pairs. -/

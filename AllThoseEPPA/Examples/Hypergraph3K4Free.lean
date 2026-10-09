@@ -112,3 +112,15 @@ theorem Hypergraph3.eppaK4Free
       change g (ψ a.1) = ψ (Bridge.partialEquiv U V p a.1) at h
       simpa [Bridge.partialEquiv_apply_of_mem p a.2,
         AllThoseEPPA.Structure.Automorphism.toEquiv_apply] using h
+
+/-!
+These aliases make the existing project's axiom audit (whose root namespace
+is `AllThoseEPPA`) inspect *both* public hypergraph theorems, even though the
+user-facing statements are deliberately defined outside the project API.
+-/
+namespace AllThoseEPPA
+
+def hypergraph3EPPA_axiomAudit := @Hypergraph3.eppa
+def hypergraph3K4FreeEPPA_axiomAudit := @Hypergraph3.eppaK4Free
+
+end AllThoseEPPA

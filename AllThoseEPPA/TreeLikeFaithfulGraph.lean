@@ -109,7 +109,7 @@ theorem edgeSymmetric_of_faithful
 /-- Paper-facing form of the structural graph-cut lemma:
 on a faithful witness, a closed separator and an E-cut give an
 actual free decomposition of the whole structure. -/
-theorem freeDecomposition_of_faithful_edge_separator
+noncomputable def freeDecomposition_of_faithful_edge_separator
     [L.HasUnaryFunctions]
     (act : L.Action Γ)
     (A : Structure L α) (B : Structure L β)

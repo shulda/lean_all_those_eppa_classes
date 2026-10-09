@@ -32,7 +32,7 @@ green.
 | Irreducible-structure faithfulness / Proposition `prop:faithful` | `AllThoseEPPA/FaithfulProposition.lean`; `AllThoseEPPA.Faithful.faithfulWitness_proposition` (and supporting `Faithful*.lean` files) | **Formalized** | Finite, irreducible-structure faithful coherent extension of an arbitrary finite EPPA witness; includes projection as a homomorphism-embedding. |
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
-| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeDescent.lean`, `TreeLikeEdgeBudget.lean` (merged PR #3); `TreeLikeClosedProjection.lean` (follow-up PR #4) | **In progress** | Finite-descent counting and directed-edge budget merged into `main`. The closed-image projection lemma is in follow-up PR #4. Missing: clique-relation expansion/reduct, chordal-cut/tree-amalgamation lemma `lem:cuts`, iterated witness API, and full theorem. Regression target: integer-valued metric spaces. |
+| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeDescent.lean`, `TreeLikeEdgeBudget.lean`, `TreeLikeClosedProjection.lean` (merged); `TreeLikeClique.lean`, `TreeLikeEdgeCut.lean`, `TreeLikeFaithfulClique.lean`, `TreeLikeFaithfulGraph.lean`, `TreeLikeGraphInterface.lean`, `TreeLikeInducedCycles.lean` (work branch) | **In progress** | Iteration counting and closed projections are on `main`. The work branch tackles the structural and graph-interface ingredients of `lem:cuts`; still missing the chordal clique-separator theorem, actual tree-amalgamation construction, clique-relation expansion/reduct and the fully iterated witness theorem. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -107,3 +107,43 @@ clique A to a substructure of a tree amalgamation of copies of A.
 The proof needs a rigorous chordal clique-separator argument compatible
 with unary-function closures; it is not implied by the existing
 cycle-sparsening trichotomy alone.
+
+
+### Structural progress toward `lem:cuts` (2026-10-09)
+
+The next proof layer starts with an elementary, but important, distinction:
+a graph-theoretic separator is not automatically a *closed* separator for
+set-valued unary functions. A correct route must both establish that the
+separator is the closure of an E-clique and show that the two sides stay
+closed under all functions.
+
+The following Lean modules are under development in the work branch
+`tree-like-induced-cycle-bridge`; they should be considered formally
+verified only after its complete Lean build and axiom audit succeed:
+
+- `TreeLikeClique.lean`: the closure of an E-clique is irreducible,
+  regardless of function arities; when every irreducible substructure is
+  an E-clique, it follows that the closure of a clique is a clique.
+  Every realized relation tuple and unary-function value is then E-local.
+- `TreeLikeEdgeCut.lean`: a closed graph separator without edges between
+  exclusive sides induces a genuine free decomposition, assuming unary
+  functions and E-cliquish irreducibles. The proof checks relation tuples,
+  function closure of both sides, and the empty cross-function clause.
+- `TreeLikeFaithfulClique.lean` and `TreeLikeFaithfulGraph.lean`: connect
+  these hypotheses to the *existing* irreducible-structure faithful
+  EPPA construction. In particular, E is loopless and symmetric in the
+  entire faithful witness when E is fixed and complete on the copy of A.
+- `TreeLikeGraphInterface.lean`: expose the distinguished E-reduct as a
+  `mathlib.SimpleGraph` and identify the two notions of E-clique.
+- `TreeLikeInducedCycles.lean`: lift a bad induced cycle of a closed
+  induced substructure to the ambient structure. This transports the
+  good alternative of `lem:sparsen` to the graph-theoretic task.
+
+**What is NOT proved:** `lem:cuts` itself. In particular, Mathlib's
+current pinned graph library defines chordless walks, but does not
+provide a ready-made theorem that finite graphs without induced cycles
+of length at least four have clique minimal separators / a clique tree.
+This is the next substantial graph-theoretic obligation, followed by
+building a tree amalgamation of copies of A and then completing
+`thm:maintree`. Do not state the full theorem until those obligations
+have closed in Lean.

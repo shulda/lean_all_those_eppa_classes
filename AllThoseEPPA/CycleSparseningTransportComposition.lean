@@ -1,4 +1,5 @@
 import AllThoseEPPA.CycleSparseningPartialExtension
+import AllThoseEPPA.CycleSparseningSwitchAlgebra
 
 /-!
 # Functorial transport of indexed bad cycles and global switches
@@ -33,7 +34,8 @@ end Structure
 
 namespace Sparsening
 universe u v w
-variable {L : Language.{u}} {Γ : Type v} [Group Γ]
+variable {L : Language.{u}} [L.HasUnaryFunctions]
+variable {Γ : Type v} [Group Γ]
 variable {V : Type w}
 variable (act : L.Action Γ) (B₀ : Structure L V)
 variable (E : L.RelSymbol 2)
@@ -60,8 +62,13 @@ theorem transportedSwitch_comp
           (transportedSwitch act B₀ E g hfix s)
           (d.transport (h.comp g) hfix) := by
       rw [← ht]
-      rw [transportedSwitch_transport]
-      rw [transportedSwitch_transport]
+      have houter :=
+        transportedSwitch_transport act B₀ E h hfix
+          (transportedSwitch act B₀ E g hfix s)
+          (d.transport g hfix)
+      have hinner :=
+        transportedSwitch_transport act B₀ E g hfix s d
+      exact (houter.trans hinner).symm
 
 /-- Transport of a pointwise XOR switch equals XOR of its transports. -/
 theorem transportedSwitch_sum

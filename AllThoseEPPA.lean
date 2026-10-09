@@ -62,3 +62,4 @@ import AllThoseEPPA.CycleSparseningClosure
 import AllThoseEPPA.CycleSparseningIrreducible
 import AllThoseEPPA.CycleSparseningCanonical
 import AllThoseEPPA.CycleSparseningCanonicalEmbedding
+import AllThoseEPPA.CycleSparseningSwitch

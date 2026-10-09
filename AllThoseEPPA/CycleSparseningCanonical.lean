@@ -211,8 +211,7 @@ theorem canonical_areGeneric
   · refine Or.inr ⟨?_, ?_⟩
     · intro h
       have hbase : ψ a = ψ b := by
-        exact congrArg
-          (fun p : ValuationPoint B₀ E => p.1) h
+        exact h
       exact hab (ψ.injective hbase)
     · intro c ha hb
       rcases (embedded_common_cycle_pair_classified

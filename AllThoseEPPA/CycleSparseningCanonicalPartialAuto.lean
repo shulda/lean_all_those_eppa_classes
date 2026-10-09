@@ -51,7 +51,7 @@ theorem canonicalPartialSourceSet_isClosed
     (witnessStructure B₀ E).IsClosed
       (canonicalPartialSourceSet act A B₀ ψ E hfix hcomplete p) := by
   exact
-    embedding_range_isClosed act
+    Faithful.embedding_range_isClosed act
       (A.induce p.source p.source_closed)
       (witnessStructure B₀ E)
       (canonicalSourceCopyEmbedding act A B₀ ψ E hfix hcomplete p)

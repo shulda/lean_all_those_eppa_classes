@@ -1,6 +1,6 @@
 import AllThoseEPPA.CycleSparseningEdgeCount
 import Mathlib.Data.Set.Card
-import Mathlib.Tactic.Omega
+import Lean.Elab.Tactic.Omega
 
 /-!
 # The full induced-cycle sparsening trichotomy

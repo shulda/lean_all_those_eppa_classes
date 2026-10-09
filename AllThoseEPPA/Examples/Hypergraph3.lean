@@ -60,11 +60,24 @@ theorem Hypergraph3.eppa
         _ ↔ H.edge (Set.range (ψ.toFun ∘ xs)) :=
           (Bridge.fromFaithfulStructure_edge_iff
             A B ψ hfaith (ψ.toFun ∘ xs)).symm
-    simpa [xs, Bridge.range_triple, Function.comp_def] using h
+    have hrangeA : Set.range xs = ({a, b, c} : Set α) := by
+      ext t
+      simp [xs, Bridge.range_triple, or_assoc, or_comm, or_left_comm]
+    have hrangeB :
+        Set.range (ψ.toFun ∘ xs) =
+          ({ψ.toFun a, ψ.toFun b, ψ.toFun c} : Set β) := by
+      ext t
+      simp [xs, Bridge.range_triple, Function.comp_def,
+        or_assoc, or_comm, or_left_comm]
+    rw [hrangeA, hrangeB] at h
+    exact h
   · intro U V p hp
     rcases hcoh with ⟨e⟩
     let q := Bridge.partialAutomorphism A U V p hp
-    obtain ⟨g, hg⟩ := e.isEPPAWitness q
+    have hw : AllThoseEPPA.Structure.IsEPPAWitness Bridge.action ψ :=
+      AllThoseEPPA.Structure.CoherentExtension.isEPPAWitness
+        Bridge.action e
+    obtain ⟨g, hg⟩ := hw q
     refine ⟨g.toEquiv, ?_, ?_⟩
     · intro x y z
       let xs : Fin 3 → β := ![x, y, z]

@@ -1,6 +1,5 @@
 import AllThoseEPPA.Examples.Hypergraph3K4Basic
 import AllThoseEPPA.Examples.Hypergraph3Faithful
-import Mathlib.Tactic.Omega
 
 /-!
 # A faithful relational witness preserves K₄³-freeness
@@ -43,7 +42,12 @@ private theorem exists_third_of_ncard_four {β : Type*}
     calc
       _ ≤ ({y.1} : Set β).ncard + 1 := Set.ncard_insert_le x.1 {y.1}
       _ = 2 := by simp
-  omega
+  have hbad : (4 : ℕ) ≤ 2 := by
+    calc
+      4 = S.ncard := h4.symm
+      _ ≤ ({x.1, y.1} : Set β).ncard := hle
+      _ ≤ 2 := hpair
+  exact (by decide : ¬ (4 : ℕ) ≤ 2) hbad
 
 /-- Every induced complete 3-uniform hypergraph on four vertices is
 irreducible as a relational structure. -/

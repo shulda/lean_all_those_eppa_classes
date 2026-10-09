@@ -48,7 +48,7 @@ theorem outsideComponent_adj
     y ∈ outsideComponent G S C := by
   obtain ⟨a, ha, hax⟩ := hx
   subst x
-  let b : Sᶜ := ⟨y, hy⟩
+  let b : {z : V // z ∈ Sᶜ} := ⟨y, hy⟩
   have hab : (G.induce Sᶜ).Adj a b := hxy
   exact ⟨b, C.mem_supp_of_adj_mem_supp ha hab, rfl⟩
 
@@ -154,7 +154,7 @@ theorem otherComponent_gives_vertex
   have heq : a = b := Subtype.ext hba.symm
   subst b
   have hDC : D = C :=
-    (G.induce Sᶜ).ConnectedComponent.eq_of_common_vertex ha hb
+    SimpleGraph.ConnectedComponent.eq_of_common_vertex ha hb
   exact hne hDC
 
 end TreeLike

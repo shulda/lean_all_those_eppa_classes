@@ -10,6 +10,7 @@ import AllThoseEPPA.F2Completion
 import AllThoseEPPA.Examples.Graph
 import AllThoseEPPA.Examples.GraphWitness
 import AllThoseEPPA.Examples.GraphExtension
+import AllThoseEPPA.Examples.Hypergraph3
 import AllThoseEPPA.Basic
 
 import AllThoseEPPA.RelationalWitness

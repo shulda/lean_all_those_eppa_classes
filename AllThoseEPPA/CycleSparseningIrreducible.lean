@@ -203,7 +203,7 @@ theorem projection_isHomomorphismEmbedding :
     projection_isEmbeddingOn_of_generic
       act B₀ E S
       (irreducible_witnessSetGeneric
-        act B₀ E S hS hirr)
+        B₀ E S hS hirr)
 
 end Sparsening
 end AllThoseEPPA

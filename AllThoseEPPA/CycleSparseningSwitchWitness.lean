@@ -50,8 +50,14 @@ def WitnessVertex.flip (w : WitnessVertex B₀ E) :
     (w : WitnessVertex B₀ E) :
     (w.flip B₀ E switch).flip B₀ E switch = w := by
   rcases w with ⟨x, W⟩
-  apply Sigma.ext rfl
-  exact heq_of_eq (ValuationStructure.flip_flip B₀ E switch W)
+  have hW : (W.flip B₀ E switch).flip B₀ E switch = W :=
+    ValuationStructure.flip_flip B₀ E switch W
+  change
+    (⟨x, (W.flip B₀ E switch).flip B₀ E switch⟩ :
+      WitnessVertex B₀ E) = ⟨x, W⟩
+  exact congrArg
+    (fun Q : ValuationStructure B₀ E x =>
+      (⟨x, Q⟩ : WitnessVertex B₀ E)) hW
 
 /-- Switching the witness preserves and reflects pairwise genericity. -/
 theorem witnessFamilyGeneric_flip_iff

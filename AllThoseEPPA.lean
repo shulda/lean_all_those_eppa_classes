@@ -84,3 +84,6 @@ import AllThoseEPPA.CycleSparseningPartialClosure
 import AllThoseEPPA.CycleSparseningPartialBits
 import AllThoseEPPA.CycleSparseningPartialValuations
 import AllThoseEPPA.CycleSparseningPartialExtension
+import AllThoseEPPA.CycleSparseningParity
+import AllThoseEPPA.CycleSparseningParityLift
+import AllThoseEPPA.CycleSparseningParityEdges

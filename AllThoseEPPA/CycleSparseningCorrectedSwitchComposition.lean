@@ -33,12 +33,19 @@ theorem transportedSwitch_pullback
   have hseq : (d.transport gp hfix).transport gq hfix =
       d.transport (gq.comp gp) hfix :=
     Structure.BadCycleSequence.transport_comp d gq gp hfix
-  rw [transportedSwitch_transport act B₀ E (gq.comp gp) hfix
-    (fun t => s (t.transport gp hfix)) d]
-  rw [← hseq]
-  exact
-    (transportedSwitch_transport act B₀ E gq hfix s
-      (d.transport gp hfix)).symm
+  calc
+    transportedSwitch act B₀ E (gq.comp gp) hfix
+        (fun t => s (t.transport gp hfix))
+        (d.transport (gq.comp gp) hfix) =
+      s (d.transport gp hfix) :=
+      transportedSwitch_transport act B₀ E (gq.comp gp) hfix
+        (fun t => s (t.transport gp hfix)) d
+    _ = transportedSwitch act B₀ E gq hfix s
+          (d.transport (gq.comp gp) hfix) := by
+      rw [← hseq]
+      exact
+        (transportedSwitch_transport act B₀ E gq hfix s
+          (d.transport gp hfix)).symm
 
 /-- The canonical correction of a composite, after reindexing to its
 target, is precisely the XOR of the corrections of the two lifts in the

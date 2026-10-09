@@ -101,5 +101,37 @@ theorem witnessFunction_flip
     · exact functionValueVertex_flip B₀ E switch w F y hy
 
 
+/-- Every global assignment of 0/1 cycle switches gives an automorphism of
+the sparsening witness fixing each base coordinate. -/
+noncomputable def witnessFlipAutomorphism
+    {Γ : Type*} [Group Γ] (act : L.Action Γ) :
+    Structure.Automorphism act (witnessStructure B₀ E) where
+  toPartialIsomorphism :=
+    { lang := 1
+      toPartialEquiv := (witnessFlipEquiv B₀ E switch).toPartialEquiv
+      source_closed := (witnessStructure B₀ E).isClosed_univ
+      target_closed := (witnessStructure B₀ E).isClosed_univ
+      map_rel_iff := by
+        intro n R ws hws
+        simpa using witnessRelation_flip_iff B₀ E switch R ws
+      map_func := by
+        intro n F ws hws
+        simpa using witnessFunction_flip B₀ E switch F ws }
+  source_eq_univ := rfl
+  target_eq_univ := rfl
+
+@[simp] theorem witnessFlipAutomorphism_apply
+    {Γ : Type*} [Group Γ] (act : L.Action Γ)
+    (w : WitnessVertex B₀ E) :
+    witnessFlipAutomorphism B₀ E switch act w =
+      w.flip B₀ E switch :=
+  rfl
+
+@[simp] theorem witnessFlipAutomorphism_lang
+    {Γ : Type*} [Group Γ] (act : L.Action Γ) :
+    (witnessFlipAutomorphism B₀ E switch act).lang = 1 :=
+  rfl
+
+
 end Sparsening
 end AllThoseEPPA

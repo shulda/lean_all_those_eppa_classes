@@ -48,16 +48,14 @@ theorem relationTriple_movable
   have hgx : (g ∘ xs) = (ψ ∘ as) := by
     funext i
     exact has i
-  have hglang : g.lang = 1 := Subsingleton.elim _ _
-  have hψlang : ψ.lang = 1 := Subsingleton.elim _ _
   have hrelg : B.rel RelSymbol.triple (g ∘ xs) := by
-    simpa only [hglang, Language.Action.onRel_one] using
+    simpa only [action_on_triple] using
       ((AllThoseEPPA.Structure.Automorphism.map_rel_iff
         g RelSymbol.triple xs).2 hrel)
   rw [hgx] at hrelg
   change (toStructure A).rel RelSymbol.triple as
   apply (ψ.map_rel_iff RelSymbol.triple as).1
-  simpa only [hψlang, Language.Action.onRel_one] using hrelg
+  simpa only [action_on_triple] using hrelg
 
 /-- Reordering a realised ternary tuple does not change the relation,
 provided its set of vertices stays the same. -/
@@ -90,18 +88,16 @@ theorem relationTriple_reorder
   have hAys : A.edge (Set.range bs) := by
     rw [← hrangeA]
     exact hA
-  have hψlang : ψ.lang = 1 := Subsingleton.elim _ _
   have hrelψ : B.rel RelSymbol.triple (ψ ∘ bs) := by
     have h := (ψ.map_rel_iff RelSymbol.triple bs).2
       (show (toStructure A).rel RelSymbol.triple bs from hAys)
-    simpa only [hψlang, Language.Action.onRel_one] using h
+    simpa only [action_on_triple] using h
   have hrelg : B.rel RelSymbol.triple (g ∘ ys) := by
     rw [hgy]
     exact hrelψ
-  have hglang : g.lang = 1 := Subsingleton.elim _ _
   apply (AllThoseEPPA.Structure.Automorphism.map_rel_iff
     g RelSymbol.triple ys).1
-  simpa only [hglang, Language.Action.onRel_one] using hrelg
+  simpa only [action_on_triple] using hrelg
 
 /-- Faithfulness forbids degeneracies in realised ternary tuples. -/
 theorem relationTriple_ncard

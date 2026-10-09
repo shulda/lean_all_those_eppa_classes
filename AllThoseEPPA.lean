@@ -105,3 +105,5 @@ import AllThoseEPPA.CycleSparseningCorrectedSwitchComposition
 import AllThoseEPPA.CycleSparseningLiftEquivalent
 import AllThoseEPPA.CycleSparseningLiftCoherence
 import AllThoseEPPA.CycleSparseningCanonicalPartialAuto
+import AllThoseEPPA.CycleSparseningEPPA
+import AllThoseEPPA.CycleSparseningCanonicalCoherence

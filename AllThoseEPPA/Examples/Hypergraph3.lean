@@ -1,5 +1,4 @@
-import Mathlib.Data.Set.Finite.Basic
-import AllThoseEPPA.UnrestrictedFaithfulEPPA
+import AllThoseEPPA.Examples.Hypergraph3Bridge
 
 /-!
 # Finite 3-uniform hypergraphs have EPPA
@@ -13,11 +12,6 @@ This is a regression test for the irreducible-structure faithful EPPA theorem.
 -/
 
 universe u
-
-/-- A 3-uniform hypergraph. -/
-structure Hypergraph3 (V : Type u) where
-  edge : Set V → Prop
-  uniform : ∀ e, edge e → e.ncard = 3
 
 /-- Every finite 3-uniform hypergraph has EPPA. -/
 theorem Hypergraph3.eppa

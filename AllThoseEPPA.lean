@@ -117,3 +117,5 @@ import AllThoseEPPA.TreeLikeClique
 import AllThoseEPPA.TreeLikeEdgeCut
 import AllThoseEPPA.TreeLikeFaithfulClique
 import AllThoseEPPA.TreeLikeFaithfulGraph
+import AllThoseEPPA.TreeLikeGraphInterface
+import AllThoseEPPA.TreeLikeInducedCycles

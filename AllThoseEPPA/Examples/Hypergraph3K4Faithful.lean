@@ -182,9 +182,12 @@ theorem fromFaithfulStructure_k4Free
     · exact y.2
     · exact z.2
   have h3 : (Set.range xs).ncard = 3 := by
-    simpa [xs, range_triple] using
-      ((Set.ncard_eq_three).2
-        ⟨x.1, y.1, z.1, hxy, hxz, hyz, rfl⟩)
+    have hs : Set.range xs = ({x.1, y.1, z.1} : Set β) := by
+      ext t
+      simp [xs, range_triple, or_assoc, or_comm, or_left_comm]
+    rw [hs]
+    exact (Set.ncard_eq_three).2
+      ⟨x.1, y.1, z.1, hxy, hxz, hyz, rfl⟩
   have hrel : B.rel RelSymbol.triple xs := hfullRel xs hsub h3
   have hrelg : B.rel RelSymbol.triple (g ∘ xs) := by
     simpa only [action_on_triple] using

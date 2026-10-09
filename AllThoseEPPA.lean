@@ -52,3 +52,4 @@ import AllThoseEPPA.FaithfulProposition
 import AllThoseEPPA.UnrestrictedFaithfulEPPA
 
 import AllThoseEPPA.CycleSparseningBasics
+import AllThoseEPPA.CycleSparseningFaithfulEdge

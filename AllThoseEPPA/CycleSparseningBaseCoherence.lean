@@ -110,6 +110,13 @@ theorem valuationAssignmentTransport_comp
     rw [valuationAssignmentEquiv_apply_transport act B₀ E gq hfix
       (gp x) (valuationAssignmentEquiv act B₀ E gp hfix x W) (e₀ y)]
     rw [valuationAssignmentEquiv_apply_transport act B₀ E gp hfix x W y]
+    change
+      valuationFunctionTransportEquiv act B₀ E gq hfix
+        (Faithful.closureTransportEquiv act B₀ gp x y).1
+        (valuationFunctionTransportEquiv act B₀ E gp hfix y.1 (W y)) =
+      valuationFunctionTransportEquiv act B₀ E gq hfix (gp y.1)
+        (valuationFunctionTransportEquiv act B₀ E gp hfix y.1 (W y))
+    rw [Faithful.closureTransportEquiv_apply_val]
   have hr :=
     valuationAssignmentEquiv_apply_transport
       act B₀ E (gq.comp gp) hfix x W y

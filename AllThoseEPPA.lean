@@ -59,3 +59,4 @@ import AllThoseEPPA.CycleSparseningWitness
 import AllThoseEPPA.CycleSparseningProjection
 import AllThoseEPPA.CycleSparseningFinite
 import AllThoseEPPA.CycleSparseningClosure
+import AllThoseEPPA.CycleSparseningIrreducible

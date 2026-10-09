@@ -57,19 +57,33 @@ variable (E : L.RelSymbol 2)
 /-- Cycle valuation functions are finite over a finite base carrier. -/
 theorem valuationFunction_finite [Finite V] (x : V) :
     Finite (ValuationFunction B₀ E x) := by
+  classical
   letI : Finite (Structure.BadCycleSequence B₀ E) :=
     Structure.BadCycleSequence.finite_of_finite
-  infer_instance
+  letI : Fintype (Structure.BadCycleSequence B₀ E) :=
+    Fintype.ofFinite _
+  letI : Fintype (BadCyclesAt B₀ E x) :=
+    Fintype.ofFinite _
+  letI : Fintype (ValuationFunction B₀ E x) :=
+    inferInstance
+  exact Finite.of_fintype _
 
 /-- Cycle valuation assignments over a one-point closure are finite. -/
 theorem valuationAssignment_finite [Finite V] (x : V) :
     Finite (ValuationAssignment B₀ E x) := by
-  letI : Finite (Structure.BadCycleSequence B₀ E) :=
-    Structure.BadCycleSequence.finite_of_finite
+  classical
+  letI : Fintype V := Fintype.ofFinite V
+  letI : Fintype (B₀.closureAtSet x) :=
+    Fintype.ofFinite _
   letI (y : B₀.closureAtSet x) :
-      Finite (ValuationFunction B₀ E y.1) := by
-    exact valuationFunction_finite B₀ E y.1
-  infer_instance
+      Finite (ValuationFunction B₀ E y.1) :=
+    valuationFunction_finite B₀ E y.1
+  letI (y : B₀.closureAtSet x) :
+      Fintype (ValuationFunction B₀ E y.1) :=
+    Fintype.ofFinite _
+  letI : Fintype (ValuationAssignment B₀ E x) :=
+    inferInstance
+  exact Finite.of_fintype _
 
 /-- Cycle valuation structures are finite over a finite base carrier. -/
 theorem valuationStructure_finite [Finite V] (x : V) :
@@ -82,9 +96,15 @@ theorem valuationStructure_finite [Finite V] (x : V) :
 witness. -/
 theorem witnessVertex_finite [Finite V] :
     Finite (WitnessVertex B₀ E) := by
+  classical
+  letI : Fintype V := Fintype.ofFinite V
   letI (x : V) : Finite (ValuationStructure B₀ E x) :=
     valuationStructure_finite B₀ E x
-  infer_instance
+  letI (x : V) : Fintype (ValuationStructure B₀ E x) :=
+    Fintype.ofFinite _
+  letI : Fintype (WitnessVertex B₀ E) :=
+    inferInstance
+  exact Finite.of_fintype _
 
 end Sparsening
 end AllThoseEPPA

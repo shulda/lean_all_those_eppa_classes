@@ -54,3 +54,4 @@ import AllThoseEPPA.UnrestrictedFaithfulEPPA
 import AllThoseEPPA.CycleSparseningBasics
 import AllThoseEPPA.CycleSparseningFaithfulEdge
 import AllThoseEPPA.CycleSparseningValuations
+import AllThoseEPPA.CycleSparseningGeneric

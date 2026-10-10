@@ -98,7 +98,7 @@ theorem freeCutPushout_left_support
         x = (freeCut_baseToRight act B d s).1 :=
           congrArg Subtype.val hsub
         _ = s.1 := freeCut_baseToRight_val act B d s
-    exact hx (hxx ▸ s.2.1)
+    exact hx (hxx.symm ▸ s.2.1)
   · intro hx
     refine ⟨eL ⟨x, hx⟩, ?_⟩
     exact (glueFreeCutMap_left d l.toFun r.toFun x hx).symm
@@ -151,7 +151,7 @@ theorem freeCutPushout_right_support
         x = (freeCut_baseToLeft act B d s).1 :=
           congrArg Subtype.val hsub
         _ = s.1 := freeCut_baseToLeft_val act B d s
-    exact hx (hxx ▸ s.2.2)
+    exact hx (hxx.symm ▸ s.2.2)
   · intro hx
     refine ⟨eR ⟨x, hx⟩, ?_⟩
     exact (glueFreeCutMap_right d l.toFun r.toFun

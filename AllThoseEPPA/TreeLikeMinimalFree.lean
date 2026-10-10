@@ -34,7 +34,7 @@ variable {α : Type w} {β : Type z}
 Any two nonadjacent vertices of the distinguished E-graph of a
 finite faithful EPPA witness can be separated by a genuine free
 decomposition of the entire witness. -/
-noncomputable def freeDecomposition_of_nonadjacent
+theorem freeDecomposition_nonempty_of_nonadjacent
     [Finite β]
     (act : L.Action Γ)
     (A : Structure L α) (B : Structure L β)
@@ -44,7 +44,7 @@ noncomputable def freeDecomposition_of_nonadjacent
     (hcomplete : A.EdgeComplete E)
     (hfaith : Structure.IsIrreducibleStructureFaithful act ψ)
     (u v : β) (huv : u ≠ v) (hno : ¬ B.Edge E u v) :
-    B.FreeDecomposition := by
+    Nonempty B.FreeDecomposition := by
   let G : SimpleGraph β :=
     faithfulGraph act A B ψ E hfix hcomplete hfaith
   have hNoAdj : ¬ G.Adj u v := hno
@@ -63,8 +63,26 @@ noncomputable def freeDecomposition_of_nonadjacent
       minimal_separator_two_sided_neighbors
         G u v S hu hv hCD hMin x hx
     exact ⟨⟨c, hc, hxc⟩, ⟨d, hd, hxd⟩⟩
-  exact freeDecomposition_of_two_sided_neighbors
-    act A B ψ E hfix hcomplete hfaith S C D hCD hBoth
+  exact ⟨freeDecomposition_of_two_sided_neighbors
+    act A B ψ E hfix hcomplete hfaith S C D hCD hBoth⟩
+
+/-- Choose the actual free decomposition supplied by the preceding
+existence theorem. Separating the Prop-valued existence argument from
+this choice is essential: Lean prohibits elimination of arbitrary
+existential proofs directly into the data type `FreeDecomposition`. -/
+noncomputable def freeDecomposition_of_nonadjacent
+    [Finite β]
+    (act : L.Action Γ)
+    (A : Structure L α) (B : Structure L β)
+    (ψ : Structure.Embedding act A B)
+    (E : L.RelSymbol 2)
+    (hfix : act.FixesRel E)
+    (hcomplete : A.EdgeComplete E)
+    (hfaith : Structure.IsIrreducibleStructureFaithful act ψ)
+    (u v : β) (huv : u ≠ v) (hno : ¬ B.Edge E u v) :
+    B.FreeDecomposition :=
+  Classical.choice (freeDecomposition_nonempty_of_nonadjacent
+    act A B ψ E hfix hcomplete hfaith u v huv hno)
 
 end TreeLike
 end AllThoseEPPA

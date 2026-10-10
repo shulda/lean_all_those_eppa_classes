@@ -233,3 +233,26 @@ components of the complement and concatenates them into a forbidden
 induced cycle. Its arbitrary-length path argument is NOT yet formalized;
 neither the full tree-amalgamation constructor nor `thm:maintree`
 should be marked proved.
+
+
+### Shortest induced paths through components (2026-10-10)
+
+The following three modules passed their separate complete Lean CI runs
+and axiom audits, and are integrated through the current PR:
+
+- `TreeLikeShortestWalk.lean`: reachable vertices have a walk of
+  minimum length, via `Nat.find`; minimum-length walks are simple
+  paths, and edges between two nonconsecutive positions are excluded
+  by constructing a shorter shortcut.
+- `TreeLikeChordlessShortest.lean`: every reachable pair has a
+  chordless (induced) path, by upgrading the shortest-walk properties.
+- `TreeLikeComponentPaths.lean`: the graph induced on any connected
+  component of G outside S has chordless paths between every pair
+  of its vertices, with intermediate vertices necessarily remaining
+  in that outside component.
+
+These modules reduce the outstanding chordal clique-separator argument
+to carefully connecting two such paths through distinct components
+(and converting the resulting long induced graph cycle to the existing
+`BadCycleSequence` API). The full clique-separator theorem, complete
+`lem:cuts`, and `thm:maintree` are still **not** formalized.

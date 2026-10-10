@@ -319,3 +319,5 @@ import AllThoseEPPA.StrongCompletionTreeAmalgamationClass
 import AllThoseEPPA.StrongCompletionSmallTrees
 
 import AllThoseEPPA.StrongCompletionLocallyFiniteStep
+
+import AllThoseEPPA.StrongCompletionLocallyFiniteClassTheorem

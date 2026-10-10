@@ -1,3 +1,4 @@
+import AllThoseEPPA.TreeLikeACliqueTree
 import AllThoseEPPA.TreeLikeEmbeddingCliqueBridge
 
 /-!
@@ -65,6 +66,28 @@ theorem edgeSymmetric_of_everyIrreducibleEmbedsIn
       act A B E hFix hComplete hEvery)
     (edgeLoopless_of_everyIrreducibleEmbedsIn
       act A B E hFix hComplete hEvery)
+
+/-- The precise `lem:cuts` hypotheses already suffice for a
+clique-tree with all leaves embedded in A. In particular, **no
+separate symmetry or looplessness assumption on B** is needed:
+both have been derived from the irreducible embedding condition. -/
+theorem chordal_hasACliqueTree_of_everyIrreducibleEmbedsIn
+    [L.HasUnaryFunctions] [Finite β]
+    (act : L.Action Γ)
+    (A : Structure L α) (B : Structure L β)
+    (E : L.RelSymbol 2)
+    (hFix : act.FixesRel E)
+    (hComplete : A.EdgeComplete E)
+    (hEvery : EveryIrreducibleEmbedsIn act A B)
+    (hNo : ∀ c : Structure.BadCycleSequence B E, False) :
+    ACliqueTree act A E B := by
+  exact chordal_hasACliqueTree act A B E
+    hFix hComplete hEvery
+    (edgeLoopless_of_everyIrreducibleEmbedsIn
+      act A B E hFix hComplete hEvery)
+    (edgeSymmetric_of_everyIrreducibleEmbedsIn
+      act A B E hFix hComplete hEvery)
+    hNo
 
 end TreeLike
 end AllThoseEPPA

@@ -74,6 +74,7 @@ def Action.withFixedBinaryRel
         cases x with
         | inl r =>
             simp
+            rfl
         | inr e => rfl
       map_mul' := by
         intro g h
@@ -82,6 +83,7 @@ def Action.withFixedBinaryRel
         cases x with
         | inl r =>
             simp
+            rfl
         | inr e => rfl }
   func := act.func
 
@@ -118,7 +120,7 @@ instance (L : Language.{u}) [L.HasUnaryFunctions] :
     L.withFixedBinaryRel.HasUnaryFunctions where
   arity_eq_one := by
     intro n F
-    exact (inferInstanceAs L.HasUnaryFunctions).arity_eq_one F
+    exact HasUnaryFunctions.arity_eq_one (L := L) F
 
 end Language
 end AllThoseEPPA

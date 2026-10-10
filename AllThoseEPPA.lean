@@ -258,3 +258,6 @@ import AllThoseEPPA.TreeLikeFreshBinaryStructure
 import AllThoseEPPA.TreeLikeFreshBinaryComplete
 
 import AllThoseEPPA.TreeLikeFreshBinaryPartialIso
+
+import AllThoseEPPA.TreeLikeFreshBinaryIrreducibility
+import AllThoseEPPA.TreeLikeFreshBinaryEPPA

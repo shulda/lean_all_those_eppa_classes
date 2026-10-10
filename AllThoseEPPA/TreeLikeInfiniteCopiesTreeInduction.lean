@@ -96,8 +96,8 @@ theorem TreeAmalgamation.realizeIntoAmbient
         exists_ambientNormalizer_selfEmbedding act a hExt θ hθSurj
       refine ⟨σ, ?_, ?_⟩
       · change σ.lang * (a.lang * inv.lang) * β.lang = a.lang
-        change σ.lang * a.lang * θ.lang = a.lang at hσLang
-        simpa only [θ, mul_assoc] using hσLang
+        change σ.lang * a.lang * (inv.lang * β.lang) = a.lang at hσLang
+        simpa only [mul_assoc] using hσLang
       · intro x
         exact hσApply x
   | glue C B₁ B₂ hTree₁ hTree₂ δ₁ δ₂ α₁ α₂ ih₁ ih₂ =>

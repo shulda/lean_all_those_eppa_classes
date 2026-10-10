@@ -287,3 +287,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizedGlue
 import AllThoseEPPA.TreeLikeInfiniteCopiesEveryCopySide
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesSurjectiveInverse
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesSelfNormalizer

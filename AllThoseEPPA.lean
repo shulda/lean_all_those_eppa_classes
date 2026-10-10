@@ -140,3 +140,4 @@ import AllThoseEPPA.TreeLikeComponentPaths
 import AllThoseEPPA.TreeLikeChordlessReverse
 import AllThoseEPPA.TreeLikeChordlessAppend
 import AllThoseEPPA.TreeLikeTwoPathCycle
+import AllThoseEPPA.TreeLikeInducedAmbientPath

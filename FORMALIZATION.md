@@ -279,3 +279,16 @@ paths in distinct separator components; the translation of a
 mathlib chordless cycle to our `BadCycleSequence`; the general
 chordal minimal-separator clique theorem; the tree-amalgamation
 induction of `lem:cuts`; or `thm:maintree`.
+
+
+### Induced paths inside prescribed vertex subsets (2026-10-10)
+
+`TreeLikeInducedAmbientPath.lean` proves that a chordless path chosen
+in a Mathlib graph induced on a set T stays chordless and simple when
+included in the original graph, with support still contained in T.
+It also exposes the useful existence form: reachability of u,v in the
+induced graph yields a chordless ambient path supported entirely in T.
+This module passed a standalone full Lean build and axiom audit on
+feature branch `tree-like-induced-ambient-path`. The related endpoint-
+through-component construction and the full chordal clique theorem
+remain separate proof obligations.

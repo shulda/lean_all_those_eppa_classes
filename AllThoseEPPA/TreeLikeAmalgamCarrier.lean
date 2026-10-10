@@ -57,11 +57,14 @@ theorem amalgamRight_glued (f : I → X) (g : I → Y)
     (hg : Function.Injective g) (i : I) :
     amalgamRight f g (g i) = amalgamLeft f g (f i) := by
   classical
-  unfold amalgamRight amalgamLeft
-  split_ifs with h
-  · congr 1
-    exact congrArg f (hg (Classical.choose_spec h))
-  · exact (h ⟨i, rfl⟩).elim
+  have hi : g i ∈ Set.range g := ⟨i, rfl⟩
+  change (if h : g i ∈ Set.range g then
+      (Sum.inl (f (Classical.choose h)) : AmalgamCarrier f g)
+    else Sum.inr ⟨g i, h⟩) = Sum.inl (f i)
+  simp only [dif_pos hi]
+  exact congrArg (fun j : I =>
+    (Sum.inl (f j) : AmalgamCarrier f g))
+    (hg (Classical.choose_spec hi))
 
 /-- A right vertex outside the interface remains a freshly tagged
 right vertex. -/
@@ -69,12 +72,10 @@ theorem amalgamRight_outside (f : I → X) (g : I → Y)
     (y : Y) (hy : y ∉ Set.range g) :
     amalgamRight f g y = Sum.inr ⟨y, hy⟩ := by
   classical
-  unfold amalgamRight
-  split_ifs with h
-  · exact (hy h).elim
-  · apply congrArg Sum.inr
-    apply Subtype.ext
-    rfl
+  change (if h : y ∈ Set.range g then
+      (Sum.inl (f (Classical.choose h)) : AmalgamCarrier f g)
+    else Sum.inr ⟨y, h⟩) = Sum.inr ⟨y, hy⟩
+  simp only [dif_neg hy]
 
 /-- The right inclusion is injective whenever the gluing maps
 are injective. This rules out any accidental identifications
@@ -153,8 +154,11 @@ has a finite carrier. -/
 instance amalgamCarrier_finite (f : I → X) (g : I → Y)
     [Finite X] [Finite Y] :
     Finite (AmalgamCarrier f g) := by
-  unfold AmalgamCarrier
-  infer_instance
+  classical
+  letI : Fintype X := Fintype.ofFinite X
+  letI : Fintype Y := Fintype.ofFinite Y
+  change Finite (X ⊕ {y : Y // y ∉ Set.range g})
+  exact Fintype.finite _
 
 end TreeLike
 end AllThoseEPPA

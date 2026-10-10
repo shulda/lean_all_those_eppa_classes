@@ -152,3 +152,4 @@ import AllThoseEPPA.TreeLikeCompleteIrreducible
 import AllThoseEPPA.TreeLikeInducedIrreducibles
 import AllThoseEPPA.TreeLikeInducedEmbeddings
 import AllThoseEPPA.TreeLikeEmbeddingCliqueBridge
+import AllThoseEPPA.TreeLikeFaithfulEmbeddingBridge

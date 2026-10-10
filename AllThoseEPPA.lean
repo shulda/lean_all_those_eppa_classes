@@ -129,3 +129,5 @@ import AllThoseEPPA.TreeLikeTwoSidedClosure
 import AllThoseEPPA.TreeLikeWalkClosure
 import AllThoseEPPA.TreeLikeEssentialNeighbors
 import AllThoseEPPA.TreeLikeMinimalClosed
+import AllThoseEPPA.TreeLikeIrreducibleSeparator
+import AllThoseEPPA.TreeLikeCliqueAmalgamationBase

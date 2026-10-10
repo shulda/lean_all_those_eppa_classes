@@ -276,3 +276,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto
 import AllThoseEPPA.TreeLikeInfiniteCopiesAlignM
 import AllThoseEPPA.TreeLikeInfiniteCopiesGlueCarrier
 import AllThoseEPPA.TreeLikeInfiniteCopiesRelabelHom
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesEveryCopySide

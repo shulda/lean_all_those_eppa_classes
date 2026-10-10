@@ -199,3 +199,5 @@ import AllThoseEPPA.TreeLikeFreeCutBaseMapIdentities
 import AllThoseEPPA.TreeLikeFreeCutGlueMap
 
 import AllThoseEPPA.TreeLikeFreeCutSideData
+
+import AllThoseEPPA.TreeLikeFreeCutUniversalEmbedding

@@ -307,3 +307,5 @@ import AllThoseEPPA.HerwigLascarForbiddenImage
 import AllThoseEPPA.HerwigLascarCompleteEObstruction
 
 import AllThoseEPPA.HerwigLascarTheorem
+
+import AllThoseEPPA.AutomorphismPreservingCompletion

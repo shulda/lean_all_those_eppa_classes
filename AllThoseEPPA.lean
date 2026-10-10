@@ -249,3 +249,5 @@ import AllThoseEPPA.TreeLikeFixedERestrictedCoherentEPPA
 import AllThoseEPPA.TreeLikeFixedEAllSmallSubstructures
 
 import AllThoseEPPA.TreeLikeFixedENoncoherentRestrictedEPPA
+
+import AllThoseEPPA.TreeLikeTowerGlobalProjection

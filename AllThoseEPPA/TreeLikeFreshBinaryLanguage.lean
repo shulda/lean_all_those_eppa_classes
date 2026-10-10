@@ -37,7 +37,7 @@ relation symbol, preserving every old relation/function
 symbol and its arity. -/
 def withFixedBinaryRel (L : Language.{u}) : Language.{u} where
   RelSymbol := fun n => Sum (L.RelSymbol n)
-    (Subtype (fun (_ : PUnit.{u}) => n = 2))
+    (Subtype (fun (_ : PUnit.{u+1}) => n = 2))
   FuncSymbol := L.FuncSymbol
   relArity_pos := by
     intro n R

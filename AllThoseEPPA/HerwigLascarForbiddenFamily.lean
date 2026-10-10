@@ -59,7 +59,10 @@ theorem card_le_maxCard
   classical
   letI : Finite F.Code := F.finiteCode
   letI : Fintype F.Code := Fintype.ofFinite F.Code
-  exact Finset.le_sup (Finset.mem_univ i)
+  change Nat.card (F.Carrier i) ≤
+    (Finset.univ : Finset F.Code).sup (fun j => Nat.card (F.Carrier j))
+  exact Finset.le_sup (f := fun j : F.Code => Nat.card (F.Carrier j))
+    (Finset.mem_univ i)
 
 /-- Forb(F): no forbidden Γ-structure admits a genuine
 homomorphism-embedding into the target structure B.

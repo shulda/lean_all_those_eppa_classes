@@ -54,8 +54,9 @@ theorem minimal_separator_isClosed
     intro x hx
     exact minimal_separator_two_sided_neighbors
       G u v S hu hv hsep hmin x hx
-  exact two_sided_separator_isClosed
-    B E hIrred hloop hsymm S C D hsep hBoth
+  intro n F xs hxs
+  exact (two_sided_separator_isClosed
+    B E hIrred hloop hsymm S C D hsep hBoth) F xs hxs
 
 end TreeLike
 end AllThoseEPPA

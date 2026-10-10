@@ -73,6 +73,7 @@ noncomputable def amalgamLeftHom
   toFun := amalgamLeft f.toFun g.toFun
   map_rel := by
     intro n R xs hRel
+    rw [act.onRel_one]
     change
       (∃ xs' : Fin n → X,
         amalgamLeft f.toFun g.toFun ∘ xs' =
@@ -83,6 +84,7 @@ noncomputable def amalgamLeftHom
     exact Or.inl ⟨xs, rfl, hRel⟩
   map_func := by
     intro n F xs z hz
+    rw [act.onFunc_one]
     change
       (∃ xs' : Fin n → X,
         amalgamLeft f.toFun g.toFun ∘ xs' =
@@ -111,6 +113,7 @@ noncomputable def amalgamRightHom
   toFun := amalgamRight f.toFun g.toFun
   map_rel := by
     intro n R ys hRel
+    rw [act.onRel_one]
     change
       (∃ xs : Fin n → X,
         amalgamLeft f.toFun g.toFun ∘ xs =
@@ -121,6 +124,7 @@ noncomputable def amalgamRightHom
     exact Or.inr ⟨ys, rfl, hRel⟩
   map_func := by
     intro n F ys z hz
+    rw [act.onFunc_one]
     change
       (∃ xs : Fin n → X,
         amalgamLeft f.toFun g.toFun ∘ xs =

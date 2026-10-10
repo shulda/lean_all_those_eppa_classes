@@ -15,8 +15,10 @@ invoke the core class theorem. Thus the paper's stronger, familiar
 hypothesis becomes a literal special case of the Lean theorem,
 instead of an informal comment about amalgamation.
 
-The strong intersection condition is the pointwise assertion that
-if j₁(x)=j₂(y), then both points arise from the specified interface,
+The hereditary property is expressed under exact Γ-embeddings,
+so an interface embedded in a class member also belongs to the class.
+The strong intersection condition says that if j₁(x)=j₂(y),
+then both points arise from the specified interface,
 in addition to equality of the Γ-embedding maps on that interface.
 -/
 
@@ -37,16 +39,17 @@ structure HereditaryFiniteStrongAmalgamationClass
     ∀ {V : Type v} (B : Structure L V),
       mem B → Finite V
   hereditary :
-    ∀ {V : Type v} (B : Structure L V)
-      (S : Set V) (hS : B.IsClosed S),
-      mem B → mem (B.induce S hS)
+    ∀ {V W : Type v} {D : Structure L V}
+      {B : Structure L W}
+      (e : Structure.Embedding act D B),
+      mem B → mem D
   strong_amalgamate :
     ∀ {I X Y : Type v}
       {D : Structure L I} {B₁ : Structure L X}
       {B₂ : Structure L Y}
       (f : Structure.Embedding act D B₁)
       (g : Structure.Embedding act D B₂),
-      mem B₁ → mem B₂ →
+      mem D → mem B₁ → mem B₂ →
       ∃ (Z : Type v) (_ : Finite Z) (B : Structure L Z),
         mem B ∧
         ∃ (j₁ : Structure.Embedding act B₁ B)
@@ -68,8 +71,9 @@ def toAmalgamationClass
   mem := K.mem
   amalgamate := by
     intro I X Y D B₁ B₂ f g hB₁ hB₂
+    have hD : K.mem D := K.hereditary f hB₁
     obtain ⟨Z, hZ, B, hB, j₁, j₂, hCommute, _hStrong⟩ :=
-      K.strong_amalgamate f g hB₁ hB₂
+      K.strong_amalgamate f g hD hB₁ hB₂
     exact ⟨Z, hZ, B, hB, j₁, j₂, hCommute⟩
 
 /-- Ordinary EPPA in the **actual hereditary strong-amalgamation

@@ -314,3 +314,32 @@ The next required bridge is translating a long Mathlib chordless
 cycle to our `BadCycleSequence` API (under active CI), followed by
 proving the actual chordal minimal-separator clique theorem. Neither
 `lem:cuts` nor `thm:maintree` has yet been proved in full.
+
+
+### Chordal minimal-separator clique theorem (2026-10-10, PR #17)
+
+The central graph-theoretic obstacle in `lem:cuts` has now been proved
+by Lean on the feature branch `tree-like-chordal-minimal-clique`
+(commit `03cec72d`, green complete CI and axiom audit), building on
+PRs #13–#16:
+
+- `TreeLikeCycleTranslation.lean`: converts a Mathlib `SimpleGraph.Walk`
+  of length at least four carrying `IsCycle` and `IsChordless`
+  certificates into our exact `Structure.BadCycleSequence`;
+- `TreeLikeChordalMinimalClique.lean`: every inclusion-minimal vertex
+  separator of a graph with no long induced cycles is a clique;
+  the no-`BadCycleSequence` hypothesis for the distinguished E
+  relation implies graph chordality; in unary-function structures
+  with E-clique irreducibles, a minimal separator is both closed
+  and irreducible.
+
+PR #17 brings these exact proven modules onto the current `main`,
+with an additional combined CI run before merging.
+
+**Unfinished:** the induction on the number of vertices which
+realizes a finite structure with chordal E-reduct as a substructure
+of a *tree amalgamation of copies of A*. In particular, a complete
+formal definition and construction of tree amalgamations, faithful
+copies of A covering irreducibles, and the recursive free-amalgam
+of two smaller witnesses remain to be built. The full `lem:cuts`
+and `thm:maintree` MUST NOT be marked proved yet.

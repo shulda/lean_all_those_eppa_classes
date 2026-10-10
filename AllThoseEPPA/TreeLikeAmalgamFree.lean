@@ -100,10 +100,10 @@ noncomputable def amalgamFreeDecomposition
     rcases hRel with ⟨ls, hEq, _⟩ | ⟨rs, hEq, _⟩
     · left
       intro i
-      exact ⟨ls i, (congrFun hEq i).symm⟩
+      exact ⟨ls i, (congrFun hEq i)⟩
     · right
       intro i
-      exact ⟨rs i, (congrFun hEq i).symm⟩
+      exact ⟨rs i, (congrFun hEq i)⟩
   · intro n F xs hCross
     ext z
     constructor
@@ -120,9 +120,9 @@ noncomputable def amalgamFreeDecomposition
         at hz
       rcases hz with ⟨ls, hEq, _⟩ | ⟨rs, hEq, _⟩
       · exact False.elim (hCross (Or.inl (fun i =>
-          ⟨ls i, (congrFun hEq i).symm⟩)))
+          ⟨ls i, (congrFun hEq i)⟩)))
       · exact False.elim (hCross (Or.inr (fun i =>
-          ⟨rs i, (congrFun hEq i).symm⟩)))
+          ⟨rs i, (congrFun hEq i)⟩)))
     · intro hz
       exact hz.elim
 

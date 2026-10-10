@@ -191,3 +191,5 @@ import AllThoseEPPA.TreeLikeGeneralAmalgamFreeCover
 import AllThoseEPPA.TreeLikeTreeIrreducibleExtension
 
 import AllThoseEPPA.TreeLikeFullATreeFinite
+
+import AllThoseEPPA.TreeLikeGeneralAmalgamOverlap

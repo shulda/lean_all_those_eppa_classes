@@ -1,3 +1,4 @@
+import AllThoseEPPA.Irreducible
 import AllThoseEPPA.TreeLikeAmalgamEmbeddings
 import AllThoseEPPA.TreeLikeEmbeddingRangeClosure
 

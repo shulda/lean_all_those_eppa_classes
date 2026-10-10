@@ -33,6 +33,8 @@ green.
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
 | Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeUnrestrictedMaintree.lean`; `TreeLike.restrictedEPPA_from_any_witness` | **Formalized** | Full unrestricted finite faithful EPPA witness from an arbitrary finite EPPA witness, genuine global homomorphism-embedding into the original witness, all bounded closed substructures homomorphism-embed into literal recursive trees of full original-language A-copies, optional coherent EPPA. New Γ-fixed E is constructed and forgotten exactly. PR #103, full Lean build + axiom audit green (run `38063228073`), merged to main `0e1c4af`. |
+| Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
+| Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -824,3 +826,29 @@ formalized**; do not infer them merely from `thm:maintree`.
 
 After further development always re-read the live `main` branch
 and full CI status; this historical checkpoint can be superseded.
+
+
+### 2026-10-10: both concrete 3-uniform hypergraph regressions integrated
+
+**PR #104**, full project Lean build and axiom audit green
+(GitHub Actions run `38063998340`), was merged into `main`
+at commit `695573510ece1193e9e8799cf6b11c570dce8729`.
+This reconciles the separately verified older feature branch
+`hypergraph3-k4-free-eppa` with all intervening general EPPA and
+tree-like work, without replacing or weakening either theorem.
+
+- `Hypergraph3.eppa`: ordinary EPPA for **all** finite 3-uniform
+  hypergraphs, with standalone graph-theoretic semantics, exact
+  induced inclusion, and a true permutation extending every
+  partial automorphism.
+- `Hypergraph3.eppaK4Free`: ordinary EPPA for **all finite
+  K₄³-free 3-uniform hypergraphs** with a K₄³-free witness.
+  This uses the actual irreducible-structure faithful construction
+  and is therefore the stronger API regression.
+- `AllThoseEPPA.hypergraph3EPPA_axiomAudit` and
+  `AllThoseEPPA.hypergraph3K4FreeEPPA_axiomAudit` expose both
+  public examples to the same audited project namespace.
+
+The next paper proof target remains `lem:infinitecopies`
+and the associated general Herwig–Lascar `thm:main`; these
+are **not** implied automatically by the completed `thm:maintree`.

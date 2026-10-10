@@ -146,3 +146,4 @@ import AllThoseEPPA.TreeLikePathInteriorDisjoint
 import AllThoseEPPA.TreeLikeComponentNeighborhoodPath
 import AllThoseEPPA.TreeLikeNonadjacentPathLength
 import AllThoseEPPA.TreeLikeCycleTranslation
+import AllThoseEPPA.TreeLikeChordalMinimalClique

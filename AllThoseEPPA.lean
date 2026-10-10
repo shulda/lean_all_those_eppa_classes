@@ -237,3 +237,7 @@ import AllThoseEPPA.TreeLikeTowerCycleFreeTree
 import AllThoseEPPA.TreeLikeTowerInducedProjectionHom
 
 import AllThoseEPPA.TreeLikeEmptySubstructure
+
+import AllThoseEPPA.TreeLikeTowerProjectionHomEmb
+
+import AllThoseEPPA.TreeLikeHomEmbClosedIrreducibleImage

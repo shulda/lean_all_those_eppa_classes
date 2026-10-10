@@ -247,3 +247,5 @@ import AllThoseEPPA.TreeLikeTowerCycleFreeTree
 import AllThoseEPPA.TreeLikeTowerFullTreeHomEmb
 
 import AllThoseEPPA.TreeLikeFixedERestrictedCoherentEPPA
+
+import AllThoseEPPA.TreeLikeEmptySubstructure

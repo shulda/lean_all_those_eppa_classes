@@ -35,7 +35,7 @@ variable {Γ : Type w} [Group Γ]
 /-- The finite-class Γ-EPPA property on all finite carrier types
 in the selected universe. -/
 def FiniteAmalgamationClass.HasEPPA
-    (act : L.Action Γ)
+    {act : L.Action Γ}
     (K : FiniteAmalgamationClass act) : Prop :=
   ∀ {α : Type (max u v)} [Finite α]
     (A : Structure L α), K.mem A →
@@ -46,7 +46,7 @@ def FiniteAmalgamationClass.HasEPPA
 
 /-- Coherent version of the finite-class Γ-EPPA property. -/
 def FiniteAmalgamationClass.HasCoherentEPPA
-    (act : L.Action Γ)
+    {act : L.Action Γ}
     (K : FiniteAmalgamationClass act) : Prop :=
   ∀ {α : Type (max u v)} [Finite α]
     (A : Structure L α), K.mem A →
@@ -81,7 +81,7 @@ theorem locallyFiniteClass_hasEPPA
         K.mem A → E B₀ →
           HasLocallyFiniteAutomorphismPreservingCompletion
             act A B₀ K) :
-    K.HasEPPA act := by
+    K.HasEPPA := by
   intro α hα A hKA
   obtain ⟨β, hβ, B₀, ψ, hE, hEPPA₀⟩ :=
     hInitial A hKA
@@ -116,7 +116,7 @@ theorem locallyFiniteClass_hasCoherentEPPA
         K.mem A → E B₀ →
           HasLocallyFiniteAutomorphismPreservingCompletion
             act A B₀ K) :
-    K.HasCoherentEPPA act := by
+    K.HasCoherentEPPA := by
   intro α hα A hKA
   obtain ⟨β, hβ, B₀, ψ, hE, ⟨c⟩⟩ :=
     hInitial A hKA

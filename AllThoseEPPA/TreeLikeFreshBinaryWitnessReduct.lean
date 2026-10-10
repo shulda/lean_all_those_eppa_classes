@@ -124,7 +124,8 @@ theorem isIrreducibleStructureFaithful_forgetFixedBinary
     IsIrreducibleStructureFaithful act (ψ.forgetFixedBinary act) := by
   intro S hS hIrr
   have hOld : ((B.induce S hS).forgetFixedBinary).IsIrreducible := by
-    simpa only [forgetFixedBinary_induce] using hIrr
+    rw [forgetFixedBinary_induce B S hS]
+    exact hIrr
   have hIrrPlus : (B.induce S hS).IsIrreducible :=
     irreducible_of_forgetFixedBinary (B.induce S hS) hOld
   obtain ⟨g, hg⟩ := hFaithful S hS hIrrPlus

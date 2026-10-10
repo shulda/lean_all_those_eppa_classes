@@ -74,7 +74,7 @@ theorem project_ncard_le
     (s : FaithfulSparseningStage act A)
     (T : ClosedStageSubset act A
       (FaithfulSparseningStage.next act A E hfix hcomplete s)) :
-    (T.project act A E hfix hcomplete s).support.ncard ≤
+    (project act A E hfix hcomplete s T).support.ncard ≤
       T.support.ncard := by
   letI : Finite s.Carrier := s.finiteCarrier
   letI : Finite
@@ -95,7 +95,7 @@ theorem project_nonempty
     (T : ClosedStageSubset act A
       (FaithfulSparseningStage.next act A E hfix hcomplete s))
     (hNonempty : T.support.Nonempty) :
-    (T.project act A E hfix hcomplete s).support.Nonempty := by
+    (project act A E hfix hcomplete s T).support.Nonempty := by
   letI : Finite s.Carrier := s.finiteCarrier
   obtain ⟨w, hw⟩ := hNonempty
   change (Sparsening.projectionImage s.model E T.support).Nonempty
@@ -114,8 +114,8 @@ noncomputable def projectAt
       (FaithfulSparseningStage.iterate act A E hfix hcomplete s (k+1))) :
     ClosedStageSubset act A
       (FaithfulSparseningStage.iterate act A E hfix hcomplete s k) :=
-  T.project act A E hfix hcomplete
-    (FaithfulSparseningStage.iterate act A E hfix hcomplete s k)
+  project act A E hfix hcomplete
+    (FaithfulSparseningStage.iterate act A E hfix hcomplete s k) T
 
 /-- Every backwards step of the actual tower does not
 increase the number of projected vertices. -/
@@ -128,7 +128,7 @@ theorem projectAt_ncard_le
     (k : ℕ)
     (T : ClosedStageSubset act A
       (FaithfulSparseningStage.iterate act A E hfix hcomplete s (k+1))) :
-    (T.projectAt act A E hfix hcomplete s k).support.ncard ≤
+    (projectAt act A E hfix hcomplete s k T).support.ncard ≤
       T.support.ncard :=
   project_ncard_le act A E hfix hcomplete
     (FaithfulSparseningStage.iterate act A E hfix hcomplete s k) T

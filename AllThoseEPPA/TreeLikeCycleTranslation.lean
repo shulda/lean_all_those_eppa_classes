@@ -119,14 +119,14 @@ def badCycleOfChordlessGraphCycle
             (p.getVert (i.val + 1)) :=
           p.adj_getVert_succ i.isLt
         have hmod := closedWalk_getVert_succ_mod G p i.val i.isLt
-        rw [hmod, hij] at hiEdge
+        rw [hmod, ← hij] at hiEdge
         exact hiEdge
       · change i.val = (j.val + 1) % p.length at hji
         have hjEdge : G.Adj (p.getVert j.val)
             (p.getVert (j.val + 1)) :=
           p.adj_getVert_succ j.isLt
         have hmod := closedWalk_getVert_succ_mod G p j.val j.isLt
-        rw [hmod, hji] at hjEdge
+        rw [hmod, ← hji] at hjEdge
         exact hjEdge.symm
 
 /-- In particular, if the E-structure has no bad induced cycles,

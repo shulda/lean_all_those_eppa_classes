@@ -63,7 +63,13 @@ theorem infiniteCopies_anyCompleteFreshE
     completeFreshETree_realizesIntoAmbient
       act Aplus.forgetFixedBinary N a hExt D hTreeCanonical
   refine ⟨h, hh, ?_⟩
-  simpa only [hCanonical] using hNorm
+  let P : Structure L.withFixedBinaryRel V → Prop := fun Q =>
+    ∀ β : Structure.Embedding act.withFixedBinaryRel Q D,
+      ∃ σ : Structure.Automorphism act N,
+        σ.lang * h.lang * (β.forgetFixedBinary act).lang = a.lang ∧
+        ∀ x : V, σ (h (β x)) = a x
+  change P Aplus
+  exact Eq.mp (congrArg P hCanonical) hNorm
 
 end TreeLike
 end AllThoseEPPA

@@ -293,3 +293,6 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizationTransport
 import AllThoseEPPA.TreeLikeInfiniteCopiesTreeInduction
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesCompleteEReduct
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesCanonicalCompleteE
+import AllThoseEPPA.TreeLikeInfiniteCopiesTheorem

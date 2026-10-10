@@ -163,3 +163,5 @@ import AllThoseEPPA.TreeLikeLocalGraphAxioms
 import AllThoseEPPA.TreeLikeEmbeddingRangeClosure
 
 import AllThoseEPPA.TreeLikeIrreducibilityTransport
+
+import AllThoseEPPA.TreeLikeIrreducibleEmbeddingImage

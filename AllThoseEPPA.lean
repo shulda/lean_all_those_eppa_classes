@@ -232,4 +232,8 @@ import AllThoseEPPA.TreeLikeTowerRankDescent
 
 import AllThoseEPPA.TreeLikeTowerCycleFreeAncestor
 
+import AllThoseEPPA.TreeLikeTowerCycleFreeTree
+
+import AllThoseEPPA.TreeLikeTowerInducedProjectionHom
+
 import AllThoseEPPA.TreeLikeEmptySubstructure

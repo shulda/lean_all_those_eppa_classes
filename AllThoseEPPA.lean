@@ -163,3 +163,5 @@ import AllThoseEPPA.TreeLikeAmalgamRelabel
 import AllThoseEPPA.TreeLikeAmalgamCompatibility
 
 import AllThoseEPPA.TreeLikeAmalgamStructure
+
+import AllThoseEPPA.TreeLikeAmalgamEmbeddings

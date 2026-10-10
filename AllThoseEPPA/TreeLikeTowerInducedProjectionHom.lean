@@ -55,7 +55,8 @@ noncomputable def inducedClosedImage
     have hf : f y.1 ∈
         B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs)) :=
       f.map_func F (Subtype.val ∘ xs) ⟨y.1, hyA, rfl⟩
-    simpa only [Structure.induce, Function.comp_def] using hf
+    change f y.1 ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs))
+    exact hf
 
 /-- If a homomorphism maps every *whole* set-valued function
 fibre exactly onto the target fibre, the induced map on any
@@ -88,12 +89,14 @@ theorem inducedClosedImage_exact_func
         (f.toFun ∘ (Subtype.val ∘ xs)) := by
       have hv : f z.1 = y.1 := congrArg Subtype.val hzy
       rwa [← hv]
-    simpa only [Structure.induce, Function.comp_def] using hyB
+    change y.1 ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs))
+    exact hyB
   · intro hy
     have hyB : y.1 ∈
         B.func (act.onFunc f.lang F)
           (f.toFun ∘ (Subtype.val ∘ xs)) := by
-      simpa only [Structure.induce, Function.comp_def] using hy
+      change y.1 ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs)) at hy
+      exact hy
     rw [← hExact F (Subtype.val ∘ xs)] at hyB
     obtain ⟨z, hzA, hzB⟩ := hyB
     have hzS : z ∈ S := hS F (Subtype.val ∘ xs)

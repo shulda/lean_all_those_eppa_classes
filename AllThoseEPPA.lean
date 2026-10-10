@@ -148,3 +148,4 @@ import AllThoseEPPA.TreeLikeNonadjacentPathLength
 import AllThoseEPPA.TreeLikeCycleTranslation
 import AllThoseEPPA.TreeLikeChordalMinimalClique
 import AllThoseEPPA.TreeLikeChordalCut
+import AllThoseEPPA.TreeLikeInducedIrreducibles

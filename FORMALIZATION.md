@@ -580,3 +580,88 @@ For **authoritative progress**, use the `main` branch and the green
 CI/axiom-audit runs. PRs #65–#66 have passed standalone Lean build and axiom audit;
 this combined integration must also pass CI before these are called
 results of `main`.
+
+
+### 2026-10-10: actual restricted-EPPA tower, current authoritative cutoff
+
+**This section supersedes earlier chronological statements claiming that
+the concrete iterated sparsening tower, bounded-rank descent, or the
+cycle-free ancestor-to-full-A-tree bridge are still missing.**
+
+The following have been merged to `main` and passed the complete Lean
+build and project axiom audit:
+
+- **PR #64:** the actual unary-function version of manuscript
+  `lem:cuts`, using an exact Γ-embedding of B into a recursively
+  constructed tree amalgamation of full copies of A; theorem
+  `TreeLike.chordal_embedsInFullATree` in
+  `TreeLikeCutsRealization.lean`.
+- **PR #68:** the concrete sparsening trichotomy yields a bounded
+  increase of the vertex/ordered-E-edge rank, and a cycle-free closed
+  sparsening subset can be realized via `lem:cuts`.
+- **PR #69:** `TreeLikeFiniteSparseningTower.lean` constructs an
+  **actual finite dependent tower** of cycle-sparsening witnesses with
+  exact interstage projections, EPPA, irreducible-structure
+  faithfulness, and preservation of optional coherent EPPA. This is
+  not an assumed or independently existentially chosen sequence.
+- **PR #75:** `TreeLikeTowerClosedProjections.lean`,
+  `TreeLikeTowerMultistepProjection.lean`,
+  `TreeLikeTowerConcreteRank.lean`,
+  `TreeLikeTowerRankDescent.lean`, and
+  `TreeLikeTowerCycleFreeAncestor.lean` exhibit the **actual**
+  projected-closed-subset chain and, for any nonempty top subset of
+  cardinality at most n, find a cycle-free closed ancestor after
+  `N = n*(n*n+1)` steps. Directed E-edges are counted as
+  **ordered** pairs, so `n*n` is the safe edge budget.
+- **PR #81:** `TreeLikeTowerCycleFreeTree.lean` applies the **proved**
+  `lem:cuts` to that actual cycle-free ancestor, obtaining a genuine
+  Γ-embedding of the ancestor into a tree amalgamation of *full*
+  A-copies.
+- **PR #86:** `TreeLikeTowerInducedProjectionHom.lean` constructs
+  genuine **typed homomorphisms** between closed induced tower
+  subsets and proves **equality** of all projected unary function
+  fibres. This theorem does **not** by itself assert that these maps
+  are homomorphism-embeddings (embedding-on-every-irreducible);
+  that additional result is a separate proof obligation.
+
+**Still open: manuscript `thm:maintree`.** In particular, PR #81
+embeds a *cycle-free ancestor*, not automatically the originally
+selected bounded top substructure. The remaining fixed-E proof chain
+must show:
+
+1. Each typed closed-image tower projection is a genuine
+   **homomorphism-embedding**, not just a homomorphism (PR #77
+   independently green).
+2. The image of a closed irreducible source under a local exact
+   homomorphism-embedding is closed and irreducible, enabling
+   **composition** of such maps (PRs #78–#79).
+3. Produce the composite homomorphism-embedding along the certified
+   actual ancestor chain, and append its exact full-A-tree embedding
+   (PRs #80–#82).
+4. Package a fixed-Γ-E coherent faithful EPPA witness with the
+   restricted property for every nonempty small closed substructure,
+   and separately cover the empty substructure (PRs #83–#85).
+5. For the unrestricted-language theorem, **add a fresh binary E
+   fixed by all Γ-permutations**, expand the original structure and
+   witness with complete E, and finally forget E while transporting
+   EPPA, coherence, irreducible-structure faithfulness and the
+   restricted conclusion (starting with PR #87).
+
+**Precise CI status at this cutoff:** PR #77's independent build was
+green. PR #84's independent empty-substructure build was green,
+and its branch has been reconciled to newer main with a new CI
+pending. The initial PRs #78–#85 shared a *single* Lean
+elaboration failure concerning membership in a function fibre
+of an induced closed image; the relevant module was corrected
+on all dependent branches and their fresh CI runs are pending.
+The initial PR #87 failed on a malformed fresh-symbol subtype
+expression, which was repaired; fresh CI is pending. No later
+result should be inferred until GitHub Actions has checked the
+repaired heads.
+
+**Authoritative cutoff:** main SHA
+`98336d57f0b526c9753965eacaa2b9d4514e97c4`
+(after the green PR #86 integration). The post-merge main
+CI is tracked separately. The project may have moved further;
+always re-read `main` and the current GitHub CI before using this
+cutoff in a later chat.

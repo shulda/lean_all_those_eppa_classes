@@ -181,3 +181,30 @@ restricted witness construction `thm:maintree`.
 
 **Do not call `lem:cuts` or `thm:maintree` proved:** these exact
 graph/path and tree-amalgamation proof obligations remain open.
+
+
+### Completed free-decomposition descent (2026-10-10)
+
+The coherent structural step following the already-merged separator
+infrastructure is implemented in:
+
+- `TreeLikeWalkClosure.lean`: adjacency-closed subsets of a graph are
+  closed under all graph walks and reachability.
+- `TreeLikeEssentialNeighbors.lean`: inclusion-minimal u-v separators
+  meet both u and v endpoint components by adjacency at every separator
+  vertex; this uses the previous adjacency-closure result.
+- `TreeLikeTwoSidedFree.lean`: two outside components and two-sided
+  separator adjacency automatically furnish a concrete
+  `Structure.FreeDecomposition` of a faithful witness.
+- `TreeLikeMinimalFree.lean`: for any two distinct nonadjacent vertices
+  of the E-reduct of a finite faithful EPPA witness, select a minimal
+  separator and construct a concrete free decomposition of the whole
+  witness. The existence proof lies in Prop and the actual data object
+  is obtained by Classical.choice, avoiding invalid Prop-to-Type
+  elimination.
+
+Each module passed complete Lean CI and the standard axiom audit on the
+prior development branch; the combined PR must also pass its own CI.
+**The full `lem:cuts` is not proved.** The missing implication is that
+an inclusion-minimal separator is an E-clique in a chordal graph,
+followed by the recursive tree-amalgamation construction.

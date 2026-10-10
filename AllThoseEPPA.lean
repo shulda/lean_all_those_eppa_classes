@@ -287,3 +287,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizedGlue
 import AllThoseEPPA.TreeLikeInfiniteCopiesEveryCopySide
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizationTransport
+
+import AllThoseEPPA.UnaryHomEmbImageClosure

@@ -138,3 +138,4 @@ import AllThoseEPPA.TreeLikeShortestWalk
 import AllThoseEPPA.TreeLikeChordlessShortest
 import AllThoseEPPA.TreeLikeComponentPaths
 import AllThoseEPPA.TreeLikeInducedAmbientPath
+import AllThoseEPPA.TreeLikeComponentNeighborhoodPath

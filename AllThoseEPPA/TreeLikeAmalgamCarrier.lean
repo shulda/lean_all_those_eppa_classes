@@ -1,3 +1,4 @@
+import Mathlib.Data.Fintype.Basic
 import AllThoseEPPA.Map
 
 /-!
@@ -56,11 +57,11 @@ theorem amalgamRight_glued (f : I → X) (g : I → Y)
     (hg : Function.Injective g) (i : I) :
     amalgamRight f g (g i) = amalgamLeft f g (f i) := by
   classical
-  have hi : g i ∈ Set.range g := ⟨i, rfl⟩
-  simp only [amalgamRight, dif_pos hi, amalgamLeft]
-  have hchoose : Classical.choose hi = i :=
-    hg (Classical.choose_spec hi)
-  rw [hchoose]
+  unfold amalgamRight amalgamLeft
+  split_ifs with h
+  · congr 1
+    exact congrArg f (hg (Classical.choose_spec h))
+  · exact (h ⟨i, rfl⟩).elim
 
 /-- A right vertex outside the interface remains a freshly tagged
 right vertex. -/
@@ -68,7 +69,12 @@ theorem amalgamRight_outside (f : I → X) (g : I → Y)
     (y : Y) (hy : y ∉ Set.range g) :
     amalgamRight f g y = Sum.inr ⟨y, hy⟩ := by
   classical
-  simp [amalgamRight, hy]
+  unfold amalgamRight
+  split_ifs with h
+  · exact (hy h).elim
+  · apply congrArg Sum.inr
+    apply Subtype.ext
+    rfl
 
 /-- The right inclusion is injective whenever the gluing maps
 are injective. This rules out any accidental identifications
@@ -135,8 +141,12 @@ theorem amalgamCarrier_covered
   | inl x =>
       exact Or.inl ⟨x, rfl⟩
   | inr y =>
-      have hy := amalgamRight_outside f g y.1 y.2
-      exact Or.inr ⟨y.1, hy.symm⟩
+      refine Or.inr ⟨y.1, ?_⟩
+      have hSubtype :
+          (⟨y.1, y.2⟩ : {z : Y // z ∉ Set.range g}) = y :=
+        Subtype.ext rfl
+      simpa only [hSubtype] using
+        (amalgamRight_outside f g y.1 y.2)
 
 /-- No new infinitude is introduced: gluing two finite carriers
 has a finite carrier. -/

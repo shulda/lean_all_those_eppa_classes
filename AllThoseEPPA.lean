@@ -261,3 +261,5 @@ import AllThoseEPPA.TreeLikeFreshBinaryPartialIso
 
 import AllThoseEPPA.TreeLikeFreshBinaryIrreducibility
 import AllThoseEPPA.TreeLikeFreshBinaryEPPA
+
+import AllThoseEPPA.TreeLikeFreshBinaryWitnessReduct

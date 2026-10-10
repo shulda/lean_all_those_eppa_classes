@@ -1,3 +1,4 @@
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Combinatorics.SimpleGraph.Paths
 import Mathlib.Data.Nat.Find
 import Lean.Elab.Tactic.Omega
@@ -52,11 +53,13 @@ theorem shortest_walk_isPath
     (p : G.Walk u v)
     (hmin : ∀ q : G.Walk u v, p.length ≤ q.length) :
     p.IsPath := by
+  classical
   have hlen : p.length ≤ p.bypass.length := by
     simpa using hmin (p.toPath : G.Walk u v)
   have heq : p.bypass = p :=
     (SimpleGraph.Walk.length_le_bypass_length_iff p).mp hlen
-  exact (SimpleGraph.Walk.bypass_eq_self_iff_isPath p).mp heq
+  exact (show p.bypass = p ↔ p.IsPath from
+    SimpleGraph.Walk.bypass_eq_self_iff_isPath).mp heq
 
 /-- A shortest walk has no chord that skips at least one edge.
 The candidate shortcut is the concatenation of the prefix to
@@ -75,10 +78,12 @@ theorem shortest_walk_no_long_chord
     (p.take i).append (hChord.toWalk.append (p.drop j))
   have hq : q.length = i + 1 + (p.length - j) := by
     dsimp [q]
-    simp [SimpleGraph.Walk.length_append,
+    simp only [SimpleGraph.Walk.length_append,
+      SimpleGraph.Adj.length_toWalk,
       SimpleGraph.Walk.take_length,
       SimpleGraph.Walk.drop_length,
-      Nat.min_eq_left hi, Nat.add_assoc]
+      Nat.min_eq_left hi]
+    omega
   have hge : p.length ≤ q.length := hmin q
   omega
 

@@ -407,3 +407,84 @@ that B embeds into it.
 steps 1–4 are verified by Lean.** The integration PR #26 is likewise
 not a `main` result until its own complete CI and axiom audit pass
 and the PR is merged.
+
+
+### Verified full-A tree machinery; precise remaining gap (2026-10-10, through PR #48)
+
+**Authoritative update, superseding older progress notes above where they
+say the chordal separator theorem or the full-A tree definition is still
+missing.** All of the following have been merged into `main` after a
+complete Lean build and the project-wide axiom audit:
+
+- PRs **#17, #18, #21, #26**: the graph-theoretic chordal separator
+  theorem, proper irreducible free cuts, induced-structure heredity, and
+  recursive `CliqueTree E B` structural certificates.
+- PRs **#27, #29**: `ACliqueTree act A E B` labels every complete
+  leaf with an **actual exact embedding into A**. The distinguished
+  E-relation is automatically loopless and symmetric under the full
+  irreducible-embedding hypothesis; these are not extraneous hypotheses
+  added to manuscript `lem:cuts`.
+- PR **#34**: the image of any exact Γ-structure embedding is closed
+  under arbitrary set-valued functions, and intersections of closed
+  sets are closed.
+- PRs **#38, #41**: explicit construction of finite amalgam carriers,
+  genuine amalgam *structures* with all relations and set-valued
+  functions, **exact embeddings of both source structures**,
+  alignment of different Γ-language components, and the manuscript's
+  **literal `TreeAmalgamation` inductive definition** whose basic
+  pieces are **full copies of A**, not merely clique bags.
+- PR **#45**: the constructed amalgam has a genuine
+  `FreeDecomposition` whenever the two sources are proper. More
+  generally `FreeCover` works even for degenerate attachments and
+  implies that every irreducible closed substructure lies entirely
+  in one source side.
+- PR **#48**: Γ-isomorphic transport of irreducibility; the exact
+  closed image of an irreducible Γ-embedding is irreducible;
+  lifting a full-A extension through an embedded side; and, most
+  importantly, the **fully Lean-proved**
+  `TreeAmalgamation.everyIrreducibleExtendsToA`:
+
+  > Every closed irreducible induced substructure of any recursive
+  > tree amalgamation of full copies of A is contained in the
+  > image of a genuine Γ-structure embedding of the *whole* A.
+
+  This includes nontrivial language permutations, arbitrary set-valued
+  functions and gluing along an entire side. PR #48 also integrates
+  finiteness of full-A tree amalgamations when A is finite.
+
+**The paper's `lem:cuts` is still OPEN.** The new theorem above is
+the *observation used in its induction*, not the lemma's conclusion.
+The remaining core task is to show that the existing
+`ACliqueTree act A E B` certificate is **realized inside a
+`TreeAmalgamation act A H`**, with an exact Γ-embedding
+`B ↪ H`. A precise proof plan is recorded on PR #47:
+
+1. A leaf embeds in A directly; use `TreeAmalgamation.singleton`.
+2. In a proper free-decomposition node, recursively embed both closed
+   induced sides of B into full-A tree amalgamations H₁,H₂.
+3. The exact closed irreducible intersection embeds irreducibly into
+   each Hᵢ. Apply PR #48's extension observation to factor each
+   base embedding through a **full embedded copy of A** in Hᵢ.
+4. Glue H₁,H₂ on these embeddings of the exact common base, using
+   `generalAmalgamStructure` and `TreeAmalgamation.glue`.
+5. **Still to prove:** the genuine pushout/universal-property
+   embedding of the original freely decomposed B into this glued
+   target. It must show injectivity (the only cross-identifications
+   arise from the exact common base), **relation reflection**, and
+   **equality** of all set-valued-function fibres. Here one uses
+   `FreeDecomposition.rel_local` and
+   `FreeDecomposition.func_cross_empty`; merely a homomorphism or
+   a set-theoretic vertex inclusion would NOT suffice.
+
+Feature PRs **#49** (exact embeddings of the common closed base),
+**#50** (unique/injective carrier gluing), and **#51** (pointwise
+identification of the factored base embeddings) are preliminary
+steps toward item 5 and are **not authoritative until their own
+CI passes and they are integrated**.
+
+After the exact `lem:cuts` realization is Lean-proved, the further
+work to finish `thm:maintree` is to connect it to the already
+formalized `lem:sparsen` iteration, including preservation of EPPA,
+the coherence condition, the required bound, and forgetting the
+added E-relation. **Do not call either theorem proved until this
+code compiles without `sorry` and passes the standard axiom audit.**

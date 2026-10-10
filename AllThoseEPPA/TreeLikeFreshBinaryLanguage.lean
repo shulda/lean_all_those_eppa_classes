@@ -73,7 +73,6 @@ def Action.withFixedBinaryRel
         intro x
         cases x with
         | inl r =>
-            change (act.rel n (1 : Γ)) r = r
             simp
         | inr e => rfl
       map_mul' := by
@@ -82,8 +81,6 @@ def Action.withFixedBinaryRel
         intro x
         cases x with
         | inl r =>
-            change (act.rel n (g * h)) r =
-              (act.rel n g) ((act.rel n h) r)
             simp
         | inr e => rfl }
   func := act.func
@@ -94,8 +91,8 @@ action on all old relation symbols. -/
     (act : L.Action Γ)
     (g : Γ) {n : ℕ} (R : L.RelSymbol n) :
     (act.withFixedBinaryRel).onRel g
-      (L.withFixedBinaryRel.oldRelation R) =
-        L.withFixedBinaryRel.oldRelation (act.onRel g R) :=
+      (withFixedBinaryRel.oldRelation L R) =
+        withFixedBinaryRel.oldRelation L (act.onRel g R) :=
   rfl
 
 /-- The new binary relation is fixed by EVERY element
@@ -103,8 +100,8 @@ of the Γ-language action, as required by lem:sparsen. -/
 @[simp] theorem Action.withFixedBinaryRel_onFresh
     (act : L.Action Γ) (g : Γ) :
     (act.withFixedBinaryRel).onRel g
-      (L.withFixedBinaryRel.freshE) =
-        L.withFixedBinaryRel.freshE :=
+      (withFixedBinaryRel.freshE L) =
+        withFixedBinaryRel.freshE L :=
   rfl
 
 /-- The extended language has exactly the same function
@@ -119,7 +116,9 @@ symbol families as the original language. -/
 unary-only restriction on function arities. -/
 instance (L : Language.{u}) [L.HasUnaryFunctions] :
     L.withFixedBinaryRel.HasUnaryFunctions where
-  arity_eq_one := fun F => HasUnaryFunctions.arity_eq_one F
+  arity_eq_one := by
+    intro n F
+    exact (inferInstanceAs L.HasUnaryFunctions).arity_eq_one F
 
 end Language
 end AllThoseEPPA

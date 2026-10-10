@@ -105,7 +105,7 @@ noncomputable def nextProjection
     (hcomplete : A.EdgeComplete E)
     (s : FaithfulSparseningStage act A) :
     Structure.Homomorphism act
-      (s.next act A E hfix hcomplete).model s.model :=
+      (next act A E hfix hcomplete s).model s.model :=
   Sparsening.projection act s.model E
 
 /-- Every interstage projection preserves the embedding
@@ -117,7 +117,7 @@ theorem nextProjection_isHomomorphismEmbedding
     (hcomplete : A.EdgeComplete E)
     (s : FaithfulSparseningStage act A) :
     Structure.Homomorphism.IsHomomorphismEmbedding act
-      (s.nextProjection act A E hfix hcomplete) :=
+      (nextProjection act A E hfix hcomplete s) :=
   Sparsening.projection_isHomomorphismEmbedding act s.model E
 
 /-- Each tower projection maps complete unary function
@@ -131,13 +131,13 @@ theorem nextProjection_exact_functions
     (hcomplete : A.EdgeComplete E)
     (s : FaithfulSparseningStage act A)
     {n : ℕ} (F : L.FuncSymbol n)
-    (xs : Fin n → (s.next act A E hfix hcomplete).Carrier) :
+    (xs : Fin n → (next act A E hfix hcomplete s).Carrier) :
     Structure.imageSet
-        (s.nextProjection act A E hfix hcomplete).toFun
-        ((s.next act A E hfix hcomplete).model.func F xs) =
+        (nextProjection act A E hfix hcomplete s).toFun
+        ((next act A E hfix hcomplete s).model.func F xs) =
       s.model.func
-        (act.onFunc (s.nextProjection act A E hfix hcomplete).lang F)
-        ((s.nextProjection act A E hfix hcomplete).toFun ∘ xs) :=
+        (act.onFunc (nextProjection act A E hfix hcomplete s).lang F)
+        ((nextProjection act A E hfix hcomplete s).toFun ∘ xs) :=
   Sparsening.projection_map_func_eq act s.model E F xs
 
 /-- Apply the actual sparsening successor k times.
@@ -153,8 +153,8 @@ noncomputable def iterate
     ℕ → FaithfulSparseningStage act A
   | 0 => s
   | k + 1 =>
-      (iterate act A E hfix hcomplete s k).next
-        act A E hfix hcomplete
+      next act A E hfix hcomplete
+        (iterate act A E hfix hcomplete s k)
 
 /-- The projection from level k+1 to level k in the
 explicit finite sparsening tower. -/
@@ -167,8 +167,8 @@ noncomputable def iterateProjection
     Structure.Homomorphism act
       (iterate act A E hfix hcomplete s (k+1)).model
       (iterate act A E hfix hcomplete s k).model :=
-  (iterate act A E hfix hcomplete s k).nextProjection
-    act A E hfix hcomplete
+  nextProjection act A E hfix hcomplete
+    (iterate act A E hfix hcomplete s k)
 
 /-- Coherent EPPA, if present initially, survives the
 specific concrete sparsening successor step. -/
@@ -180,7 +180,7 @@ theorem next_coherent
     (s : FaithfulSparseningStage act A)
     (hcoh : Structure.IsCoherentEPPAWitness act s.embedding) :
     Structure.IsCoherentEPPAWitness act
-      (s.next act A E hfix hcomplete).embedding := by
+      (next act A E hfix hcomplete s).embedding := by
   letI : Finite s.Carrier := s.finiteCarrier
   exact Sparsening.sparseningWitness_isCoherentEPPAWitness
     act A s.model s.embedding E hfix hcomplete hcoh

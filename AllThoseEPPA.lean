@@ -239,3 +239,5 @@ import AllThoseEPPA.TreeLikeTowerProjectionHomEmb
 import AllThoseEPPA.TreeLikeHomEmbClosedIrreducibleImage
 
 import AllThoseEPPA.TreeLikeHomEmbComposition
+
+import AllThoseEPPA.TreeLikeTowerAncestorHomEmb

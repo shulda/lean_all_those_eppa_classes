@@ -69,7 +69,7 @@ theorem projectDown_ncard_le
         (start + steps))) :
     (projectDown act A E hfix hcomplete s start steps T).support.ncard ≤
       T.support.ncard := by
-  induction steps generalizing T with
+  induction steps with
   | zero =>
       exact le_refl _
   | succ steps ih =>
@@ -94,7 +94,7 @@ theorem projectDown_nonempty
         (start + steps)))
     (hT : T.support.Nonempty) :
     (projectDown act A E hfix hcomplete s start steps T).support.Nonempty := by
-  induction steps generalizing T with
+  induction steps with
   | zero =>
       exact hT
   | succ steps ih =>

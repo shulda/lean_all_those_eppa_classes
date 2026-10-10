@@ -270,3 +270,9 @@ import AllThoseEPPA.TreeLikeUnrestrictedMaintree
 
 import AllThoseEPPA.Examples.Hypergraph3
 import AllThoseEPPA.Examples.Hypergraph3K4Free
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
+import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto
+import AllThoseEPPA.TreeLikeInfiniteCopiesAlignM
+import AllThoseEPPA.TreeLikeInfiniteCopiesGlueCarrier
+import AllThoseEPPA.TreeLikeInfiniteCopiesRelabelHom

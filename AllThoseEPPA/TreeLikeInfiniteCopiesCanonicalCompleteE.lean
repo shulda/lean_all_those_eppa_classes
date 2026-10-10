@@ -61,7 +61,9 @@ theorem withCompleteFixedBinary_eq_of_edgeComplete
     (hE : A.EdgeComplete (Language.withFixedBinaryRel.freshE L)) :
     A.forgetFixedBinary.withCompleteFixedBinary = A := by
   have hRel :
-      (A.forgetFixedBinary.withCompleteFixedBinary).rel = A.rel := by
+      (@Structure.rel L.withFixedBinaryRel V
+        (A.forgetFixedBinary.withCompleteFixedBinary)) =
+      (@Structure.rel L.withFixedBinaryRel V A) := by
     funext n R xs
     cases R with
     | inl r =>
@@ -75,7 +77,9 @@ theorem withCompleteFixedBinary_eq_of_edgeComplete
         apply propext
         exact (freshE_relation_iff_injective A hE xs).symm
   have hFunc :
-      (A.forgetFixedBinary.withCompleteFixedBinary).func = A.func := rfl
+      (@Structure.func L.withFixedBinaryRel V
+        (A.forgetFixedBinary.withCompleteFixedBinary)) =
+      (@Structure.func L.withFixedBinaryRel V A) := rfl
   exact congrArg₂
     (fun rel func => (Structure.mk rel func : Structure L.withFixedBinaryRel V))
     hRel hFunc

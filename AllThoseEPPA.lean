@@ -217,3 +217,5 @@ import AllThoseEPPA.TreeLikeFreeCutPushoutEmbedding
 import AllThoseEPPA.TreeLikeCutsRealization
 
 import AllThoseEPPA.TreeLikeFiniteSparseningTower
+
+import AllThoseEPPA.TreeLikeTowerClosedProjections

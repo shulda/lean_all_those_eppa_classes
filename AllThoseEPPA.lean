@@ -211,3 +211,5 @@ import AllThoseEPPA.TreeLikeFreeCutPushoutMaps
 import AllThoseEPPA.TreeLikeFreeCutPushoutSupport
 
 import AllThoseEPPA.TreeLikeFreeCutPushoutEmbedding
+
+import AllThoseEPPA.TreeLikeEmbeddingFactorComposition

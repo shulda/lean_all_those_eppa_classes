@@ -134,3 +134,4 @@ import AllThoseEPPA.TreeLikeTwoComponentSquare
 import AllThoseEPPA.TreeLikeIrreducibleSeparator
 import AllThoseEPPA.TreeLikeMinimalClosed
 import AllThoseEPPA.TreeLikeCliqueAmalgamationBase
+import AllThoseEPPA.TreeLikeChordlessReverse

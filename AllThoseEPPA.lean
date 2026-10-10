@@ -181,3 +181,5 @@ import AllThoseEPPA.TreeLikeAmalgamFree
 import AllThoseEPPA.TreeLikeAmalgamFreeCover
 
 import AllThoseEPPA.TreeLikeFreeCutBaseEmbeddings
+
+import AllThoseEPPA.TreeLikeFreeCutBaseMapIdentities

@@ -159,3 +159,5 @@ import AllThoseEPPA.TreeLikeEmbeddingFactor
 import AllThoseEPPA.TreeLikeAmalgamCarrier
 
 import AllThoseEPPA.TreeLikeAmalgamRelabel
+
+import AllThoseEPPA.TreeLikeAmalgamCompatibility

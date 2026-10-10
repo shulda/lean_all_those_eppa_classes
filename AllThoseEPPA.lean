@@ -291,3 +291,6 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizationTransport
 import AllThoseEPPA.TreeLikeInfiniteCopiesSurjectiveInverse
 import AllThoseEPPA.TreeLikeInfiniteCopiesSelfNormalizer
 import AllThoseEPPA.TreeLikeInfiniteCopiesConjugatedGlue
+
+import AllThoseEPPA.UnaryHomEmbImageClosure
+import AllThoseEPPA.UnaryHomEmbClosedRangeFactor

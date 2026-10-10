@@ -309,3 +309,5 @@ import AllThoseEPPA.HerwigLascarCompleteEObstruction
 import AllThoseEPPA.HerwigLascarTheorem
 
 import AllThoseEPPA.AutomorphismPreservingCompletion
+
+import AllThoseEPPA.AutomorphismPreservingEPPATransfer

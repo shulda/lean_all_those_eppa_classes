@@ -60,7 +60,7 @@ theorem generalAmalgam_right_in_left_iff
   constructor
   · rintro ⟨x, hx⟩
     have hEq : generalAmalgamLeftEmbedding act f g x =
-        generalAmalgamRightEmbedding act f g y := hx.symm
+        generalAmalgamRightEmbedding act f g y := hx
     obtain ⟨i, _, hyi⟩ :=
       (generalAmalgam_source_overlap_iff act f g x y).mp hEq
     exact ⟨i, hyi.symm⟩
@@ -82,7 +82,7 @@ theorem generalAmalgam_left_in_right_iff
   constructor
   · rintro ⟨y, hy⟩
     obtain ⟨i, hxi, _⟩ :=
-      (generalAmalgam_source_overlap_iff act f g x y).mp hy
+      (generalAmalgam_source_overlap_iff act f g x y).mp hy.symm
     exact ⟨i, hxi.symm⟩
   · rintro ⟨i, rfl⟩
     exact ⟨g i, (generalAmalgam_gluing_agrees act f g i).symm⟩

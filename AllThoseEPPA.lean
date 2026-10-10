@@ -235,3 +235,5 @@ import AllThoseEPPA.TreeLikeTowerCycleFreeAncestor
 import AllThoseEPPA.TreeLikeTowerCycleFreeTree
 
 import AllThoseEPPA.TreeLikeFreshBinaryLanguage
+
+import AllThoseEPPA.TreeLikeFreshBinaryStructure

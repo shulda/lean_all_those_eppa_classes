@@ -221,3 +221,5 @@ import AllThoseEPPA.TreeLikeFiniteSparseningTower
 import AllThoseEPPA.TreeLikeTowerClosedProjections
 
 import AllThoseEPPA.TreeLikeTowerConcreteRank
+
+import AllThoseEPPA.TreeLikeTowerRankDescent

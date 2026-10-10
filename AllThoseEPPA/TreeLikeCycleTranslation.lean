@@ -68,8 +68,8 @@ def badCycleOfChordlessGraphCycle
   · intro i j heq
     apply Fin.ext
     exact hcyc.getVert_injOn'
-      (by have := i.isLt; omega)
-      (by have := j.isLt; omega) heq
+      (Nat.le_sub_one_of_lt i.isLt)
+      (Nat.le_sub_one_of_lt j.isLt) heq
   · intro i j
     change G.Adj (p.getVert i.val) (p.getVert j.val) ↔
       Structure.CyclicAdjacent i j
@@ -94,20 +94,20 @@ def badCycleOfChordlessGraphCycle
           ⟨hkI, hkJ⟩ | ⟨hkJ, hkI⟩
       · have hki : k = i.val :=
           hcyc.getVert_injOn'
-            (by omega) (by have := i.isLt; omega) hkI
+            (Nat.le_sub_one_of_lt hk) (Nat.le_sub_one_of_lt i.isLt) hkI
         have hkj : (k + 1) % p.length = j.val :=
           hcyc.getVert_injOn'
-            (by omega) (by have := j.isLt; omega)
+            (Nat.le_sub_one_of_lt hmodLt) (Nat.le_sub_one_of_lt j.isLt)
             (hmod.symm.trans hkJ)
         left
         change j.val = (i.val + 1) % p.length
         simpa only [← hki] using hkj.symm
       · have hkj : k = j.val :=
           hcyc.getVert_injOn'
-            (by omega) (by have := j.isLt; omega) hkJ
+            (Nat.le_sub_one_of_lt hk) (Nat.le_sub_one_of_lt j.isLt) hkJ
         have hki : (k + 1) % p.length = i.val :=
           hcyc.getVert_injOn'
-            (by omega) (by have := i.isLt; omega)
+            (Nat.le_sub_one_of_lt hmodLt) (Nat.le_sub_one_of_lt i.isLt)
             (hmod.symm.trans hkI)
         right
         change i.val = (j.val + 1) % p.length

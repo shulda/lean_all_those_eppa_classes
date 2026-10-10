@@ -207,3 +207,5 @@ import AllThoseEPPA.TreeLikeGeneralAmalgamOverlap
 import AllThoseEPPA.TreeLikeAmalgamLanguageComponents
 
 import AllThoseEPPA.TreeLikeFreeCutPushoutMaps
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutSupport

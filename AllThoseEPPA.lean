@@ -209,3 +209,5 @@ import AllThoseEPPA.TreeLikeAmalgamLanguageComponents
 import AllThoseEPPA.TreeLikeFreeCutPushoutMaps
 
 import AllThoseEPPA.TreeLikeFreeCutPushoutSupport
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutEmbedding

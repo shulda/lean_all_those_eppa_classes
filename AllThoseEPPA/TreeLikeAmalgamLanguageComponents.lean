@@ -46,7 +46,7 @@ relabeling required to align the two maps of the interface. -/
       f.lang * g.lang⁻¹ := by
   simp [generalAmalgamRightEmbedding,
     Structure.Embedding.comp, Structure.Embedding.relabelTarget,
-    Structure.Embedding.id]
+    Structure.Embedding.id, amalgamRightEmbedding]
 
 universe z
 variable {V : Type z}

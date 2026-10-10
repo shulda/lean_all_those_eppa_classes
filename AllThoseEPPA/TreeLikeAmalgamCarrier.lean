@@ -1,4 +1,4 @@
-import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
 import AllThoseEPPA.Map
 
 /-!
@@ -158,7 +158,7 @@ instance amalgamCarrier_finite (f : I → X) (g : I → Y)
   letI : Fintype X := Fintype.ofFinite X
   letI : Fintype Y := Fintype.ofFinite Y
   change Finite (X ⊕ {y : Y // y ∉ Set.range g})
-  exact Fintype.finite _
+  infer_instance
 
 end TreeLike
 end AllThoseEPPA

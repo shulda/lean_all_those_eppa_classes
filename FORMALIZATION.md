@@ -665,3 +665,76 @@ repaired heads.
 CI is tracked separately. The project may have moved further;
 always re-read `main` and the current GitHub CI before using this
 cutoff in a later chat.
+
+
+### 2026-10-10: integrated fixed-E core of restricted EPPA
+
+**This supersedes the previous 2026-10-10 cutoff, which predated
+integration of the projection and full-A-tree maps.**
+
+The following complete proof modules have passed the full Lean build
+and project-wide axiom audit on their integration branches and have
+been merged to `main`:
+
+- **PR #88** updates this authoritative status ledger after the
+  actual bounded-rank descent and full-A ancestor construction.
+- **PR #89**, CI success run `38055507395`, integrates
+  `TreeLikeTowerProjectionHomEmb.lean` (exact embedding-on-irreducibles
+  for canonical closed tower projections) and
+  `TreeLikeHomEmbClosedIrreducibleImage.lean` (irreducible closed
+  images under genuine homomorphism-embeddings).
+- **PR #90**, CI success run `38055618955`, integrates the composition
+  theorem, the actual projected ancestor homomorphism-embedding
+  chain, the homomorphism-embedding of every bounded top
+  closed substructure into a recursively constructed full-A tree,
+  and the **finite coherent fixed-E restricted EPPA** theorem
+  `TreeLike.fixedE_faithfulCoherent_restrictedEPPA_all`.
+  Importantly, the conclusion covers **every** closed subset on
+  at most n vertices, including the empty subset with nullary
+  relations handled exactly.
+- **PR #92**, CI success run `38056142561`, integrates
+  `TreeLike.fixedE_faithful_restrictedEPPA_all`. This variant
+  requires only ordinary EPPA of the *faithful* starting
+  witness, and makes no prior coherence assumption.
+
+The concrete sparsening depth is
+`N = n * (n*n+1)`; directed E-pairs are counted as ordered
+pairs. The fixed-E results do **not** claim the unrestricted
+paper theorem: the E symbol is still required to exist in
+the language, be fixed by the Γ-action, and be interpreted
+as a complete graph in the source.
+
+**Remaining manuscripts obligations and active development:**
+
+1. Given *any* finite EPPA witness `B₀` (not necessarily faithful
+   or coherent), use the already formalized `prop:faithful`
+   construction to obtain faithful `B₁` with a genuine global
+   homomorphism-embedding `B₁ → B₀`. Compose it with the
+   **global iterated tower projection** `B → B₁`, not merely
+   the maps on selected small closed substructures.
+   PR #93 constructs that global map and proves its
+   embedding-on-irreducibles property; PR #94 proposes
+   `fixedE_restrictedEPPA_from_any_witness`, packaging the
+   arbitrary-start fixed-E statement, optional coherence,
+   the projection `B → B₀` and all local full-A-tree maps.
+   **These PRs need independent combined green CI before merging.**
+2. For the *original* arbitrary unary-function Γ-language, add a
+   **fresh**, not re-used, binary relation E fixed under the whole
+   Γ-action; expand A and B₀ by the complete loopless E-graph.
+   PR #87 develops the new Γ-language and PR #91 the
+   structure expansion, embeddings and old-language reduct.
+   Their current heads still require successful CI.
+3. After the expanded-language fixed-E theorem applies, forget E
+   while preserving the witness and its global projection,
+   ordinary and conditional coherent EPPA, irreducible-structure
+   faithfulness, every closed small-substructure
+   homomorphism-embedding, and the *recursive full-A*
+   tree-amalgamation conclusion. The tree-reduct step is
+   mathematically substantial and is **not** yet formalized.
+
+**Authoritative checkpoint:** `main` after PR #92 is
+`c5216299b8355b21fe95da0df83e533a802420c8`; post-merge
+main CI may be pending, while the specific PR CI runs listed
+above are green. Re-check GitHub before treating this cutoff
+as current. **Do not conflate the fixed-E results with a
+completed formalization of manuscript `thm:maintree`.**

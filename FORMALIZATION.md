@@ -32,7 +32,7 @@ green.
 | Irreducible-structure faithfulness / Proposition `prop:faithful` | `AllThoseEPPA/FaithfulProposition.lean`; `AllThoseEPPA.Faithful.faithfulWitness_proposition` (and supporting `Faithful*.lean` files) | **Formalized** | Finite, irreducible-structure faithful coherent extension of an arbitrary finite EPPA witness; includes projection as a homomorphism-embedding. |
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
-| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLike*.lean` (PRs #3–#9) | **In progress** | Checked: finite sparsening descent, exact closed projections, clique closure, graph component-to-free-decomposition cut, faithful E graph, induced-cycle transport and the explicit square obstruction. PR #9 contributes existence of inclusion-minimal vertex separators and closure of two-sided separators. Not yet checked: minimal separator → two-sided neighbors → clique, tree-amalgamation constructor, E expansion/reduct, full iterated EPPA. |
+| Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeUnrestrictedMaintree.lean`; `TreeLike.restrictedEPPA_from_any_witness` | **Formalized** | Full unrestricted finite faithful EPPA witness from an arbitrary finite EPPA witness, genuine global homomorphism-embedding into the original witness, all bounded closed substructures homomorphism-embed into literal recursive trees of full original-language A-copies, optional coherent EPPA. New Γ-fixed E is constructed and forgotten exactly. PR #103, full Lean build + axiom audit green (run `38063228073`), merged to main `0e1c4af`. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -738,3 +738,89 @@ main CI may be pending, while the specific PR CI runs listed
 above are green. Re-check GitHub before treating this cutoff
 as current. **Do not conflate the fixed-E results with a
 completed formalization of manuscript `thm:maintree`.**
+
+
+### 2026-10-10: FULL unrestricted manuscript thm:maintree proved in Lean
+
+**This section supersedes ALL older chronological status notes that
+reported the unrestricted theorem, the fresh-E language, or the
+recursive tree-reduct transport as still missing.**
+
+**Authoritative milestone:** merged PR
+[#103](https://github.com/shulda/lean_all_those_eppa_classes/pull/103),
+main merge commit
+`0e1c4af96ca2c0376d6f99032a32b3259d8ab388`.
+The complete, standalone integration branch has a **successful full
+Lean build and project axiom audit**, GitHub Actions run
+`38063228073` on `1fe3ec9a8faa7e960b06a7bdb2c3e7ee0e79bcd5`.
+Its preceding combined non-main branch also passed, run
+`38062670945`. The post-merge main CI is tracked separately.
+
+**Paper-facing verified Lean theorem:**
+`TreeLike.restrictedEPPA_from_any_witness` in
+`AllThoseEPPA/TreeLikeUnrestrictedMaintree.lean`. In *any*
+Γ-language of positive-arity relations and set-valued unary functions,
+given finite structures A and B₀, an actual Γ-embedding
+ψ:A↪B₀ making B₀ an ordinary EPPA-witness, and a natural number n,
+the theorem constructs a finite Γ-structure B with an embedding ι:A↪B
+such that all of the following hold:
+
+1. B is an ordinary EPPA-witness of A and is
+   **irreducible-structure faithful**;
+2. there exists a **global Γ-homomorphism-embedding B→B₀**;
+3. for **every function-closed** S⊆B with |S|≤n,
+   **including S=∅**, the induced B|S admits a real Γ-homomorphism-
+   embedding into a literal recursively constructed
+   `TreeAmalgamation act A H` of complete *original-language*
+   A-copies;
+4. **coherence is preserved if present initially**:
+   coherent EPPA of ψ implies coherent EPPA of ι.
+
+There is **no distinguished E symbol** in the input language.
+The theorem does not assume A irreducible or n≥1, so its scope is
+slightly stronger than the corresponding printed manuscript theorem.
+These extra freedoms are verified by Lean rather than being
+assumed. The concrete finite tower uses the conservative bound
+`N=n*(n*n+1)`, counting *ordered* E pairs rather than the paper's
+smaller undirected budget; the theorem does not demand a sharp N.
+
+**Checked mainline dependency chain:**
+
+- PRs #64, #68, #69, #75, #81: actual `lem:cuts`, finite
+  cycle-sparsening tower, bounded rank descent, a projected cycle-free
+  ancestor, and embedding into literal full-A trees.
+- PRs #89, #90, #92, #94: closed projection homomorphism-embeddings,
+  irreducible closed-image theorem, composition along an actual
+  certificate, the all-small-substructure fixed-E construction,
+  removal of coherence/faithfulness assumptions on the starting
+  witness, and global projection B→B₀. PR #94 is the full
+  fixed-complete-E theorem.
+- PR #96: a genuinely fresh binary relation E fixed under **all**
+  Γ-actions, complete loopless graph on the input expansions;
+  exact structure, map, language reducts.
+- PR #97: exact partial isomorphism and automorphism expansion/reduct.
+- PR #100: preservation of ordinary/coherent EPPA when E is added,
+  plus irreducibility and homomorphism-embedding descent on reduct.
+- PR #101: **output** ordinary EPPA, coherent EPPA and irreducible-
+  structure faithfulness descend when E is forgotten. In particular,
+  the output sparsified E relation need **not** be complete.
+- PR #103: `TreeLikeFreshBinaryTreeReduct.lean` shows **literal
+  equality** of concrete Γ-amalgam reducts, including Γ-language
+  alignment and all set-valued function fibres; inducts through
+  `TreeAmalgamation` constructors. The final
+  `TreeLikeUnrestrictedMaintree.lean` assembles the full theorem.
+
+**Next mathematical targets:** The paper next uses
+`lem:infinitecopies` (a homomorphism-embedding of a full-A tree
+reduct into a possibly infinite ambient M equipped with extensions of
+partial automorphisms of A). This is the essential new induction
+needed for the class-level Herwig–Lascar generalisation
+`thm:main`. Subsequently address the locally finite/strong
+completion theorem `thm:mainstrong`, its `prop:strongcompletion`
+and the remaining applications. Also consider the separate
+cardinality-bound observation `obs:main_bound` and integrate
+checked regression examples. These future targets are **not yet
+formalized**; do not infer them merely from `thm:maintree`.
+
+After further development always re-read the live `main` branch
+and full CI status; this historical checkpoint can be superseded.

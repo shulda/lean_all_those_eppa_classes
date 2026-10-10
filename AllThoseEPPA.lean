@@ -245,3 +245,5 @@ import AllThoseEPPA.TreeLikeTowerAncestorHomEmb
 import AllThoseEPPA.TreeLikeTowerCycleFreeTree
 
 import AllThoseEPPA.TreeLikeTowerFullTreeHomEmb
+
+import AllThoseEPPA.TreeLikeFixedERestrictedCoherentEPPA

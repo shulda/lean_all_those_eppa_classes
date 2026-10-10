@@ -26,9 +26,29 @@ theorem closed_edgeClique_isIrreducible
     (S : Set V) (hS : B.IsClosed S)
     (hclique : EdgeClique B E S) :
     (B.induce S hS).IsIrreducible := by
-  have h := cliqueClosure_isIrreducible B E S hclique
-  simpa only [Structure.closureStructure,
-    B.closureSet_eq_self hS] using h
+  constructor
+  intro d
+  have hCliqueU :
+      EdgeClique (B.induce S hS) E (Set.univ : Set S) := by
+    intro x y _ _ hne
+    have hneq : (x : V) ≠ (y : V) := by
+      intro heq
+      exact hne (Subtype.ext heq)
+    have hedge : B.Edge E x.1 y.1 :=
+      hclique x.2 y.2 hneq
+    change B.rel E (Subtype.val ∘ Structure.pairTuple x y)
+    rw [Structure.pairTuple_map]
+    exact hedge
+  rcases edgeClique_subset_one_side
+      (B.induce S hS) E d Set.univ hCliqueU with hl | hr
+  · apply d.left_proper
+    apply Set.eq_univ_of_forall
+    intro x
+    exact hl (Set.mem_univ x)
+  · apply d.right_proper
+    apply Set.eq_univ_of_forall
+    intro x
+    exact hr (Set.mem_univ x)
 
 /-- Equivalently, a closed clique in the Mathlib simple graph
 associated with E is irreducible as a structure. -/

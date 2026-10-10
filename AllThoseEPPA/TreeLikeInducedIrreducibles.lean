@@ -121,7 +121,7 @@ noncomputable def nestedInduceEquiv
   · intro x y hxy
     apply Subtype.ext
     apply Subtype.ext
-    exact congrArg Subtype.val hxy
+    exact congrArg (fun z : (Subtype.val '' S : Set V) => (z : V)) hxy
   · rintro ⟨y, ⟨t, ht, hty⟩⟩
     refine ⟨⟨t, ht⟩, ?_⟩
     apply Subtype.ext

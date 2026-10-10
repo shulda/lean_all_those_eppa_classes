@@ -159,3 +159,5 @@ import AllThoseEPPA.TreeLikeEmbeddingFactor
 import AllThoseEPPA.TreeLikeACliqueTree
 
 import AllThoseEPPA.TreeLikeLocalGraphAxioms
+
+import AllThoseEPPA.TreeLikeEmbeddingRangeClosure

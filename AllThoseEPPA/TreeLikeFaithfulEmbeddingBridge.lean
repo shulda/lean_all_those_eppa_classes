@@ -25,7 +25,8 @@ namespace AllThoseEPPA
 namespace TreeLike
 
 universe u v w x
-variable {L : Language.{u}} {Γ : Type v} [Group Γ]
+variable {L : Language.{u}} [L.HasUnaryFunctions]
+variable {Γ : Type v} [Group Γ]
 variable {α : Type w} {β : Type x}
 
 /-- **Faithfulness-to-cuts bridge.**

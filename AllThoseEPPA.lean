@@ -241,3 +241,9 @@ import AllThoseEPPA.TreeLikeEmptySubstructure
 import AllThoseEPPA.TreeLikeTowerProjectionHomEmb
 
 import AllThoseEPPA.TreeLikeHomEmbClosedIrreducibleImage
+
+import AllThoseEPPA.TreeLikeHomEmbComposition
+import AllThoseEPPA.TreeLikeTowerAncestorHomEmb
+import AllThoseEPPA.TreeLikeTowerFullTreeHomEmb
+import AllThoseEPPA.TreeLikeFixedERestrictedCoherentEPPA
+import AllThoseEPPA.TreeLikeFixedEAllSmallSubstructures

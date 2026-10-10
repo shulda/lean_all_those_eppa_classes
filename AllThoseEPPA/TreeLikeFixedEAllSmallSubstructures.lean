@@ -71,9 +71,12 @@ theorem fixedE_faithfulCoherent_restrictedEPPA_all
   by_cases hNonempty : S.Nonempty
   · exact hSmall S hS hNonempty hBound
   · have hEmpty : S = (∅ : Set δ) := by
-      apply Set.eq_empty_iff_forall_not_mem.mpr
-      intro x hx
-      exact hNonempty ⟨x, hx⟩
+      ext x
+      constructor
+      · intro hx
+        exact (hNonempty ⟨x, hx⟩).elim
+      · intro hx
+        exact hx.elim
     subst S
     obtain ⟨W, H, hTree, ⟨e⟩⟩ :=
       emptyInduced_embedsFullATree act A B ι

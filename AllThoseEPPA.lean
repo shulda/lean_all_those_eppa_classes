@@ -313,3 +313,5 @@ import AllThoseEPPA.AutomorphismPreservingCompletion
 import AllThoseEPPA.AutomorphismPreservingEPPATransfer
 
 import AllThoseEPPA.StrongCompletionIrreducibleCopyEPPA
+
+import AllThoseEPPA.StrongCompletionTreeAmalgamationClass

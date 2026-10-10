@@ -40,7 +40,9 @@ theorem induced_edgeLoopless
     (hloop : B.EdgeLoopless E) :
     (B.induce S hS).EdgeLoopless E := by
   intro x hx
-  exact hloop x.1 hx
+  apply hloop x.1
+  change B.rel E (Subtype.val ∘ Structure.pairTuple x x) at hx
+  rwa [Structure.pairTuple_map] at hx
 
 /-- Every closed induced substructure inherits E-symmetry. -/
 theorem induced_edgeSymmetric
@@ -49,6 +51,9 @@ theorem induced_edgeSymmetric
     (hsymm : B.EdgeSymmetric E) :
     (B.induce S hS).EdgeSymmetric E := by
   intro x y
+  change B.rel E (Subtype.val ∘ Structure.pairTuple x y) ↔
+    B.rel E (Subtype.val ∘ Structure.pairTuple y x)
+  simp only [Structure.pairTuple_map]
   exact hsymm x.1 y.1
 
 /-- The no-bad-induced-cycle property is hereditary to closed

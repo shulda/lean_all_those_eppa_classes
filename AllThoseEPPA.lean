@@ -191,3 +191,9 @@ import AllThoseEPPA.TreeLikeGeneralAmalgamFreeCover
 import AllThoseEPPA.TreeLikeTreeIrreducibleExtension
 
 import AllThoseEPPA.TreeLikeFullATreeFinite
+
+import AllThoseEPPA.TreeLikeFreeCutBaseEmbeddings
+
+import AllThoseEPPA.TreeLikeFreeCutBaseMapIdentities
+
+import AllThoseEPPA.TreeLikeFreeCutGlueMap

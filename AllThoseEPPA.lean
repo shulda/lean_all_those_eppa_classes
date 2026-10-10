@@ -285,3 +285,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesGluedHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesGeneralGluedHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizedGlue
 import AllThoseEPPA.TreeLikeInfiniteCopiesEveryCopySide
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesSurjectiveInverse

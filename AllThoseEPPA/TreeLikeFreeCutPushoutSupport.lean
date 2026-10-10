@@ -91,7 +91,7 @@ theorem freeCutPushout_left_support
       (generalAmalgam_right_in_left_iff act f g
         (eR ⟨x, hxR⟩)).mp hRight
     have hs' : eR ⟨x, hxR⟩ =
-        eR (freeCut_baseToRight act B d s) := hs
+        eR (freeCut_baseToRight act B d s) := hs.symm
     have hsub := eR.injective hs'
     have hxx : x = s.1 := by
       calc
@@ -144,7 +144,7 @@ theorem freeCutPushout_right_support
       (generalAmalgam_left_in_right_iff act f g
         (eL ⟨x, hxL⟩)).mp hLeft
     have hs' : eL ⟨x, hxL⟩ =
-        eL (freeCut_baseToLeft act B d s) := hs
+        eL (freeCut_baseToLeft act B d s) := hs.symm
     have hsub := eL.injective hs'
     have hxx : x = s.1 := by
       calc

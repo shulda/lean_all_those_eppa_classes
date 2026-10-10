@@ -55,7 +55,7 @@ theorem shortest_walk_isPath
     p.IsPath := by
   classical
   have hlen : p.length ≤ p.bypass.length := by
-    simpa using hmin (p.toPath : G.Walk u v)
+    exact hmin (p.toPath : G.Walk u v)
   have heq : p.bypass = p :=
     (SimpleGraph.Walk.length_le_bypass_length_iff p).mp hlen
   exact (show p.bypass = p ↔ p.IsPath from
@@ -79,7 +79,8 @@ theorem shortest_walk_no_long_chord
   have hq : q.length = i + 1 + (p.length - j) := by
     dsimp [q]
     simp only [SimpleGraph.Walk.length_append,
-      SimpleGraph.Adj.length_toWalk,
+      SimpleGraph.Walk.length_cons,
+      SimpleGraph.Walk.length_nil,
       SimpleGraph.Walk.take_length,
       SimpleGraph.Walk.drop_length,
       Nat.min_eq_left hi]

@@ -343,3 +343,67 @@ formal definition and construction of tree amalgamations, faithful
 copies of A covering irreducibles, and the recursive free-amalgam
 of two smaller witnesses remain to be built. The full `lem:cuts`
 and `thm:maintree` MUST NOT be marked proved yet.
+
+
+### Chordal free cuts, clique-tree certificates and the true `lem:cuts` hypotheses (2026-10-10)
+
+The central graph result was merged as PR #17. Since that point:
+
+- **PR #18 (merged, green Lean build and axiom audit):**
+  `TreeLikeChordalCut.lean` proves the complete/noncomplete dichotomy.
+  In the noncomplete case, it constructs a **proper free decomposition**
+  whose *exact* common intersection is a closed irreducible substructure.
+- **PR #21 (merged, green):**
+  `TreeLikeCompleteIrreducible.lean` proves that an E-complete
+  structure is irreducible even for languages with arbitrary
+  set-valued functions.
+- **Integration PR #26:** combines six further proof modules in one
+  CI run to avoid conflicts between stacked PRs:
+  - `TreeLikeInducedIrreducibles.lean`: irreducible-to-E-clique,
+    looplessness, symmetry and absence of bad induced cycles
+    pass to closed induced pieces; this uses exact transport of
+    irreducibility across nested inductions.
+  - `TreeLikeCliqueTree.lean`: by strong induction on the finite
+    vertex count, a chordal structure satisfying those conditions
+    admits a recursive certificate of **proper free amalgamation**
+    from E-complete leaves over closed irreducible bases.
+  - `TreeLikeInducedEmbeddings.lean`: the stronger paper hypothesis
+    `EveryIrreducibleEmbedsIn act A B` also passes to closed pieces.
+  - `TreeLikeEmbeddingCliqueBridge.lean`: this actual embedding
+    hypothesis implies all irreducibles are E-cliques whenever E
+    is Γ-fixed and complete in A.
+  - `TreeLikeFaithfulEmbeddingBridge.lean`: derives the actual
+    embedding hypothesis from irreducible-structure faithfulness
+    using **previously formalized**
+    `Faithful.automorphismInducedEmbedding` and
+    `Faithful.embeddingInverseOnClosedSubset`.
+  - `TreeLikeEmbeddingFactor.lean`: an optional general
+    factorization of exact Γ-embeddings through an inclusion
+    of images, respecting all set-valued function fibres.
+
+**Scope of this milestone:** `CliqueTree E B` certifies a recursive
+decomposition of B into E-complete pieces. It is **not** the paper's
+tree amalgamation of full copies of A. Although the complete pieces
+are irreducible and therefore embed into A under the paper's
+hypothesis, Lean still needs an explicit construction of the
+superstructure consisting of full A-copies, including the recursive
+free-amalgamation/gluing over matching substructures of A and proof
+that B embeds into it.
+
+**Next proof obligations (in order):**
+1. Equip each clique-tree leaf with a chosen embedding into A,
+   using the newly hereditary local embedding hypothesis.
+2. Define finite tree amalgamations of full A-copies, and prove the
+   irreducible-bag coverage property for arbitrary irreducible
+   substructures of such a tree.
+3. Construct the glued A-copy superstructure recursively along a
+   clique-tree certificate, retaining a structure embedding of B;
+   this completes the actual `lem:cuts`.
+4. Connect the completed lemma to the already formalized
+   `lem:sparsen` trichotomy and iteration budget to prove
+   `thm:maintree`, including coherence and forgetting E.
+
+**Do not mark `lem:cuts` or `thm:maintree` formalized before
+steps 1–4 are verified by Lean.** The integration PR #26 is likewise
+not a `main` result until its own complete CI and axiom audit pass
+and the PR is merged.

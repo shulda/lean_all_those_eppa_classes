@@ -135,3 +135,5 @@ import AllThoseEPPA.TreeLikeIrreducibleSeparator
 import AllThoseEPPA.TreeLikeMinimalClosed
 import AllThoseEPPA.TreeLikeCliqueAmalgamationBase
 import AllThoseEPPA.TreeLikeChordlessAppend
+import AllThoseEPPA.TreeLikeChordlessReverse
+import AllThoseEPPA.TreeLikeTwoPathCycle

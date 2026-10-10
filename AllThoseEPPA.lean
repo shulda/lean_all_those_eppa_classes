@@ -221,3 +221,13 @@ import AllThoseEPPA.TreeLikeConcreteSparseningRank
 import AllThoseEPPA.TreeLikeSparseningGoodStage
 
 import AllThoseEPPA.TreeLikeFiniteSparseningTower
+
+import AllThoseEPPA.TreeLikeTowerClosedProjections
+
+import AllThoseEPPA.TreeLikeTowerMultistepProjection
+
+import AllThoseEPPA.TreeLikeTowerConcreteRank
+
+import AllThoseEPPA.TreeLikeTowerRankDescent
+
+import AllThoseEPPA.TreeLikeTowerCycleFreeAncestor

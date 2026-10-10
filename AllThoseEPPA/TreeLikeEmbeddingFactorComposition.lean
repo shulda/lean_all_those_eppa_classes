@@ -41,9 +41,9 @@ theorem ext_of_lang_toFun
     (hToFun : f.toFun = g.toFun) :
     f = g := by
   cases f with
-  | mk lf vf ifl rfl ffl =>
+  | mk lf vf ifl hrel hfunc =>
     cases g with
-    | mk lg vg ig rg fg =>
+    | mk lg vg ig hrelg hfuncg =>
       cases hLang
       cases hToFun
       rfl

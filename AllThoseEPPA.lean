@@ -161,3 +161,13 @@ import AllThoseEPPA.TreeLikeACliqueTree
 import AllThoseEPPA.TreeLikeLocalGraphAxioms
 
 import AllThoseEPPA.TreeLikeEmbeddingRangeClosure
+
+import AllThoseEPPA.TreeLikeAmalgamCarrier
+
+import AllThoseEPPA.TreeLikeAmalgamRelabel
+
+import AllThoseEPPA.TreeLikeAmalgamCompatibility
+
+import AllThoseEPPA.TreeLikeAmalgamStructure
+
+import AllThoseEPPA.TreeLikeAmalgamEmbeddings

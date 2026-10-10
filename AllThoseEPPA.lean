@@ -179,3 +179,15 @@ import AllThoseEPPA.TreeLikeFullAAmalgamation
 import AllThoseEPPA.TreeLikeAmalgamFree
 
 import AllThoseEPPA.TreeLikeAmalgamFreeCover
+
+import AllThoseEPPA.TreeLikeIrreducibilityTransport
+
+import AllThoseEPPA.TreeLikeIrreducibleEmbeddingImage
+
+import AllThoseEPPA.TreeLikeIrreducibleExtensionLift
+
+import AllThoseEPPA.TreeLikeGeneralAmalgamFreeCover
+
+import AllThoseEPPA.TreeLikeTreeIrreducibleExtension
+
+import AllThoseEPPA.TreeLikeFullATreeFinite

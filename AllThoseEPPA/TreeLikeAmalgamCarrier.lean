@@ -1,4 +1,4 @@
-import Mathlib.Data.Fintype.Card
+import Mathlib.Data.Finite.Sum
 import AllThoseEPPA.Map
 
 /-!
@@ -154,9 +154,6 @@ has a finite carrier. -/
 instance amalgamCarrier_finite (f : I → X) (g : I → Y)
     [Finite X] [Finite Y] :
     Finite (AmalgamCarrier f g) := by
-  classical
-  letI : Fintype X := Fintype.ofFinite X
-  letI : Fintype Y := Fintype.ofFinite Y
   change Finite (X ⊕ {y : Y // y ∉ Set.range g})
   infer_instance
 

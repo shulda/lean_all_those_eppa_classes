@@ -36,7 +36,7 @@ variable {L : Language.{u}} {Γ : Type v} [Group Γ]
 relation symbol, preserving every old relation/function
 symbol and its arity. -/
 def withFixedBinaryRel (L : Language.{u}) : Language.{u} where
-  RelSymbol := fun n => L.RelSymbol n ⊕ { _ : PUnit // n = 2 }
+  RelSymbol := fun n => L.RelSymbol n ⊕ Subtype (fun (_ : PUnit) => n = 2)
   FuncSymbol := L.FuncSymbol
   relArity_pos := by
     intro n R

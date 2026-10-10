@@ -317,3 +317,5 @@ import AllThoseEPPA.StrongCompletionIrreducibleCopyEPPA
 import AllThoseEPPA.StrongCompletionTreeAmalgamationClass
 
 import AllThoseEPPA.StrongCompletionSmallTrees
+
+import AllThoseEPPA.StrongCompletionLocallyFiniteStep

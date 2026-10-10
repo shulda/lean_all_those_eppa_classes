@@ -263,3 +263,7 @@ import AllThoseEPPA.TreeLikeFreshBinaryIrreducibility
 import AllThoseEPPA.TreeLikeFreshBinaryEPPA
 
 import AllThoseEPPA.TreeLikeFreshBinaryWitnessReduct
+
+import AllThoseEPPA.TreeLikeFreshBinaryTreeReduct
+
+import AllThoseEPPA.TreeLikeUnrestrictedMaintree

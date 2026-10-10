@@ -215,3 +215,7 @@ import AllThoseEPPA.TreeLikeFreeCutPushoutSupport
 import AllThoseEPPA.TreeLikeFreeCutPushoutEmbedding
 
 import AllThoseEPPA.TreeLikeCutsRealization
+
+import AllThoseEPPA.TreeLikeConcreteSparseningRank
+
+import AllThoseEPPA.TreeLikeSparseningGoodStage

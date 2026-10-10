@@ -53,7 +53,7 @@ ambient vertex (with a different subtype proof). -/
 theorem freeCut_baseToLeft_val
     (act : L.Action Γ)
     (B : Structure L V) (d : B.FreeDecomposition)
-    (s : d.left ∩ d.right) :
+    (s : (d.left ∩ d.right : Set V)) :
     (freeCut_baseToLeft act B d s).1 = s.1 := by
   change
     (Structure.inclusion act B d.left d.left_closed)
@@ -71,7 +71,7 @@ on the underlying vertices. -/
 theorem freeCut_baseToRight_val
     (act : L.Action Γ)
     (B : Structure L V) (d : B.FreeDecomposition)
-    (s : d.left ∩ d.right) :
+    (s : (d.left ∩ d.right : Set V)) :
     (freeCut_baseToRight act B d s).1 = s.1 := by
   change
     (Structure.inclusion act B d.right d.right_closed)
@@ -90,7 +90,7 @@ gluing along this base. -/
 theorem freeCut_baseToSides_agree_on_vertices
     (act : L.Action Γ)
     (B : Structure L V) (d : B.FreeDecomposition)
-    (s : d.left ∩ d.right) :
+    (s : (d.left ∩ d.right : Set V)) :
     (freeCut_baseToLeft act B d s).1 =
       (freeCut_baseToRight act B d s).1 := by
   rw [freeCut_baseToLeft_val, freeCut_baseToRight_val]

@@ -321,3 +321,5 @@ import AllThoseEPPA.StrongCompletionSmallTrees
 import AllThoseEPPA.StrongCompletionLocallyFiniteStep
 
 import AllThoseEPPA.StrongCompletionLocallyFiniteClassTheorem
+
+import AllThoseEPPA.StrongCompletionManuscriptSubclass

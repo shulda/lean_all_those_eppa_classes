@@ -7,9 +7,10 @@ import AllThoseEPPA.TreeLikeHomEmbComposition
 The further completion/local-finiteness consequences of the
 Herwig--Lascar theorem use *automorphism-preserving* completions.
 
-A strong completion need not be an induced embedding on the entire
-source: it is an **injective homomorphism-embedding**, so only
-irreducible closed substructures must be embedded exactly.
+A strong completion has an **irreducible target** and need not be an
+induced embedding on the entire source: its map is an injective
+homomorphism-embedding, so only irreducible closed substructures
+must be embedded exactly.
 Automorphism preservation additionally supplies a homomorphic lift
 of *every* source automorphism to an automorphism of the target.
 
@@ -38,6 +39,7 @@ irreducible pieces. -/
 structure AutomorphismPreservingStrongCompletion
     (act : L.Action Γ)
     (A : Structure L V) (B : Structure L W) where
+  irreducible_target : B.IsIrreducible
   toHomomorphism : Homomorphism act A B
   injective : Function.Injective toHomomorphism.toFun
   homomorphismEmbedding :
@@ -61,12 +63,14 @@ namespace AutomorphismPreservingStrongCompletion
 variable {act : L.Action Γ}
 variable {A : Structure L V} {B : Structure L W} {C : Structure L X}
 
-/-- A Γ-structure is an automorphism-preserving strong
-completion of itself. -/
-noncomputable def identity (act : L.Action Γ) (A : Structure L V) :
+/-- Every irreducible Γ-structure is an automorphism-preserving
+strong completion of itself. -/
+noncomputable def identity (act : L.Action Γ) (A : Structure L V)
+    (hA : A.IsIrreducible) :
     AutomorphismPreservingStrongCompletion act A A := by
   let e : Embedding act A A := Embedding.id A
   refine {
+    irreducible_target := hA
     toHomomorphism := e.toHomomorphism
     injective := e.injective
     homomorphismEmbedding := ?_
@@ -100,6 +104,7 @@ def comp
     (f : AutomorphismPreservingStrongCompletion act A B) :
     AutomorphismPreservingStrongCompletion act A C := by
   refine {
+    irreducible_target := g.irreducible_target
     toHomomorphism := g.toHomomorphism.comp f.toHomomorphism
     injective := g.injective.comp f.injective
     homomorphismEmbedding :=

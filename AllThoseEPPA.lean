@@ -155,3 +155,5 @@ import AllThoseEPPA.TreeLikeInducedEmbeddings
 import AllThoseEPPA.TreeLikeEmbeddingCliqueBridge
 import AllThoseEPPA.TreeLikeFaithfulEmbeddingBridge
 import AllThoseEPPA.TreeLikeEmbeddingFactor
+
+import AllThoseEPPA.TreeLikeLocalGraphAxioms

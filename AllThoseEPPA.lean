@@ -272,3 +272,5 @@ import AllThoseEPPA.Examples.Hypergraph3
 import AllThoseEPPA.Examples.Hypergraph3K4Free
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesAlignM

@@ -274,3 +274,6 @@ import AllThoseEPPA.Examples.Hypergraph3K4Free
 import AllThoseEPPA.TreeLikeInfiniteCopiesGlueCarrier
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesGluedHom
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesRelabelHom
+import AllThoseEPPA.TreeLikeInfiniteCopiesGeneralGluedHom

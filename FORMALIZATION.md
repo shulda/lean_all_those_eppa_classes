@@ -488,3 +488,94 @@ formalized `lem:sparsen` iteration, including preservation of EPPA,
 the coherence condition, the required bound, and forgetting the
 added E-relation. **Do not call either theorem proved until this
 code compiles without `sorry` and passes the standard axiom audit.**
+
+
+### Lemma `lem:cuts` COMPLETE; next target `thm:maintree` (2026-10-10, PR #64)
+
+**This section supersedes any older chronological entry above which says
+the full `lem:cuts` is still open.**
+
+- **PR #53, merged:** `TreeLikeFreeCutBaseEmbeddings.lean`,
+  `TreeLikeFreeCutBaseMapIdentities.lean`, and
+  `TreeLikeFreeCutGlueMap.lean` formally construct embeddings of the
+  exact closed common base into both closed induced sides of a genuine
+  free decomposition, and uniquely glue compatible vertex maps with
+  the correct cross-side injectivity condition.
+- **PRs #54 and #55, merged:** `TreeLikeFreeCutSideData.lean`
+  proves side-supported relation reflection and **equality of complete
+  set-valued function fibres**, and
+  `TreeLikeFreeCutUniversalEmbedding.lean` upgrades the glued map
+  from a mere function/homomorphism to an exact Γ-structure embedding,
+  provided side-support reflection holds in a target free cover.
+  Mixed tuples are handled using empty function fibres on both sides.
+- **PR #61, merged:** `TreeLikeEmbeddingFactorComposition.lean`
+  proves that factorization of an exact Γ-embedding through a larger
+  embedded copy gives **equality of the entire Γ-embeddings**, including
+  the language components, not just pointwise equality.
+- **PR #64, merged at commit `7804dca440a5fa8e2ceea42f09201475f6c0fe2e`:**
+  adds six more modules with a successful complete PR Lean build
+  and project-wide axiom audit (GitHub Actions run `38045366436`).
+  The key files are:
+  - `TreeLikeGeneralAmalgamOverlap.lean`: the two source copies in
+    a concrete general Γ-amalgam meet **precisely** at their prescribed
+    interface, including exact range-reflection criteria;
+  - `TreeLikeAmalgamLanguageComponents.lean`: correct Γ-language
+    components of source and base embeddings;
+  - `TreeLikeFreeCutPushoutMaps.lean` and
+    `TreeLikeFreeCutPushoutSupport.lean`: exact composites of the
+    recursively embedded sides and reflection of left/right support;
+  - `TreeLikeFreeCutPushoutEmbedding.lean`: a concrete exact Γ-embedding
+    of the **whole freely decomposed B** into the Γ-amalgam of arbitrary
+    target structures receiving its two closed sides;
+  - **`TreeLikeCutsRealization.lean`:**
+    `ACliqueTree.realizedInFullATree` constructs an exact embedding
+    of B into a recursive tree amalgamation of **full copies of A**,
+    inducting on the checked `ACliqueTree` certificate, using the
+    previously proved full-A irreducible-extension observation and
+    exact factorization along the base.
+
+The paper-facing final theorem is
+**`TreeLike.chordal_embedsInFullATree`**, proved with no `sorry`:
+for finite A and B in an `[L.HasUnaryFunctions]` language, a
+Γ-fixed binary relation E which is a complete simple graph on A,
+embeddings of all irreducible closed induced B-substructures into A,
+and absence of induced long E-cycles in B imply the existence of a
+genuine tree amalgamation H of full copies of A together with an
+exact Γ-structure embedding B ↪ H.
+
+**Scope:** this proves the statement required in the manuscript's
+unary-function setting, with `B` and `A` carrier types in one
+universe and arbitrary relational arities / genuine set-valued
+unary functions. The more general arbitrary-arity set-valued
+function version of the graph chordality stage has not been claimed.
+The `lem:cuts` proof does **not** imply that the subsequent
+restricted EPPA theorem `thm:maintree` is already proved.
+
+**Outstanding next tasks, in order:**
+
+1. Connect the actual `Sparsening.sparsening_trichotomy` to the
+   already proved `TreeLike.exists_good_sparsening_step`,
+   including the uniform bound on **ordered** E-edge pairs.
+   PR #65 starts with a concrete one-step rank progress statement.
+2. Build the finite iterated tower of sparsening witnesses and
+   projections, preserving the finite EPPA witness, irreducible
+   structure faithfulness, and optional coherent extensions.
+   The images of small closed subsets under projections are
+   closed by the previously checked exact unary-function-fibre law.
+3. Use the numerical descent to find a cycle-free closed induced
+   subset at some level. Apply completed `lem:cuts` to embed this
+   substructure into a full-A tree. PR #66 independently tests the
+   direct good-stage-to-tree lemma.
+4. Compose the intermediate projection homomorphism-embeddings to
+   obtain the homomorphism-embedding of the original small final
+   substructure into the tree; preserve language permutations,
+   relation reflection on irreducibles, and exact closure.
+5. Add the extra complete fixed binary E-relation to an arbitrary
+   initial finite unary-function Γ-structure, run the theorem, and
+   forget E while transporting EPPA, coherence, and
+   irreducible-structure faithfulness. This is the remaining
+   `thm:maintree` construction.
+
+For **authoritative progress**, use the `main` branch and the green
+CI/axiom-audit runs. PRs #65–#66 are new tasks and must not be
+treated as proved before their checks pass.

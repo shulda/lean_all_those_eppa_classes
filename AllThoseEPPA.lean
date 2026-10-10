@@ -256,3 +256,5 @@ import AllThoseEPPA.TreeLikeFixedEFullMainTheorem
 import AllThoseEPPA.TreeLikeFreshBinaryLanguage
 import AllThoseEPPA.TreeLikeFreshBinaryStructure
 import AllThoseEPPA.TreeLikeFreshBinaryComplete
+
+import AllThoseEPPA.TreeLikeFreshBinaryIrreducibility

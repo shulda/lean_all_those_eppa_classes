@@ -294,3 +294,8 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesConjugatedGlue
 
 import AllThoseEPPA.UnaryHomEmbImageClosure
 import AllThoseEPPA.UnaryHomEmbClosedRangeFactor
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesTreeInduction
+import AllThoseEPPA.TreeLikeInfiniteCopiesCompleteEReduct
+import AllThoseEPPA.TreeLikeInfiniteCopiesCanonicalCompleteE
+import AllThoseEPPA.TreeLikeInfiniteCopiesTheorem

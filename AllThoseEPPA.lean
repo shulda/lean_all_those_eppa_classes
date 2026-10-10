@@ -150,3 +150,4 @@ import AllThoseEPPA.TreeLikeChordalMinimalClique
 import AllThoseEPPA.TreeLikeChordalCut
 import AllThoseEPPA.TreeLikeInducedIrreducibles
 import AllThoseEPPA.TreeLikeInducedEmbeddings
+import AllThoseEPPA.TreeLikeEmbeddingCliqueBridge

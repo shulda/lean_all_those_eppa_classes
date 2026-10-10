@@ -292,3 +292,25 @@ This module passed a standalone full Lean build and axiom audit on
 feature branch `tree-like-induced-ambient-path`. The related endpoint-
 through-component construction and the full chordal clique theorem
 remain separate proof obligations.
+
+
+### Paths through different separator components (2026-10-10; PR #16)
+
+Four more modules, each previously checked by the full Lean build and
+axiom audit, are integrated:
+
+- `TreeLikeCrossComponentEdges.lean` excludes additional graph edges
+  between chordless paths supported (apart from their shared endpoints)
+  in different outside components of a vertex separator;
+- `TreeLikePathInteriorDisjoint.lean` proves these two paths have
+  disjoint interiors and form a chordless Mathlib graph cycle;
+- `TreeLikeComponentNeighborhoodPath.lean` constructs a chordless
+  separator-to-separator path supported in a single specified outside
+  component from endpoint-neighbor witnesses;
+- `TreeLikeNonadjacentPathLength.lean` bounds from below the length
+  of a walk between distinct nonadjacent endpoints by two.
+
+The next required bridge is translating a long Mathlib chordless
+cycle to our `BadCycleSequence` API (under active CI), followed by
+proving the actual chordal minimal-separator clique theorem. Neither
+`lem:cuts` nor `thm:maintree` has yet been proved in full.

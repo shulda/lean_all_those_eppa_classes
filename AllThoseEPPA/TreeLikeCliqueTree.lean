@@ -83,10 +83,10 @@ theorem chordal_hasCliqueTree
       · exact .complete C hComplete
       · have hLeftProper :
             d.left ⊂ (Set.univ : Set W) :=
-          Set.ssubset_univ.mpr d.left_proper
+          lt_of_le_of_ne (Set.subset_univ _) d.left_proper
         have hRightProper :
             d.right ⊂ (Set.univ : Set W) :=
-          Set.ssubset_univ.mpr d.right_proper
+          lt_of_le_of_ne (Set.subset_univ _) d.right_proper
         have hLeftSmaller : Nat.card d.left < n := by
           have hlt :
               d.left.ncard < (Set.univ : Set W).ncard :=
@@ -124,11 +124,8 @@ theorem chordal_hasCliqueTree
         have hBase :
             ∃ hClosed : C.IsClosed (d.left ∩ d.right),
               (C.induce (d.left ∩ d.right) hClosed).IsIrreducible := by
-          have hClosed : C.IsClosed (d.left ∩ d.right) := by
-            rw [hInter]
-            exact hS
-          refine ⟨hClosed, ?_⟩
-          simpa only [hInter] using hIrrS
+          subst S
+          exact ⟨hS, hIrrS⟩
         exact .free C d hBase hLeft hRight
   exact hP (Nat.card V) V B rfl hIrred hloop hsymm hNo
 

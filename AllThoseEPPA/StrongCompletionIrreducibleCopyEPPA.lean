@@ -73,7 +73,7 @@ def compEmbedding_of_irreducible
     calc
       imageSet (g.toFun ∘ e.toFun) (A.func F xs) =
           imageSet g.toFun (imageSet e.toFun (A.func F xs)) :=
-            (imageSet_comp g.toFun e.toFun (A.func F xs)).symm
+            imageSet_comp g.toFun e.toFun (A.func F xs)
       _ = imageSet g.toFun
             (B.func (act.onFunc e.lang F) (e.toFun ∘ xs)) := by
           rw [hE]

@@ -35,7 +35,8 @@ green.
 | Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeUnrestrictedMaintree.lean`; `TreeLike.restrictedEPPA_from_any_witness` | **Formalized** | Full unrestricted finite faithful EPPA witness from an arbitrary finite EPPA witness, genuine global homomorphism-embedding into the original witness, all bounded closed substructures homomorphism-embed into literal recursive trees of full original-language A-copies, optional coherent EPPA. New Γ-fixed E is constructed and forgotten exactly. PR #103, full Lean build + axiom audit green (run `38063228073`), merged to main `0e1c4af`. |
 | Lemma `lem:infinitecopies` / tree copies into ambient M | `AllThoseEPPA/TreeLikeInfiniteCopiesTheorem.lean`; `TreeLike.infiniteCopies_anyCompleteFreshE` | **Formalized** | For any finite complete-fresh-E Γ-structure A⁺, every literal recursive tree amalgamation D of whole A⁺ copies Γ-homomorphism-embeds after forgetting E into a possibly infinite old-language M extending all partial automorphisms of A⁻. Every embedded A⁺ copy can be normalized **pointwise and in Γ-language** to the designated A⁻ inside M. PR #131, green full CI+axiom audit `38072988333`, merged `408a075`. |
 | Closed images of homomorphism-embeddings with unary functions | `AllThoseEPPA/UnaryHomEmbImageClosure.lean` and `UnaryHomEmbClosedRangeFactor.lean` | **Formalized** | Entire image of any Γ-homomorphism-embedding is function-closed; it factors through the actual induced closed image, retaining the homomorphism-embedding property. Needed to apply the small-substructure clause of `thm:maintree` to forbidden structures. PR #132, full CI+axiom audit `38072011057`, merged `cae3924`. |
-| Herwig–Lascar generalisation `thm:main` | Not yet packaged as a single Lean theorem | **Planned — next target** | Two main inputs `thm:maintree` and `lem:infinitecopies` are now formalized. Remaining: finite forbidden-family API, size bound on forbidden images, use complete-E witness before taking reduct, obstruction contradiction and final coherent faithful witness packaging. |
+| Herwig–Lascar generalisation `thm:main` | `AllThoseEPPA/HerwigLascarTheorem.lean`; `HerwigLascar.finiteOrbitHerwigLascar` | **Formalized** | Finite heterogeneous forbidden family and class `Forb(F)` defined via Γ-homomorphism-embeddings; if finite A has finite Γ-relabel orbit and its partial automorphisms extend inside some possibly infinite M∈Forb(F), then A has a **finite coherent irreducible-structure faithful EPPA witness B∈Forb(F)**. PRs #134–#137, each with green complete Lean CI and project axiom audit; merged onto main through `3d8d6d9`. |
+
 | Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
 | Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
@@ -964,3 +965,58 @@ are separate later proof targets. **Do not mark them as done.**
 
 Always re-check live GitHub main and its CI before trusting this
 historical checkpoint.
+
+
+### 2026-10-10: FULL Herwig--Lascar theorem `thm:main` integrated
+
+**Authoritative cutoff.** The earlier chronological section ending
+"Next exact target -- manuscript `thm:main`, NOT yet formalized" is now
+historical: each of its five steps has been completed, checked and
+merged into `main`. The following records what Lean actually proves.
+
+- **PR #134**, main merge `cf97d1e83dabffd4cb935da9a5d4828ae0ec7f17`:
+  `HerwigLascarForbiddenFamily.lean` defines heterogeneous finite
+  forbidden structures using a dependent family of carrier types,
+  a uniform `maxCard` (including the empty-family case), and
+  `FiniteForbiddenFamily.Avoids`. The latter forbids **Γ-homomorphism-
+  embeddings**, not just honest embeddings or ordinary homomorphisms.
+  Avoidance is inherited by homomorphism-embeddings.
+- **PR #135**, main merge `ab4719c656413afa67192b74bb1282ea99377ea1`:
+  `HerwigLascarForbiddenImage.lean` bounds a forbidden map's range by
+  `maxCard`. Its actual range is function-closed in the unary setting
+  by the previously audited global closed-image theorem, and the
+  forbidden map factors through the induced closed image. It proves
+  `FiniteForbiddenFamily.avoids_of_smallClosedHomEmbeds`: if all
+  small closed induced pieces of B homomorphism-embed into N∈Forb(F),
+  then B∈Forb(F), without assuming global injectivity.
+- **PR #136**, main merge `db5568bb8bb1f9f59888d0f1ce2663ad5ea21a60`:
+  `HerwigLascarCompleteEObstruction.lean` combines **fixed-complete-E**
+  `thm:maintree` with `lem:infinitecopies` to provide homomorphism-
+  embeddings of each small closed B-reduct into the ambient N.
+  This certifies avoidance of the forbidden family by the reduct.
+  The theorem `restrictedEPPA_avoidingForbidden` packages a
+  finite irreducible-faithful EPPA witness in Forb(F), preserving
+  coherence if the initial witness had it. The auxiliary E is
+  retained throughout tree construction and forgotten only in
+  the final witness.
+- **PR #137**, main merge `3d8d6d9fa1608d26a3fdc06ddcf7a236647c1915`:
+  `HerwigLascarTheorem.lean` supplies the initial finite **coherent**
+  faithful witness from checked `thm:nreppa`, applies the preceding
+  restricted theorem, and obtains the final
+  `HerwigLascar.finiteOrbitHerwigLascar`.
+
+**Exact theorem scope.** The language has arbitrary relations and
+set-valued *unary* functions; Γ may permute symbols nontrivially.
+A is finite, with finite Γ-relabel orbit. N may be infinite and must
+contain A by an actual Γ-embedding extending every partial
+automorphism of A, and satisfy N∈Forb(F). F is a finite indexed
+family of finite forbidden structures, of possibly different sizes
+and types. The output finite B∈Forb(F) is both a coherent EPPA
+witness and irreducible-structure faithful. No finite-carrier
+hypothesis on N or trivial language action is assumed.
+
+**Separate next targets.** The manuscript's stronger completion
+results (`prop:strongcompletion`, `thm:mainstrong`) and remaining
+application sections have **not** been formalized by this milestone.
+Plan their hypotheses, independent input lemmas, and interfaces
+separately rather than silently conflating them with `thm:main`.

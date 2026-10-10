@@ -65,7 +65,9 @@ theorem inducedClosedImage_isHomomorphismEmbedding
       intro i
       exact ⟨xs i, hxs i, rfl⟩
     have hRel := hf.2.1 R (Subtype.val ∘ xs) hUxs
-    simpa only [Structure.induce, Function.comp_def] using hRel
+    change B.rel (act.onRel f.lang R) (f.toFun ∘ (Subtype.val ∘ xs)) ↔
+      A.rel R (Subtype.val ∘ xs)
+    exact hRel
   · intro n F xs hxs
     have hUxs : ∀ i, (Subtype.val ∘ xs) i ∈ U := by
       intro i
@@ -82,12 +84,14 @@ theorem inducedClosedImage_isHomomorphismEmbedding
         exact ⟨z.1, hzA, rfl⟩
       have hzy' : f z.1 = y.1 := congrArg Subtype.val hzy
       rw [hzy'] at hzB
-      simpa only [Structure.induce, Function.comp_def] using hzB
+      change y.1 ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs))
+      exact hzB
     · intro hy
       have hyB : y.1 ∈
           B.func (act.onFunc f.lang F)
             (f.toFun ∘ (Subtype.val ∘ xs)) := by
-        simpa only [Structure.induce, Function.comp_def] using hy
+        change y.1 ∈ B.func (act.onFunc f.lang F) (f.toFun ∘ (Subtype.val ∘ xs)) at hy
+        exact hy
       rw [← hExact] at hyB
       obtain ⟨z, hz, hzy⟩ := hyB
       have hzS : z ∈ S := hS F (Subtype.val ∘ xs)

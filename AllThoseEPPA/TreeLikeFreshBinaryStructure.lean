@@ -49,7 +49,7 @@ def forgetFixedBinary (B : Structure L.withFixedBinaryRel V) :
 @[simp] theorem withCompleteFixedBinary_freshRel
     (A : Structure L V) (xs : Fin 2 → V) :
     A.withCompleteFixedBinary.rel
-      (L.withFixedBinaryRel.freshE) xs ↔ Function.Injective xs :=
+      (Language.withFixedBinaryRel.freshE L) xs ↔ Function.Injective xs :=
   Iff.rfl
 
 namespace Embedding

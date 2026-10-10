@@ -289,3 +289,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesEveryCopySide
 import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizationTransport
 
 import AllThoseEPPA.UnaryHomEmbImageClosure
+
+import AllThoseEPPA.UnaryHomEmbClosedRangeFactor

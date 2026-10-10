@@ -241,3 +241,5 @@ import AllThoseEPPA.TreeLikeHomEmbClosedIrreducibleImage
 import AllThoseEPPA.TreeLikeHomEmbComposition
 
 import AllThoseEPPA.TreeLikeTowerAncestorHomEmb
+
+import AllThoseEPPA.TreeLikeTowerCycleFreeTree

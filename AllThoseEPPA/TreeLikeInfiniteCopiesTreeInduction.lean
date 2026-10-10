@@ -132,7 +132,7 @@ theorem TreeAmalgamation.realizeIntoAmbient
         have hφLang : φ.lang * j.lang = τ₁.lang * h₁.lang := by
           change l.lang * 1 = τ₁.lang * h₁.lang
           simpa [hLeftLang]
-        have hφApply : ∀ b : B₁, φ (j b) = τ₁ (h₁ b) := by
+        have hφApply : ∀ b, φ (j b) = τ₁ (h₁ b) := by
           intro b
           calc
             φ (j b) = l b := rfl
@@ -161,7 +161,7 @@ theorem TreeAmalgamation.realizeIntoAmbient
             _ = (r.lang * g.lang) * g.lang⁻¹ := by rw [hLang]
             _ = r.lang := by simp [mul_assoc]
             _ = τ₂.lang * h₂.lang := hRightLang
-        have hφApply : ∀ b : B₂, φ (j b) = τ₂ (h₂ b) := by
+        have hφApply : ∀ b, φ (j b) = τ₂ (h₂ b) := by
           intro b
           calc
             φ (j b) = r b := by

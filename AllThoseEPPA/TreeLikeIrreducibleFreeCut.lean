@@ -88,7 +88,10 @@ theorem exists_freeDecomposition_irreducibleBase_of_cliqueCut
     closed_edgeClique_isIrreducible B E S hS hClique
   refine ⟨d, ?_⟩
   unfold Structure.FreeDecomposition.HasIrreducibleBase
-  simpa only [hbase] using hirr
+  change (B.induce (d.left ∩ d.right)
+    (Structure.FreeDecomposition.baseClosed B d)).IsIrreducible
+  rw [hbase]
+  exact hirr
 
 end TreeLike
 end AllThoseEPPA

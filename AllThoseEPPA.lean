@@ -201,3 +201,5 @@ import AllThoseEPPA.TreeLikeFreeCutGlueMap
 import AllThoseEPPA.TreeLikeFreeCutSideData
 
 import AllThoseEPPA.TreeLikeFreeCutUniversalEmbedding
+
+import AllThoseEPPA.TreeLikeEmbeddingFactorComposition

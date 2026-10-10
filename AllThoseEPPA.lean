@@ -243,3 +243,5 @@ import AllThoseEPPA.TreeLikeHomEmbComposition
 import AllThoseEPPA.TreeLikeTowerAncestorHomEmb
 
 import AllThoseEPPA.TreeLikeTowerCycleFreeTree
+
+import AllThoseEPPA.TreeLikeTowerFullTreeHomEmb

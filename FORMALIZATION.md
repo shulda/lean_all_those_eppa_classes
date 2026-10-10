@@ -256,3 +256,26 @@ to carefully connecting two such paths through distinct components
 (and converting the resulting long induced graph cycle to the existing
 `BadCycleSequence` API). The full clique-separator theorem, complete
 `lem:cuts`, and `thm:maintree` are still **not** formalized.
+
+
+### Joining induced paths (2026-10-10; PR #14)
+
+After PR #13 added independently checked shortest chordless paths
+inside a specified component of the complement of a separator, PR #14
+integrates three further Lean modules from green CI branch
+`tree-like-two-path-cycle` (`4cc9e248`):
+
+- `TreeLikeChordlessReverse.lean`: the reverse of a chordless
+  walk is chordless.
+- `TreeLikeChordlessAppend.lean`: two chordless walks may be
+  concatenated without creating chords provided all cross-support
+  edges already belong to one of the constituent walks.
+- `TreeLikeTwoPathCycle.lean`: two internally disjoint paths
+  with a cross-edge locality condition assemble into an induced
+  (chordless) cycle in `mathlib.SimpleGraph`.
+
+**Not proved:** the cross-edge locality condition for the concrete
+paths in distinct separator components; the translation of a
+mathlib chordless cycle to our `BadCycleSequence`; the general
+chordal minimal-separator clique theorem; the tree-amalgamation
+induction of `lem:cuts`; or `thm:maintree`.

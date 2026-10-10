@@ -305,3 +305,5 @@ import AllThoseEPPA.HerwigLascarForbiddenFamily
 import AllThoseEPPA.HerwigLascarForbiddenImage
 
 import AllThoseEPPA.HerwigLascarCompleteEObstruction
+
+import AllThoseEPPA.HerwigLascarTheorem

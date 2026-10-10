@@ -165,3 +165,5 @@ import AllThoseEPPA.TreeLikeEmbeddingRangeClosure
 import AllThoseEPPA.TreeLikeIrreducibilityTransport
 
 import AllThoseEPPA.TreeLikeIrreducibleEmbeddingImage
+
+import AllThoseEPPA.TreeLikeIrreducibleExtensionLift

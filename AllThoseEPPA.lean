@@ -130,3 +130,4 @@ import AllThoseEPPA.TreeLikeWalkClosure
 import AllThoseEPPA.TreeLikeTwoSidedFree
 import AllThoseEPPA.TreeLikeEssentialNeighbors
 import AllThoseEPPA.TreeLikeMinimalFree
+import AllThoseEPPA.TreeLikeTwoComponentSquare

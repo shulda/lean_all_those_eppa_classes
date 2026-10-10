@@ -175,3 +175,7 @@ import AllThoseEPPA.TreeLikeAmalgamEmbeddings
 import AllThoseEPPA.TreeLikeAmalgamGeneral
 
 import AllThoseEPPA.TreeLikeFullAAmalgamation
+
+import AllThoseEPPA.TreeLikeAmalgamFree
+
+import AllThoseEPPA.TreeLikeAmalgamFreeCover

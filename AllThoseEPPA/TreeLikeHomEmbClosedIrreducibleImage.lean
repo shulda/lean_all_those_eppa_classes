@@ -96,12 +96,16 @@ noncomputable def embeddingOnClosedImage
         exact ⟨z.1, hzA, rfl⟩
       have hzy' : f z.1 = y.1 := congrArg Subtype.val hzy
       rw [hzy'] at hzB
-      simpa only [Structure.induce, Function.comp_def] using hzB
+      change y.1 ∈ B.func (act.onFunc f.lang F)
+        (f.toFun ∘ (Subtype.val ∘ xs))
+      exact hzB
     · intro hy
       have hyB : y.1 ∈
           B.func (act.onFunc f.lang F)
             (f.toFun ∘ (Subtype.val ∘ xs)) := by
-        simpa only [Structure.induce, Function.comp_def] using hy
+        change y.1 ∈ B.func (act.onFunc f.lang F)
+          (f.toFun ∘ (Subtype.val ∘ xs)) at hy
+        exact hy
       rw [← hLocal] at hyB
       obtain ⟨z, hz, hzy⟩ := hyB
       have hzS : z ∈ S := hS F (Subtype.val ∘ xs)

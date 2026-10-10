@@ -128,3 +128,4 @@ import AllThoseEPPA.TreeLikeFunctionEdge
 import AllThoseEPPA.TreeLikeTwoSidedClosure
 import AllThoseEPPA.TreeLikeShortestWalk
 import AllThoseEPPA.TreeLikeChordlessShortest
+import AllThoseEPPA.TreeLikeComponentPaths

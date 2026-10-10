@@ -208,3 +208,28 @@ prior development branch; the combined PR must also pass its own CI.
 **The full `lem:cuts` is not proved.** The missing implication is that
 an inclusion-minimal separator is an E-clique in a chordal graph,
 followed by the recursive tree-amalgamation construction.
+
+
+### Closed irreducible amalgamation bases (2026-10-10)
+
+After PR #10 formalized actual free decompositions from any nonadjacent
+pair in a finite irreducible-structure faithful E-complete witness,
+and PR #11 excluded induced squares using two distinct components,
+three additional CI-checked modules bridge to the eventual chordal
+separator induction:
+
+- `TreeLikeIrreducibleSeparator.lean`: a closed E-clique is an
+  irreducible induced substructure (proved directly, avoiding a
+  dependent rewrite through its closure).
+- `TreeLikeMinimalClosed.lean`: inclusion-minimal separators are
+  closed under all unary functions whenever irreducibles are E-cliques.
+- `TreeLikeCliqueAmalgamationBase.lean`: if a minimal separator is
+  also an E-clique, it is **already** an irreducible amalgamation base.
+
+These results isolate the remaining genuinely graph-theoretic step:
+`NoBadInducedCycles G → every minimal vertex separator is a clique`.
+The classical proof uses two shortest induced paths through the two
+components of the complement and concatenates them into a forbidden
+induced cycle. Its arbitrary-length path argument is NOT yet formalized;
+neither the full tree-amalgamation constructor nor `thm:maintree`
+should be marked proved.

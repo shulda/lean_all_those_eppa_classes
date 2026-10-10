@@ -1,5 +1,6 @@
 import AllThoseEPPA.TreeLikeTwoPathCycle
 import AllThoseEPPA.TreeLikeComponentCut
+import AllThoseEPPA.TreeLikeTwoComponentSquare
 
 /-!
 # Cross-edge locality for paths through different outside components

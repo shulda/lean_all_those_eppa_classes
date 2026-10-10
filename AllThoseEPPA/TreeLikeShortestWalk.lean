@@ -1,6 +1,6 @@
 import Mathlib.Combinatorics.SimpleGraph.Paths
 import Mathlib.Data.Nat.Find
-import Mathlib.Tactic.Omega
+import Lean.Elab.Tactic.Omega
 
 /-!
 # Shortest walks have no repeated vertices or long chords

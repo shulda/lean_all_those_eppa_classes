@@ -116,14 +116,12 @@ theorem glueFreeCutMap_injective
       exact congrArg Subtype.val (hLeft h)
     · have hyR : y ∈ d.right := freeCut_right_of_not_left d hy
       have h : l ⟨x, hx⟩ = r ⟨y, hyR⟩ := by
-        simpa only [glueFreeCutMap_left d l r x hx,
-          glueFreeCutMap, dif_neg hy] using hxy
+        simpa [glueFreeCutMap, hx, hy] using hxy
       exact hCross ⟨x, hx⟩ ⟨y, hyR⟩ h
   · have hxR : x ∈ d.right := freeCut_right_of_not_left d hx
     by_cases hy : y ∈ d.left
     · have h : r ⟨x, hxR⟩ = l ⟨y, hy⟩ := by
-        simpa only [glueFreeCutMap, dif_neg hx,
-          glueFreeCutMap_left d l r y hy] using hxy
+        simpa [glueFreeCutMap, hx, hy] using hxy
       exact (hCross ⟨y, hy⟩ ⟨x, hxR⟩ h.symm).symm
     · have hyR : y ∈ d.right := freeCut_right_of_not_left d hy
       have h : r ⟨x, hxR⟩ = r ⟨y, hyR⟩ := by

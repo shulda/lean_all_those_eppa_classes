@@ -291,3 +291,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesSelfNormalizer
 import AllThoseEPPA.TreeLikeInfiniteCopiesConjugatedGlue
 import AllThoseEPPA.TreeLikeInfiniteCopiesNormalizationTransport
 import AllThoseEPPA.TreeLikeInfiniteCopiesTreeInduction
+
+import AllThoseEPPA.TreeLikeInfiniteCopiesCompleteEReduct

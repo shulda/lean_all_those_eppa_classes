@@ -33,6 +33,9 @@ green.
 | Unrestricted construction / Theorem `thm:nreppa` | `AllThoseEPPA/UnrestrictedFaithfulEPPA.lean`; `AllThoseEPPA.Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` | **Formalized** | Finite-relabel-orbit unary-function structures admit finite irreducible-structure faithful coherent EPPA witnesses. |
 | Induced-cycle sparsening / Lemma `lem:sparsen` | `AllThoseEPPA/CycleSparseningTheorem.lean`; `AllThoseEPPA.Sparsening.cycleSparseningLemma`, `cycleSparseningLemma_coherent` | **Formalized** | Finite witness, coherent EPPA, irreducible-structure faithfulness, homomorphism-embedding projection, and the full vertex/edge/induced-cycle trichotomy for arbitrary subsets. |
 | Restricted / locally tree-like construction / Theorem `thm:maintree` | `AllThoseEPPA/TreeLikeUnrestrictedMaintree.lean`; `TreeLike.restrictedEPPA_from_any_witness` | **Formalized** | Full unrestricted finite faithful EPPA witness from an arbitrary finite EPPA witness, genuine global homomorphism-embedding into the original witness, all bounded closed substructures homomorphism-embed into literal recursive trees of full original-language A-copies, optional coherent EPPA. New Γ-fixed E is constructed and forgotten exactly. PR #103, full Lean build + axiom audit green (run `38063228073`), merged to main `0e1c4af`. |
+| Lemma `lem:infinitecopies` / tree copies into ambient M | `AllThoseEPPA/TreeLikeInfiniteCopiesTheorem.lean`; `TreeLike.infiniteCopies_anyCompleteFreshE` | **Formalized** | For any finite complete-fresh-E Γ-structure A⁺, every literal recursive tree amalgamation D of whole A⁺ copies Γ-homomorphism-embeds after forgetting E into a possibly infinite old-language M extending all partial automorphisms of A⁻. Every embedded A⁺ copy can be normalized **pointwise and in Γ-language** to the designated A⁻ inside M. PR #131, green full CI+axiom audit `38072988333`, merged `408a075`. |
+| Closed images of homomorphism-embeddings with unary functions | `AllThoseEPPA/UnaryHomEmbImageClosure.lean` and `UnaryHomEmbClosedRangeFactor.lean` | **Formalized** | Entire image of any Γ-homomorphism-embedding is function-closed; it factors through the actual induced closed image, retaining the homomorphism-embedding property. Needed to apply the small-substructure clause of `thm:maintree` to forbidden structures. PR #132, full CI+axiom audit `38072011057`, merged `cae3924`. |
+| Herwig–Lascar generalisation `thm:main` | Not yet packaged as a single Lean theorem | **Planned — next target** | Two main inputs `thm:maintree` and `lem:infinitecopies` are now formalized. Remaining: finite forbidden-family API, size bound on forbidden images, use complete-E witness before taking reduct, obstruction contradiction and final coherent faithful witness packaging. |
 | Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
 | Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
@@ -852,3 +855,112 @@ tree-like work, without replacing or weakening either theorem.
 The next paper proof target remains `lem:infinitecopies`
 and the associated general Herwig–Lascar `thm:main`; these
 are **not** implied automatically by the completed `thm:maintree`.
+
+
+### 2026-10-10: FULL manuscript lem:infinitecopies integrated
+
+**This note supersedes all earlier chronological notes claiming that
+`lem:infinitecopies` was pending.** GitHub authoritative integration:
+[PR #131](https://github.com/shulda/lean_all_those_eppa_classes/pull/131),
+main merge SHA
+`408a075cd2bc39871df8448ebe2de9c5104151c6`.
+The **exact final combined integration** passed complete Lean build and
+project axiom audit on head `377e982854573ccf2ae523bd205d514da63740f8`
+(GitHub Actions run `38072988333`). The previous stacked full
+manuscript proof was also green, run `38071915974`. Current
+post-merge main CI is tracked separately.
+
+**Authoritative paper-facing theorem:**
+`TreeLike.infiniteCopies_anyCompleteFreshE` in
+`AllThoseEPPA/TreeLikeInfiniteCopiesTheorem.lean`.
+For finite E-complete expanded A, possibly infinite original-language
+M, exact Γ-embedding a:A⁻↪M, and extension along a of **every**
+partial Γ-automorphism of A⁻ to an automorphism of M,
+each literal `TreeAmalgamation act.withFixedBinaryRel A D`
+has a **Γ-homomorphism-embedding** D⁻→M. Moreover for
+**every** expanded Γ-embedding β:A↪D there exists σ∈AutΓ(M)
+whose composite σ∘h∘β=a as actual vertex maps **and whose
+Γ-language components agree**. This strengthens the paper's setwise
+normalizer statement. The theorem has no finiteness assumption
+on M; set-valued unary functions have exact fibre semantics.
+The manuscript statement, not merely the canonical-E case,
+is formalized.
+
+**Checked proof decomposition** (all in the current imported library):
+
+- `TreeLikeInfiniteCopiesTreeInduction.lean`: full induction for
+  finite **irreducible** A into ambient M, with every-copy
+  normalization as its induction invariant; exact inverse of
+  surjective Γ-copy embeddings in leaves and general Γ-homomorphism-
+  embedding gluing over arbitrary shared interfaces;
+- `TreeLikeInfiniteCopiesCompleteEReduct.lean`: complete E on A
+  and M, followed by actual deletion of E from the map and all
+  ambient normalizers, retaining Γ-language components;
+- `TreeLikeInfiniteCopiesCanonicalCompleteE.lean`: any complete
+  fresh-E Γ-structure equals its canonical reduct/re-expansion
+  literally, without noncanonical isomorphism;
+- `TreeLikeInfiniteCopiesTheorem.lean`: packages the exact
+  original statement for any E-complete expanded A.
+
+The first stages were integrated with **green CI** in PR #113
+(commit `d3276e57596b5c3220cc0ad7da9ae5e7426d8985`) and
+the general Γ-gluing/normalization steps in PR #119
+(commit `d164a6ddb3589614b621d045357107e415b6260e`).
+PR #120 (commit
+`852211f663c24ea231cb740dfef6bf718d1a0a1e`) supplies
+normalization transport. PR #128 (commit
+`82567966bc76cceb44889998c46ce2994cae6f41`) supplies
+the exact leaf inverses, self-normalizers and compatible
+ambient Γ-conjugations. The final #131 resolved an integration
+error: main still contained an older universe-restricted version
+of `TreeLikeInfiniteCopiesConjugatedGlue`; the final branch
+restores the separately audited arbitrary-universe version.
+This was a Lean type/universe mismatch, not a new mathematical
+assumption or a gap in the proof.
+
+**Additional verified step toward the next theorem:**
+PR #132, CI run `38072011057`, main merge
+`cae39245994808ec766c8f0fbd4c3bea2d2b2f23`, proves
+`Structure.Homomorphism.range_isClosed_of_unary` and
+`toClosedRange_unary_isHomomorphismEmbedding`. The entire image
+of a Γ-homomorphism-embedding is closed for unary functions,
+and its map factors through the closed induced image as an
+actual Γ-homomorphism-embedding. This prevents an unjustified
+"induce on the image" step in the paper's proof of `thm:main`.
+
+**Next exact target — manuscript `thm:main`, NOT yet formalized:**
+
+1. Encode a finite family of finite forbidden Γ-structures with
+   potentially different vertex carrier types, the class
+   `Forb(F)` via absence of Γ-homomorphism-embeddings, and a
+   uniform maximum size `n` of forbidden structures.
+2. Obtain an initial finite coherent irreducible-faithful
+   EPPA witness using formalized `thm:nreppa` from the finite
+   relabelling orbit of A. **Keep the added Γ-fixed complete E
+   in the intermediate witness**: apply the checked
+   `TreeLike.fixedE_restrictedEPPA_from_any_witness` to
+   the expanded A and initial witness, so that local certificates
+   are trees of full **E-expanded** A-copies.
+3. Forget E only in the proposed output witness. Use the already
+   checked ordinary/coherent EPPA and irreducible-faithfulness
+   E-reduct transport to obtain a finite coherent faithful
+   witness in the original language.
+4. For a forbidden Γ-homomorphism-embedding f:F→B⁻,
+   form its actual **closed** range S by the PR #132 lemma
+   and factor through B⁻|S. Establish
+   `S.ncard ≤ Nat.card F ≤ n` using finite-image cardinality.
+   Use fixed-E local tree control on B|S, take E-reduct
+   of its homomorphism-embedding, invoke now-checked
+   `lem:infinitecopies` to embed the tree reduct into M,
+   then compose the Γ-homomorphism-embeddings. This
+   contradicts M∈Forb(F).
+5. Package the final finite coherent irreducible-faithful
+   EPPA witness B∈Forb(F). Keep the stronger optional ordinary
+   EPPA variants available but do not conflate with the class theorem.
+
+The strong/local-finiteness consequence `thm:mainstrong`,
+its `prop:strongcompletion`, and other remaining applications
+are separate later proof targets. **Do not mark them as done.**
+
+Always re-check live GitHub main and its CI before trusting this
+historical checkpoint.

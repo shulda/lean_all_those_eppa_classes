@@ -203,3 +203,15 @@ import AllThoseEPPA.TreeLikeFreeCutSideData
 import AllThoseEPPA.TreeLikeFreeCutUniversalEmbedding
 
 import AllThoseEPPA.TreeLikeEmbeddingFactorComposition
+
+import AllThoseEPPA.TreeLikeGeneralAmalgamOverlap
+
+import AllThoseEPPA.TreeLikeAmalgamLanguageComponents
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutMaps
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutSupport
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutEmbedding
+
+import AllThoseEPPA.TreeLikeCutsRealization

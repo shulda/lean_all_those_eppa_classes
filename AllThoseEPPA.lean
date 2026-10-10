@@ -303,3 +303,5 @@ import AllThoseEPPA.TreeLikeInfiniteCopiesTheorem
 import AllThoseEPPA.HerwigLascarForbiddenFamily
 
 import AllThoseEPPA.HerwigLascarForbiddenImage
+
+import AllThoseEPPA.HerwigLascarCompleteEObstruction

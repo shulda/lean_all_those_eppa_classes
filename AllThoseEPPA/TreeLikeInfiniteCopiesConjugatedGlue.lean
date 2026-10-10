@@ -20,10 +20,10 @@ hidden appeal to unlabelled vertex permutations.
 namespace AllThoseEPPA
 namespace TreeLike
 
-universe u v w x y z
+universe u v w x y z t
 variable {L : Language.{u}} {Γ : Type v} [Group Γ]
 variable {I : Type w} {V : Type x} {X : Type y}
-variable {Y : Type z} {M : Type (max u v w x y z)}
+variable {Y : Type z} {M : Type t}
 
 /-- Choose side maps with both the compatibility conditions and
 explicit witnesses that each map is an ambient automorphism

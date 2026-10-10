@@ -43,7 +43,7 @@ theorem range_isClosed_of_unary
     B.IsClosed (Set.range f.toFun) := by
   classical
   intro n F xs hxs y hy
-  have hn : n = 1 := HasUnaryFunctions.arity_eq_one F
+  have hn : n = 1 := Language.HasUnaryFunctions.arity_eq_one F
   subst n
   obtain ⟨a, ha⟩ := hxs 0
   let S : Set V := A.closureAtSet a

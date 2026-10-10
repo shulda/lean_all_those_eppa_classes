@@ -252,3 +252,7 @@ import AllThoseEPPA.TreeLikeFixedENoncoherentRestrictedEPPA
 
 import AllThoseEPPA.TreeLikeTowerGlobalProjection
 import AllThoseEPPA.TreeLikeFixedEFullMainTheorem
+
+import AllThoseEPPA.TreeLikeFreshBinaryLanguage
+import AllThoseEPPA.TreeLikeFreshBinaryStructure
+import AllThoseEPPA.TreeLikeFreshBinaryComplete

@@ -205,3 +205,5 @@ import AllThoseEPPA.TreeLikeFreeCutUniversalEmbedding
 import AllThoseEPPA.TreeLikeGeneralAmalgamOverlap
 
 import AllThoseEPPA.TreeLikeAmalgamLanguageComponents
+
+import AllThoseEPPA.TreeLikeFreeCutPushoutMaps

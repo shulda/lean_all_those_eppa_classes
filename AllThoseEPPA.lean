@@ -181,3 +181,11 @@ import AllThoseEPPA.TreeLikeAmalgamFree
 import AllThoseEPPA.TreeLikeAmalgamFreeCover
 
 import AllThoseEPPA.TreeLikeGeneralAmalgamFreeCover
+
+import AllThoseEPPA.TreeLikeIrreducibilityTransport
+
+import AllThoseEPPA.TreeLikeIrreducibleEmbeddingImage
+
+import AllThoseEPPA.TreeLikeIrreducibleExtensionLift
+
+import AllThoseEPPA.TreeLikeTreeIrreducibleExtension

@@ -41,7 +41,7 @@ the two sides, with closedness certified by both side
 closedness witnesses. -/
 def freeCut_base
     (B : Structure L V) (d : B.FreeDecomposition) :
-    Structure L (d.left ∩ d.right) :=
+    Structure L (d.left ∩ d.right : Set V) :=
   B.induce (d.left ∩ d.right) (freeCut_base_isClosed B d)
 
 /-- Exact Γ-embedding from the common closed interface into

@@ -16,7 +16,7 @@ map on irreducible S is an actual Γ-embedding.
 
 This theorem performs that transport without assuming either
 h or the glued map φ is globally injective. It tracks the
-identity Γ-component of the source-side inclusion and equality
+possibly nontrivial Γ-component of the source-side inclusion and equality
 of all set-valued function fibres on S.
 -/
 
@@ -29,7 +29,7 @@ variable {L : Language.{u}} {Γ : Type v} [Group Γ]
 variable {X : Type w} {Y : Type x} {Z : Type y}
 
 /-- If a homomorphism φ:D→M agrees along an exact Γ-embedding
-j:B↪D (whose Γ-language component is the identity) with
+j:B↪D (with arbitrary Γ-language component) with
 a homomorphism-embedding h:B→M, then φ is an exact embedding
 on every *closed irreducible subset S entirely inside j(B)*. -/
 theorem isEmbeddingOn_of_embeddedSide
@@ -37,11 +37,10 @@ theorem isEmbeddingOn_of_embeddedSide
     {B : Structure L X} {D : Structure L Y}
     {M : Structure L Z}
     (j : Embedding act B D)
-    (hjLang : j.lang = 1)
     (h : Homomorphism act B M)
     (hHomEmb : IsHomomorphismEmbedding act h)
     (φ : Homomorphism act D M)
-    (hφLang : φ.lang = h.lang)
+    (hLang : φ.lang * j.lang = h.lang)
     (hAgree : ∀ b : X, φ (j b) = h b)
     (S : Set Y) (hS : D.IsClosed S)
     (hIrr : (D.induce S hS).IsIrreducible)
@@ -50,10 +49,7 @@ theorem isEmbeddingOn_of_embeddedSide
   classical
   let k : Embedding act (D.induce S hS) B :=
     Faithful.embeddingInverseOnClosedSubset act j S hS hInside
-  have hkLang : k.lang = 1 := by
-    change j.lang⁻¹ = 1
-    rw [hjLang]
-    simp
+  have hkLang : k.lang = j.lang⁻¹ := rfl
   have hkHomEmb : IsHomomorphismEmbedding act k.toHomomorphism := by
     intro T hT hIrrT
     refine ⟨?_, ?_, ?_⟩
@@ -73,7 +69,9 @@ theorem isEmbeddingOn_of_embeddedSide
   have heLang : e.lang = φ.lang := by
     change h.lang * k.lang = φ.lang
     rw [hkLang]
-    simpa [hφLang]
+    calc
+      h.lang * j.lang⁻¹ = (φ.lang * j.lang) * j.lang⁻¹ := by rw [hLang]
+      _ = φ.lang := by simp [mul_assoc]
   have heApply (z : S) : φ z.1 = e z := by
     have hBack :=
       Faithful.embeddingInverseOnClosedSubset_apply_spec

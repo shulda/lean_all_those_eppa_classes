@@ -302,6 +302,7 @@ import AllThoseEPPA.Examples.IntegerMetricAutPreservingStrongCompletion
 import AllThoseEPPA.Examples.IntegerMetricRealRounding
 import AllThoseEPPA.Examples.IntegerMetricEncodingIsometry
 import AllThoseEPPA.Examples.IntegerMetricIsometriesToEmbeddings
+import AllThoseEPPA.Examples.IntegerMetricPullback
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto

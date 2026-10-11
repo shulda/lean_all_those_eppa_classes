@@ -1,5 +1,6 @@
 import AllThoseEPPA.Examples.IntegerMetricPairModels
 import AllThoseEPPA.Irreducible
+import Mathlib.Tactic.FinCases
 
 /-!
 # Homomorphism-embeddings into a metric yield exact pair models
@@ -88,12 +89,13 @@ theorem exactPairModels_of_metricHomomorphismEmbedding
     (hf : Structure.Homomorphism.IsHomomorphismEmbedding (action D) f) :
     HasExactColouredPairModels B := by
   intro x y hLabel
-  refine ⟨W, M, f.toFun, ?_, ?_⟩
   rcases hLabel with ⟨d, hForward | hReverse⟩
-  · exact exact_colours_on_edge B M f hf d x y hForward
+  · obtain ⟨hXY, hYX⟩ :=
+      exact_colours_on_edge B M f hf d x y hForward
+    exact ⟨W, M, f.toFun, hXY, hYX⟩
   · obtain ⟨hYX, hXY⟩ :=
       exact_colours_on_edge B M f hf d y x hReverse
-    exact ⟨hXY, hYX⟩
+    exact ⟨W, M, f.toFun, hXY, hYX⟩
 
 /-- In particular, every partial colour structure admitting
 a global homomorphism-embedding into a complete metric

@@ -63,7 +63,6 @@ noncomputable def canonicalAutomorphismPreservingStrongCompletion
       (liftAutomorphismToCanonicalCompletion B hB hD g).lang * 1 =
         1 * g.lang
     rw [liftAutomorphismToCanonicalCompletion_lang]
-    simp
   lift_apply := by
     intro g x
     exact liftAutomorphismToCanonicalCompletion_apply B hB hD g x

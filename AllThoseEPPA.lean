@@ -325,3 +325,5 @@ import AllThoseEPPA.StrongCompletionLocallyFiniteClassTheorem
 import AllThoseEPPA.StrongCompletionManuscriptSubclass
 
 import AllThoseEPPA.StrongCompletionHereditaryStrongAmalgamation
+
+import AllThoseEPPA.StrongCompletionClassAPI

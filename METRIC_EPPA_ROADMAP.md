@@ -161,3 +161,57 @@ walk, its total walk cost is <d and every step costs ≥1. Hence the
 number of steps is <d and the visited-vertex set has cardinality
 at most d≤D. The separate `max D 2` includes pair-consistency
 witnesses even when D=1. No optimisation of D beyond this is needed.
+
+
+## Strengthened regression (2026-10-11): preserve the unit-clique number
+
+**New primary readable assertion:** for every D, the finite EPPA witness B
+can be chosen so that its largest set of pairwise distance-1 vertices
+has exactly the same cardinality as in A. The standalone target is
+`FiniteBoundedMetricsHaveEPPAAndPreserveUnitClique D`;
+the old EPPA-only target remains available as a weaker comparator.
+See `METRIC_EPPA_READABLE_TARGET.md` and PR #202 (checked/merged).
+
+The reason to test this stronger assertion is precisely the scope of
+the formalized *irreducible-structure faithfulness* theorem, not an
+unrelated direct metric construction.
+
+**Two proof mechanisms for D >= 2:**
+
+1. Every complete monochromatic binary clique in the relational
+   witness is irreducible. Thus the faithful witness's automorphism
+   moves it into the embedded original A; reflection by the embedding
+   preserves its colour and cardinality. PR #204 isolates
+   irreducibility, PR #206 isolates exact cardinality transport.
+2. For any symmetric **positive integer** edge costs, a walk of total
+   weight 1 consists of one original weight-1 edge. For a partial
+   distance structure of bound D >= 2, an unlabelled pair is assigned
+   default cost D > 1, so canonical shortest-path completion cannot
+   add a new distance-1 edge. PR #203 isolates this fact.
+
+An isometric embedding A -> B gives the reverse clique-size inequality.
+PR #207 formalizes the elementary numerical maximum-clique lemmas.
+
+**D=1 warning, not an obstruction to the theorem.** Default cost D=1
+would turn missing edges into 1-edges; therefore the no-new-unit-edges
+statement for this completion is FALSE at D=1. Instead all genuine
+1-bounded metrics are discrete, and the finite-set EPPA theorem
+extends partial bijections on the same carrier. Choose B=A, preserving
+its unit-clique size automatically. PR #205 formalizes this application
+of the existing finite-set theorem. D=0 has a separately checked
+identity-witness proof.
+
+**Important scope guard:** The already verified class-level
+locally-finite completion transfer, by itself, only promises *some*
+completion in K. An arbitrary completion may add new distance-1
+edges, so the extra clique equality is not automatic from the
+class-level existential transfer alone. To obtain the stronger test,
+explicitly choose the canonical shortest-path metric completion
+in the final construction and preserve the irreducible-faithful
+property of the intermediate relational witness. One can use the
+checked restricted/tree-like theorem directly and invoke metric
+amalgamation to discharge its bounded local obligations.
+
+**Status:** these are independently auditable proof obligations.
+None of the PRs above may be interpreted as a proof of the entire
+all-D strengthened EPPA claim until the final derivation is checked.

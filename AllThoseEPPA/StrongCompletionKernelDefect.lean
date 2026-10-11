@@ -129,6 +129,18 @@ theorem kernelDefect_first_lt_composite
       range_comp_of_surjective q g hq]
   omega
 
+
+/-- Applying an injective map after a finite-domain map does not
+change the number of identifications: the two ranges have the
+same cardinality. -/
+theorem kernelDefect_postcompose_injective
+    {X : Type*} [Fintype X] {Y Z : Type*}
+    (q : X → Y) (e : Y → Z)
+    (he : Function.Injective e) :
+    kernelDefect (e ∘ q) = kernelDefect q := by
+  unfold kernelDefect
+  rw [Set.range_comp, Set.ncard_image_of_injective _ he]
+
 end StrongCompletionKernel
 end TreeLike
 end AllThoseEPPA

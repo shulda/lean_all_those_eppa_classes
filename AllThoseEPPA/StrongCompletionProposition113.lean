@@ -2,6 +2,7 @@ import AllThoseEPPA.StrongCompletionCollapseSideInjectivity
 import AllThoseEPPA.StrongCompletionLocalExactFactorization
 import AllThoseEPPA.StrongCompletionFreeCutSAP
 import AllThoseEPPA.StrongCompletionKernelDefect
+import AllThoseEPPA.StrongCompletionMinimalFactorization
 import Mathlib.Data.Fintype.EquivFin
 
 /-!

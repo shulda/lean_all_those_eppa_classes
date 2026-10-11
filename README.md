@@ -26,12 +26,18 @@ construction, the Herwig–Lascar generalisation, the locally finite
 completion transfer, and Proposition 11.3) have now passed the complete
 Lean build and axiom audit; see `FORMALIZATION.md` for precise scope.
 
-The current final **small regression** is a completely readable theorem
-for finite integer metrics, uniformly in D, strengthening ordinary EPPA
-by preserving the maximum size of a clique of pairwise distance 1.
-The all-D conclusion is not yet proved; its explicit quantifier-level
-statement is in `Examples/IntegerMetricReaderFacingEPPA.lean`,
-with the proof strategy in `METRIC_EPPA_ROADMAP.md`.
+The **final small regression is now Lean-checked**: for every natural D,
+every finite metric A with integer distances in {0,...,D} admits a finite
+D-bounded metric EPPA witness B with **exactly the same maximum size of a
+pairwise distance-one clique**. The standalone mathematical quantifiers
+are in `AllThoseEPPA/Examples/IntegerMetricReaderFacingEPPA.lean`; the
+unconditional proof is
+`IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean`
+(full Lean build + axiom audit on PR #235; integration PR #237).
+This proof genuinely invokes the already-verified unrestricted faithful
+and restricted/tree-like EPPA constructions, rather than an external metric
+EPPA theorem. See `METRIC_EPPA_ROADMAP.md` for the dependency and audit map.
 
 After the metric regression, the remaining large planned paper application
 is **EPPA for k-orientations with d-closures** (Section 9.3 of
@@ -53,8 +59,8 @@ whose mathematical meaning is easy to inspect.  Planned checkpoints include:
   `{0,1,...,D}` has a finite metric EPPA witness **with the same distance
   alphabet AND the same maximum size of a unit-distance clique**
   (testing both irreducible-structure faithfulness and the restricted/
-  tree-like machinery). The cases D=0 and D=1 are proved; the
-  full-D result remains open.
+  tree-like machinery). This strengthened, uniform all-D assertion
+  is now fully Lean-checked (PR #235; final integration PR #237).
 
 These are not merely examples: they are intended as regression tests for the
 mathematical API.

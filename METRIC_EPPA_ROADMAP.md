@@ -5,9 +5,8 @@
 **Status: complete Lean proof, 2026-10-11.** The unconditional all-D
 strengthened theorem passed the entire Lean build and axiom audit in
 [PR #235](https://github.com/shulda/lean_all_those_eppa_classes/pull/235),
-CI run `38161154070`. Integration into the single authoritative
-`main` import graph is organized in PRs #236 and #237. Refer to their
-merge state to determine whether the source is already on `main`.
+CI run `38161154070`. Integration into the authoritative `main` import graph was completed
+through PRs #236 and #237; the docstring cleanup was merged in PR #239.
 
 For **every** `D : ℕ`, each finite metric `A` with distances in
 `{0,1,...,D}` admits a finite metric `B` with distances in the
@@ -113,13 +112,12 @@ which is why the branch is treated separately.
 | General manuscript EPPA ⇒ stronger D-metric EPPA, conditional on metric AP | `Bridge.unitCliquePreservingMetricEPPA_of_finiteMetricAmalgamation` | PR #234, green run `38160937629` |
 | Complete strengthened reader-facing theorem, all D | `Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique` | PR #235, green run `38161154070` |
 
-**Integration discipline:** Standalone PRs and stacked branches can
-have stale `AllThoseEPPA.lean` imports. PR #236 consolidates checked
-conditional metric theorem modules on the post-#230 main;
-PR #237 adds the remaining real metric gluing and unconditional theorem.
-Neither a green build in isolation nor the mathematical correctness of
-the theorem licenses claiming an *on-main* result before the final
-combined import graph is green and merged.
+**Integration complete:** PR #236 consolidated the conditional
+metric theorem on `main`; PR #237 added the real-metric gluing
+and unconditional all-D theorem; both passed full CI and axiom audit
+before merge. PR #239 fixed stale docstrings. For reuse from external
+Lean projects, see [`INTEGER_METRIC_EPPA_API.md`](INTEGER_METRIC_EPPA_API.md)
+and the one-import facade `AllThoseEPPA.IntegerMetricEPPA`.
 
 GitHub Actions runs the entire Lean build and project axiom audit.
 Project proofs do not rely on `sorryAx` or custom axioms; only the

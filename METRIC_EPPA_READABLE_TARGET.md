@@ -49,7 +49,7 @@ in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean`
 hypotheses. The case D=0 has an identity-witness proof and the case
 D=1 uses the checked finite-set EPPA construction. The full proof
 passed Lean CI and the complete project axiom audit on PR #235;
-its final import/integration is PR #237.
+it was integrated into `main` in PR #237.
 
 ## What is being tested
 
@@ -112,6 +112,17 @@ real metric disjoint unions for empty interfaces (PR #222), with exact
 integer-distance preservation after ceiling-and-cap truncation.
 The manuscript-based conditional reduction is checked in PR #234.
 The unconditional fully quantified strengthened metric EPPA theorem passed
-the full Lean build and axiom audit in PR #235. Integration is tracked
-in PRs #236–#237. See `METRIC_EPPA_ROADMAP.md` for dependencies and
+the full Lean build and axiom audit in PR #235. Integration completed on `main`
+through PRs #236–#237. See `METRIC_EPPA_ROADMAP.md` for dependencies and
 merging information.
+
+
+## Reuse from other Lean projects
+
+For downstream formalizations, **import
+`AllThoseEPPA.IntegerMetricEPPA`** and apply
+`AllThoseEPPA.IntegerMetric.eppaPreservingUnitCliqueNumber D A`.
+The ordinary EPPA-only interface is `IntegerMetric.eppa D A`.
+The facade leaves all internal relational encoding and EPPA machinery
+out of the statement. See [the external API guide](INTEGER_METRIC_EPPA_API.md)
+and its [Lean-checked consumer example](AllThoseEPPA/Examples/IntegerMetricPublicAPIUsage.lean).

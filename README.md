@@ -34,7 +34,7 @@ are in `AllThoseEPPA/Examples/IntegerMetricReaderFacingEPPA.lean`; the
 unconditional proof is
 `IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
 in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean`
-(full Lean build + axiom audit on PR #235; integration PR #237).
+(full Lean build + axiom audit on PR #235; merged through PR #237).
 This proof genuinely invokes the already-verified unrestricted faithful
 and restricted/tree-like EPPA constructions, rather than an external metric
 EPPA theorem. See `METRIC_EPPA_ROADMAP.md` for the dependency and audit map.
@@ -45,6 +45,24 @@ the paper; closely related to Hrushovski predimension constructions).
 This is the deferred Hrushovski-related application referred to in older
 project notes, not a third independently scheduled regression.
 A final manuscript-statement/API audit is also planned.
+
+## Using the metric result in another Lean project
+
+The supported external import is:
+
+```lean
+import AllThoseEPPA.IntegerMetricEPPA
+```
+
+The public theorems are
+`AllThoseEPPA.IntegerMetric.eppaPreservingUnitCliqueNumber D A`
+and `AllThoseEPPA.IntegerMetric.eppa D A`.
+They return explicit existential witnesses for an input
+`A : BoundedNatMetric D α`, `[Finite α]`.
+
+**[External-project installation, complete API, and compiled usage example](INTEGER_METRIC_EPPA_API.md)**.
+The consumer smoke test is
+[`AllThoseEPPA/Examples/IntegerMetricPublicAPIUsage.lean`](AllThoseEPPA/Examples/IntegerMetricPublicAPIUsage.lean).
 
 ## Human-readable regression examples
 
@@ -60,7 +78,7 @@ whose mathematical meaning is easy to inspect.  Planned checkpoints include:
   alphabet AND the same maximum size of a unit-distance clique**
   (testing both irreducible-structure faithfulness and the restricted/
   tree-like machinery). This strengthened, uniform all-D assertion
-  is now fully Lean-checked (PR #235; final integration PR #237).
+  is now fully Lean-checked and integrated (PRs #235–#237).
 
 These are not merely examples: they are intended as regression tests for the
 mathematical API.

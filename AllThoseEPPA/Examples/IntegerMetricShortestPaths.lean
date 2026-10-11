@@ -125,20 +125,23 @@ private theorem exists_walk_cost
 /-- Shortest-path distance, defined by the least natural walk cost.
 The set is nonempty even when V is infinite. -/
 noncomputable def shortest
-    (C : SymmetricCost D V) (x y : V) : ℕ :=
-  Nat.find (C.exists_walk_cost x y)
+    (C : SymmetricCost D V) (x y : V) : ℕ := by
+  classical
+  exact Nat.find (C.exists_walk_cost x y)
 
 /-- The minimum is realized by an actual finite walk. -/
 theorem exists_shortest_walk
     (C : SymmetricCost D V) (x y : V) :
-    ∃ p : Walk V x y, p.weight C = C.shortest x y :=
-  Nat.find_spec (C.exists_walk_cost x y)
+    ∃ p : Walk V x y, p.weight C = C.shortest x y := by
+  classical
+  exact Nat.find_spec (C.exists_walk_cost x y)
 
 /-- Every walk bounds the shortest distance from above. -/
 theorem shortest_le_walk
     (C : SymmetricCost D V) {x y : V}
     (p : Walk V x y) :
     C.shortest x y ≤ p.weight C := by
+  classical
   exact Nat.find_min' (C.exists_walk_cost x y)
     ⟨p, rfl⟩
 

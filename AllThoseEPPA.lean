@@ -274,6 +274,7 @@ import AllThoseEPPA.Examples.IntegerMetricBasic
 import AllThoseEPPA.Examples.IntegerMetricBridge
 import AllThoseEPPA.Examples.IntegerMetricShortestPaths
 import AllThoseEPPA.Examples.IntegerMetricNoShortcuts
+import AllThoseEPPA.Examples.IntegerMetricWalkSupport
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto

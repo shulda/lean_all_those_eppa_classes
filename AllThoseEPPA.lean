@@ -347,3 +347,5 @@ import AllThoseEPPA.StrongCompletionClosureIsomorphism
 import AllThoseEPPA.StrongCompletionLocalCollapse
 
 import AllThoseEPPA.StrongCompletionMinimalClosurePair
+
+import AllThoseEPPA.StrongCompletionCollisionSeparatingCut

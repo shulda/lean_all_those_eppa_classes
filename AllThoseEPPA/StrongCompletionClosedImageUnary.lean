@@ -59,7 +59,8 @@ theorem image_closedSet_isClosed_of_unary
     · rintro ⟨x, hx, hfx⟩
       exact ⟨⟨x, hx⟩, hfx⟩
   rw [hEq] at hRange
-  exact hRange
+  intro n F xs hxs y hy
+  exact hRange F xs hxs hy
 
 end Homomorphism
 end Structure

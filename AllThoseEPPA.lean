@@ -361,3 +361,5 @@ import AllThoseEPPA.StrongCompletionPushforwardFunctionFibres
 import AllThoseEPPA.StrongCompletionPrimitivePairWitness
 
 import AllThoseEPPA.StrongCompletionFreeCutLocalExactness
+
+import AllThoseEPPA.StrongCompletionFreeCutHomGlue

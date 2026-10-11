@@ -125,6 +125,34 @@ theorem truncate_forgetBound_dist {D : ℕ} {V : Type u}
     ((M.forgetBound).truncate D hD).dist x y = M.dist x y :=
   cap_eq_of_le D (M.dist x y) (M.dist_le x y)
 
+
+/-- Standalone reader-facing ordinary EPPA for diameter zero.
+A genuine metric with all distances 0 has at most one point,
+so the identity permutation extends every partial isometry.
+This includes the empty and singleton vertex types. -/
+theorem zero_diameter_eppa {V : Type u} [Finite V]
+    (A : BoundedNatMetric 0 V) :
+    ∃ (W : Type u) (_ : Finite W)
+      (B : BoundedNatMetric 0 W) (ι : V ↪ W),
+      (∀ x y : V, B.dist (ι x) (ι y) = A.dist x y) ∧
+      (∀ (U T : Set V) (p : U ≃ T),
+        (∀ x y : U,
+          A.dist x.1 y.1 = A.dist (p x).1 (p y).1) →
+        ∃ g : Equiv.Perm W,
+          (∀ x y : W, B.dist (g x) (g y) = B.dist x y) ∧
+          (∀ x : U, g (ι x.1) = ι (p x).1)) := by
+  letI : Subsingleton V := A.subsingleton_of_zero
+  let ι : V ↪ V := ⟨id, by intro a b h; exact h⟩
+  refine ⟨V, inferInstance, A, ι, ?_, ?_⟩
+  · intro x y
+    rfl
+  · intro U T p _hPartialIsometry
+    refine ⟨Equiv.refl V, ?_, ?_⟩
+    · intro x y
+      rfl
+    · intro x
+      exact Subsingleton.elim _ _
+
 end BoundedNatMetric
 end IntegerMetric
 end AllThoseEPPA

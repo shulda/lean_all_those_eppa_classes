@@ -335,3 +335,5 @@ import AllThoseEPPA.StrongCompletionFibreBijection
 import AllThoseEPPA.StrongCompletionTwoClosureGeometry
 
 import AllThoseEPPA.StrongCompletionNoCrossingTuples
+
+import AllThoseEPPA.StrongCompletionFiveRegionClosure

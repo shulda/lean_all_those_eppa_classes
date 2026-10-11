@@ -273,6 +273,7 @@ import AllThoseEPPA.Examples.Hypergraph3K4Free
 import AllThoseEPPA.Examples.IntegerMetricBasic
 import AllThoseEPPA.Examples.IntegerMetricBridge
 import AllThoseEPPA.Examples.IntegerMetricFaithfulCliques
+import AllThoseEPPA.Examples.IntegerMetricFaithfulCliqueTransfer
 import AllThoseEPPA.Examples.IntegerMetricPartialCosts
 import AllThoseEPPA.Examples.IntegerMetricPairModels
 import AllThoseEPPA.Examples.IntegerMetricHomEmbPairModels

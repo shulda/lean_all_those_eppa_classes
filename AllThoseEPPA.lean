@@ -298,6 +298,7 @@ import AllThoseEPPA.Examples.IntegerMetricEquivariance
 import AllThoseEPPA.Examples.IntegerMetricAutomorphismCosts
 import AllThoseEPPA.Examples.IntegerMetricCompletionHomEmb
 import AllThoseEPPA.Examples.IntegerMetricCanonicalAutomorphismLift
+import AllThoseEPPA.Examples.IntegerMetricAutPreservingStrongCompletion
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto

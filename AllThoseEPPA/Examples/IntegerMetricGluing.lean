@@ -46,6 +46,8 @@ theorem finiteAmalgam_viaRealGlue
       (∀ x y : Y, M.dist (ιY x) (ιY y) = MY.dist x y) ∧
       (∀ z : Z, ιX (Φ z) = ιY (Ψ z)) := by
   classical
+  letI : Fintype X := Fintype.ofFinite X
+  letI : Fintype Y := Fintype.ofFinite Y
   letI : Finite (X ⊕ Y) := inferInstance
   have hFin : Finite (Metric.GlueSpace hΦ hΨ) := by
     unfold Metric.GlueSpace
@@ -58,13 +60,13 @@ theorem finiteAmalgam_viaRealGlue
     apply realMetricRounded_dist_of_integer D hD
       (Metric.toGlueL hΦ hΨ x) (Metric.toGlueL hΦ hΨ y)
       (MX.dist x y)
-    · exact (Metric.toGlueL_isometry hΦ hΨ x y).trans (hX x y)
+    · exact ((Metric.toGlueL_isometry hΦ hΨ).dist_eq x y).trans (hX x y)
     · exact MX.dist_le x y
   · intro x y
     apply realMetricRounded_dist_of_integer D hD
       (Metric.toGlueR hΦ hΨ x) (Metric.toGlueR hΦ hΨ y)
       (MY.dist x y)
-    · exact (Metric.toGlueR_isometry hΦ hΨ x y).trans (hY x y)
+    · exact ((Metric.toGlueR_isometry hΦ hΨ).dist_eq x y).trans (hY x y)
     · exact MY.dist_le x y
   · intro z
     exact congrFun (Metric.toGlue_commute hΦ hΨ) z

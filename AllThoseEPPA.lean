@@ -382,3 +382,5 @@ import AllThoseEPPA.StrongCompletionSafeQuotient
 import AllThoseEPPA.StrongCompletionLocalExactFactorization
 
 import AllThoseEPPA.StrongCompletionCollapseSideInjectivity
+
+import AllThoseEPPA.StrongCompletionProposition113

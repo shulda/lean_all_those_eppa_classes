@@ -103,7 +103,12 @@ theorem faithfulShortestPath_preserves_maximumUnitCliqueSize
       change A.dist x y = unit.val + 1 at hRel
       simpa [unit] using hRel
     have hCardU : U.card = S.card := by
-      simpa [U] using hCard
+      have hFinsetCard : T.ncard = U.card := by
+        simpa only [U] using (Set.ncard_eq_toFinset_card' T)
+      calc
+        U.card = T.ncard := hFinsetCard.symm
+        _ = (S : Set W).ncard := hCard
+        _ = S.card := Set.ncard_coe_finset S
     exact ⟨U, hUnitU, by omega⟩
   have hUpper :
       maximumUnitCliqueSize M ≤ maximumUnitCliqueSize A :=

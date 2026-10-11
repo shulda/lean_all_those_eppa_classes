@@ -46,8 +46,8 @@ theorem boundedOne_perm_isometry
   · have hgy : g x ≠ g y := by
       intro heq
       exact hxy (g.injective heq)
-    rw [M.boundedOne_dist_of_ne hgy,
-      M.boundedOne_dist_of_ne hxy]
+    rw [boundedOne_dist_of_ne M hgy,
+      boundedOne_dist_of_ne M hxy]
 
 /-- Encode a partial bijection between two arbitrary subsets
 as an ordinary partial permutation of the full point set,
@@ -101,7 +101,7 @@ theorem finiteBoundedMetricsHaveEPPAAndPreserveUnitClique_one :
     let q : PartialEquiv AType AType :=
       subsetPartialEquiv U T p
     refine ⟨extension q, ?_, ?_⟩
-    · exact A.boundedOne_perm_isometry (extension q)
+    · exact boundedOne_perm_isometry A (extension q)
     · intro x
       have hx : x.1 ∈ q.source := x.2
       have h := hExtension q x.1 hx

@@ -1,5 +1,6 @@
 import AllThoseEPPA.Examples.IntegerMetricBridge
 import Lean.Elab.Tactic.Omega
+import Mathlib.Tactic.FinCases
 
 /-!
 # Distance agreement on a common relational substructure

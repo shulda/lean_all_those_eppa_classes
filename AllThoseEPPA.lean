@@ -337,3 +337,5 @@ import AllThoseEPPA.StrongCompletionTwoClosureGeometry
 import AllThoseEPPA.StrongCompletionNoCrossingTuples
 
 import AllThoseEPPA.StrongCompletionFiveRegionClosure
+
+import AllThoseEPPA.StrongCompletionFiveRegionFreeCut

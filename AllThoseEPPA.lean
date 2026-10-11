@@ -275,6 +275,8 @@ import AllThoseEPPA.Examples.IntegerMetricReaderFacingEPPA
 import AllThoseEPPA.Examples.IntegerMetricCliqueNumber
 import AllThoseEPPA.Examples.IntegerMetricD1EPPA
 import AllThoseEPPA.Examples.IntegerMetricBridge
+import AllThoseEPPA.Examples.IntegerMetricIrreducible
+import AllThoseEPPA.Examples.IntegerMetricPartialIsometries
 import AllThoseEPPA.Examples.IntegerMetricFaithfulCliques
 import AllThoseEPPA.Examples.IntegerMetricFaithfulCliqueTransfer
 import AllThoseEPPA.Examples.IntegerMetricFaithfulCliqueEquality

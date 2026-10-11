@@ -20,8 +20,27 @@ The following first stages are checked and merged:
 - PR #191: `IntegerMetricNoShortcuts.lean`, precise iff for preservation
   of any prescribed direct edge cost, steps ≤ walk weight, and idempotence
   on already-metric costs; green complete CI, axiom audit of 3,174 declarations.
-- PR #192: `IntegerMetricWalkSupport.lean`, candidate finite-vertex support
-  bound for every shortcut (at most D vertices); **CI pending**.
+- PR #192: `IntegerMetricWalkSupport.lean`, proven finite-vertex support
+  bound for every shortcut (at most D vertices); green build and axiom audit.
+- PR #193: `IntegerMetricEquivariance.lean`, every cost-preserving
+  permutation becomes an isometry of the shortest-path completion;
+  merged and fully CI/axiom-audited.
+- PR #194: `IntegerMetricLocalCertificates.lean`, a family of metric
+  certificates for all potential shortcuts on at most D vertices
+  excludes every shortcut, WITHOUT injectivity of the vertex maps;
+  merged after full CI and axiom audit.
+- PR #196: `IntegerMetricPartialCosts.lean`, canonical symmetric direct
+  costs for loop-free, symmetric, uniquely coloured partial structures;
+  merged after full CI and axiom audit.
+- PR #198: `IntegerMetricPairModels.lean`, exact metric models for
+  each coloured pair imply precisely the three shape conditions;
+  merged after full CI and axiom audit.
+
+**CI-pending integration branches:** #195 turns complete encoded-metric
+homomorphisms into isometries; #197 proves every shortcut consists of
+already-labelled edges; #199 proves an old coloured pair is irreducible;
+#200 extracts exact pair models from an arbitrary homomorphism-embedding
+into a metric. No all-D EPPA claim is made by any of these.
 
 
 ## Chosen route
@@ -106,32 +125,36 @@ Proposition 11.3, which is now independently formalized but not needed for this 
 
 ## Next mathematical obligations (after the checked foundations)
 
-1. Complete the finite walk-support cardinality proof in PR #192 and
-   integrate only after green complete Lean CI + axiom audit.
-2. For a locally consistent partially distance-coloured Γ-structure B,
-   define its *symmetric* direct-cost matrix: use its unique positive
-   edge label when specified; otherwise use the default cost D.
-   Prove that automorphisms of B preserve this matrix exactly, hence
-   preserve the canonical shortest-path metric; this is the
-   automorphism-preserving (and coherent) completion interface.
-3. Prove that a B-structure whose substructures of size at most
-   `max D 2` admit ordinary K-homomorphism-embedding completions
-   has no loops, no asymmetric/conflicting colours, and no shortcut
-   shorter than any old labelled edge. Use the finite support
-   of a witness from (1), and triangle inequalities after mapping
-   *individual old edges* into a metric completion. **Do not assume
-   that the local completion is globally injective.**
-4. Show any tree amalgamation of whole copies of a D-metric A has
-   a D-metric completion preserving all old distances. One route:
-   establish hereditary strong amalgamation for the metric class
-   using shortest-path amalgams; alternatively derive exactly
-   the needed tree-case lemma and use the restricted-EPPA theorem
-   directly. Do not duplicate the main construction.
-5. Instantiate the checked Theorem 1.6 transfer (or the equivalent
-   direct `thm:maintree` interface) and conclude a self-contained
-   ordinary/coherent EPPA statement for all D>0; join the already
-   checked D=0 base case. The reader-facing statement must be about
-   finite isometric embeddings and extension of partial isometries.
+1. **Induced-pair exactness.** Finish PRs #195, #197, #199 and #200,
+   then derive exact pair models from ordinary
+   homomorphism-embedding completions of the induced singleton
+   and two-point structures. Since an old relation tuple
+   generates an irreducible closure, reflection holds on that pair,
+   even though the completion need not be globally injective.
+   Apply the checked #198 lemma to prove the shape axioms.
+2. **Actual local path realizations.** From a completion of the induced
+   support of a potentially shortening path (at most D vertices),
+   extract the finite metric certificate in the checked PR #194.
+   PR #197 provides the other key fact: all edges of such a
+   short walk were already labelled, so ordinary homomorphism
+   preservation suffices. Prove no-shortcut preservation of
+   every OLD labelled edge and automorphism preservation by #193.
+3. **Metric SAP / trees.** Prove that tree amalgamations of complete
+   copies of a D-metric A admit exact bounded metric completions.
+   Prefer shortest-path free amalgamation. For the full class-level
+   Theorem 1.6 interface also prove hereditary strong amalgamation
+   of finite D-metrics with the exact-overlap condition. A direct
+   `thm:maintree` route can use the weaker exact tree case.
+4. **Class-level theorem and regression.** Instantiate the checked
+   local-finiteness transfer and derive a standalone ordinary EPPA
+   theorem for all D>0, preferably coherent EPPA using canonical
+   equivariance; join the checked D=0 case. Spell out
+   finite isometric embeddings and partial-isometry extension.
+
+Keep `max D 2` as a safe local consistency bound. The existing
+abstract small-certificate and path-support theorems are NOT yet
+the complete local-finiteness proof; the concrete induced-substructure
+bridges above are essential.
 
 **Small-bound note.** For a direct edge d≤D shortened by a weighted
 walk, its total walk cost is <d and every step costs ≥1. Hence the

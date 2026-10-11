@@ -1177,10 +1177,13 @@ passed full Lean CI + allowed-axiom audit on PR #235
 (Actions run `38161154070`), supported by the separately checked
 conditional manuscript-based reduction PR #234
 (run `38160937629`) and nonempty metric gluing PR #221
-(run `38161139000`). A conflict-free integration of the
-previously checked source blobs is organized in PRs #236 and #237;
-their final CI and merge status must be checked before describing
-the result as *on main*. The existing restriction on `sorryAx`
+(run `38161139000`). The checked sources were subsequently integrated into `main`
+through PRs #236 and #237 (both passed full CI and axiom audit);
+the reader-facing docstrings were corrected in PR #239.
+For downstream projects, the public facade
+`AllThoseEPPA.IntegerMetricEPPA`, usage smoke test and
+[`INTEGER_METRIC_EPPA_API.md`](INTEGER_METRIC_EPPA_API.md)
+provide the supported entry point. The existing restriction on `sorryAx`
 and nonstandard axioms remains in force.
 
 The chronological metric work log has been preserved in

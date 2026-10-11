@@ -5,17 +5,31 @@ distances in {0,1,...,D}, construct a finite *metric* EPPA witness with the
 same distance alphabet. Target both a human-readable ordinary-EPPA theorem
 and, if the verified machinery makes it convenient, coherent EPPA.
 
-**Trust status (2026-10-11).** The only code introduced so far is
-`Examples/IntegerMetricBasic.lean`: mathematical vocabulary and
-diameter-truncation lemmas. There is **no EPPA theorem** here yet.
-Full CI and the axiom audit must pass before merging this first module.
+**Authoritative checkpoint (2026-10-11).** The principal paper theorems
+including Proposition 11.3 are already Lean-formalized on `main` (PR #189,
+green complete build and axiom audit). The **uniform all-D metric EPPA
+regression is NOT yet proved**; the degenerate D=0 case is already proved.
+The following first stages are checked and merged:
+
+- PR #188: `IntegerMetricBasic.lean` and `IntegerMetricBridge.lean`,
+  bounded integer metric vocabulary, relational distance encoding and
+  ordinary EPPA for D=0; green complete CI and axiom audit.
+- PR #190: `IntegerMetricShortestPaths.lean`, minimal weighted walks
+  construct a D-bounded metric on the same carrier; green complete CI,
+  axiom audit of 3,157 declarations.
+- PR #191: `IntegerMetricNoShortcuts.lean`, precise iff for preservation
+  of any prescribed direct edge cost, steps ≤ walk weight, and idempotence
+  on already-metric costs; green complete CI, axiom audit of 3,174 declarations.
+- PR #192: `IntegerMetricWalkSupport.lean`, candidate finite-vertex support
+  bound for every shortcut (at most D vertices); **CI pending**.
+
 
 ## Chosen route
 
 Use the already verified restricted/tree-like theorem `thm:maintree`
 and the already verified locally finite completion transfer
 `thm:mainstrong` (Theorem 1.6). The proof does *not* need
-Proposition 11.3, which is a separate outstanding paper theorem.
+Proposition 11.3, which is now independently formalized but not needed for this application.
 
 1. **Encoding.** For each fixed D, build an ordinary relational Γ-language
    (Γ trivial) with symmetric positive-arity binary distance symbols
@@ -47,7 +61,9 @@ Proposition 11.3, which is a separate outstanding paper theorem.
    asymmetry and conflicting colours on a pair. They also forbid any
    prescribed d-edge whose endpoints are connected by a labelled path
    of total weight < d: each edge has positive weight, hence such a path
-   has fewer than d edges and involves at most d+1 <= D+1 vertices.
+   has fewer than d edges and visits at most d distinct vertices
+   (therefore at most D vertices). This sharper finite-support estimate
+   is the target of PR #192.
    Even an ordinary homomorphism-embedding completion, not assumed
    globally injective, suffices: each existing labelled edge is mapped
    to an edge of precisely the same distance, and triangle inequalities
@@ -88,9 +104,37 @@ Proposition 11.3, which is a separate outstanding paper theorem.
   assumption. The objective is to test the already formalized main
   machinery on a new nontrivial concrete class.
 
-## Current next action
+## Next mathematical obligations (after the checked foundations)
 
-Wait for CI on the first vocabulary module; then implement the
-finite distance-relation encoding, followed by weighted paths and
-canonical shortest-path completion, before attacking strong
-amalgamation and the locally-finite class interface.
+1. Complete the finite walk-support cardinality proof in PR #192 and
+   integrate only after green complete Lean CI + axiom audit.
+2. For a locally consistent partially distance-coloured Γ-structure B,
+   define its *symmetric* direct-cost matrix: use its unique positive
+   edge label when specified; otherwise use the default cost D.
+   Prove that automorphisms of B preserve this matrix exactly, hence
+   preserve the canonical shortest-path metric; this is the
+   automorphism-preserving (and coherent) completion interface.
+3. Prove that a B-structure whose substructures of size at most
+   `max D 2` admit ordinary K-homomorphism-embedding completions
+   has no loops, no asymmetric/conflicting colours, and no shortcut
+   shorter than any old labelled edge. Use the finite support
+   of a witness from (1), and triangle inequalities after mapping
+   *individual old edges* into a metric completion. **Do not assume
+   that the local completion is globally injective.**
+4. Show any tree amalgamation of whole copies of a D-metric A has
+   a D-metric completion preserving all old distances. One route:
+   establish hereditary strong amalgamation for the metric class
+   using shortest-path amalgams; alternatively derive exactly
+   the needed tree-case lemma and use the restricted-EPPA theorem
+   directly. Do not duplicate the main construction.
+5. Instantiate the checked Theorem 1.6 transfer (or the equivalent
+   direct `thm:maintree` interface) and conclude a self-contained
+   ordinary/coherent EPPA statement for all D>0; join the already
+   checked D=0 base case. The reader-facing statement must be about
+   finite isometric embeddings and extension of partial isometries.
+
+**Small-bound note.** For a direct edge d≤D shortened by a weighted
+walk, its total walk cost is <d and every step costs ≥1. Hence the
+number of steps is <d and the visited-vertex set has cardinality
+at most d≤D. The separate `max D 2` includes pair-consistency
+witnesses even when D=1. No optimisation of D beyond this is needed.

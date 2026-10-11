@@ -1,274 +1,139 @@
-# Next regression: EPPA for finite integer metric spaces, uniformly in D
+# Verified regression: EPPA for finite bounded integer metric spaces
 
-**Scope.** For every natural number D and every finite metric space A with
-distances in {0,1,...,D}, construct a finite *metric* EPPA witness with the
-same distance alphabet. Target both a human-readable ordinary-EPPA theorem
-and, if the verified machinery makes it convenient, coherent EPPA.
+## Authoritative mathematical statement
 
-**Authoritative checkpoint (2026-10-11).** The principal paper theorems
-including Proposition 11.3 are already Lean-formalized on `main` (PR #189,
-green complete build and axiom audit). The **uniform all-D metric EPPA
-regression is NOT yet proved**; the degenerate D=0 case is already proved.
-The following first stages are checked and merged:
+**Status: complete Lean proof, 2026-10-11.** The unconditional all-D
+strengthened theorem passed the entire Lean build and axiom audit in
+[PR #235](https://github.com/shulda/lean_all_those_eppa_classes/pull/235),
+CI run `38161154070`. Integration into the single authoritative
+`main` import graph is organized in PRs #236 and #237. Refer to their
+merge state to determine whether the source is already on `main`.
 
-- PR #188: `IntegerMetricBasic.lean` and `IntegerMetricBridge.lean`,
-  bounded integer metric vocabulary, relational distance encoding and
-  ordinary EPPA for D=0; green complete CI and axiom audit.
-- PR #190: `IntegerMetricShortestPaths.lean`, minimal weighted walks
-  construct a D-bounded metric on the same carrier; green complete CI,
-  axiom audit of 3,157 declarations.
-- PR #191: `IntegerMetricNoShortcuts.lean`, precise iff for preservation
-  of any prescribed direct edge cost, steps ≤ walk weight, and idempotence
-  on already-metric costs; green complete CI, axiom audit of 3,174 declarations.
-- PR #192: `IntegerMetricWalkSupport.lean`, proven finite-vertex support
-  bound for every shortcut (at most D vertices); green build and axiom audit.
-- PR #193: `IntegerMetricEquivariance.lean`, every cost-preserving
-  permutation becomes an isometry of the shortest-path completion;
-  merged and fully CI/axiom-audited.
-- PR #194: `IntegerMetricLocalCertificates.lean`, a family of metric
-  certificates for all potential shortcuts on at most D vertices
-  excludes every shortcut, WITHOUT injectivity of the vertex maps;
-  merged after full CI and axiom audit.
-- PR #196: `IntegerMetricPartialCosts.lean`, canonical symmetric direct
-  costs for loop-free, symmetric, uniquely coloured partial structures;
-  merged after full CI and axiom audit.
-- PR #198: `IntegerMetricPairModels.lean`, exact metric models for
-  each coloured pair imply precisely the three shape conditions;
-  merged after full CI and axiom audit.
+For **every** `D : ℕ`, each finite metric `A` with distances in
+`{0,1,...,D}` admits a finite metric `B` with distances in the
+**same** set, together with an isometric embedding `ι : A ↪ B`, such
+that **every isometry between any two subsets of A** extends to a
+global isometry of B, and
 
-**CI-pending integration branches:** #195 turns complete encoded-metric
-homomorphisms into isometries; #197 proves every shortcut consists of
-already-labelled edges; #199 proves an old coloured pair is irreducible;
-#200 extracts exact pair models from an arbitrary homomorphism-embedding
-into a metric. No all-D EPPA claim is made by any of these.
+`maximumUnitCliqueSize B = maximumUnitCliqueSize A`.
 
+This includes empty input spaces and `D=0,1`. There is no ordering,
+auxiliary relation language, predetermined partial-map family, or
+completion hypothesis in the reader-facing conclusion.
 
-## Chosen route
+- **Exact proposition** (quantifiers expanded in the statement):
+  `IntegerMetric.AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+  in `AllThoseEPPA/Examples/IntegerMetricReaderFacingEPPA.lean`.
+- **Proof**:
+  `IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+  in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean`.
+- **Ordinary EPPA corollary**:
+  `IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPA`,
+  from the stronger theorem.
 
-Use the already verified restricted/tree-like theorem `thm:maintree`
-and the already verified locally finite completion transfer
-`thm:mainstrong` (Theorem 1.6). The proof does *not* need
-Proposition 11.3, which is now independently formalized but not needed for this application.
+These are actual theorem declarations with proofs, not unproved
+Prop-valued definitions declared as axioms.
 
-1. **Encoding.** For each fixed D, build an ordinary relational Γ-language
-   (Γ trivial) with symmetric positive-arity binary distance symbols
-   `R_d` for d = 1,...,D, and no function symbols. Interpret a D-bounded
-   integer metric as a complete undirected graph with exactly one colour
-   per unordered pair of distinct vertices. Give explicit embeddings,
-   partial automorphisms and their translation to isometries. For D=0,
-   the class consists only of carrier types of size at most one.
+## Checked proof architecture
 
-2. **Ambient coherent EPPA.** Take the ambient class E to be *all* finite
-   structures in this relational language; ordinary/coherent EPPA follows
-   from the verified general relational theorem. It is not necessary
-   for the ambient witness itself to be a metric or even a partial metric:
-   the conditional local completion hypothesis controls later witnesses.
+For `D ≥ 2`, this application is **a regression test of the general
+EPPA machinery of the manuscript**, not an independent invocation of
+a previously known metric EPPA result:
 
-3. **Canonical shortest-path completion.** For a finite, partially
-   distance-labelled relational structure B, define the path length as
-   the sum of positive edge lengths, and complete missing distances by
-   the minimum of D and the length of a shortest labelled path. Use D
-   when there is no path. Prove symmetry, strict positivity off the
-   diagonal, boundedness, and the triangle inequality (capped addition
-   is subadditive). The construction is intrinsically invariant under
-   every automorphism of B, so automorphisms lift *coherently* without
-   making arbitrary choices.
+1. **Encode complete integer metrics** in a purely relational language
+   with one binary colour for each positive distance `1,...,D`
+   and trivial symbol action. Actual isometries are precisely
+   embeddings of the complete encodings; arbitrary partial
+   isometries produce genuine partial automorphisms.
+2. **Finite metric amalgamation:** Turn a natural-valued metric into a
+   Mathlib real `MetricSpace`, transport the common interface
+   isometrically, and glue using `Metric.GlueSpace` if it is
+   nonempty; use `Metric.metricSpaceSum` if empty. The quotient
+   of finite `X ⊕ Y` is finite. Applying
+   `min D (Nat.ceil (dist x y))` gives another genuine bounded
+   integer metric, preserves all original integral distances
+   exactly, and (for the nonempty interface) identifies the
+   prescribed pairs. This proves the explicit, otherwise
+   conditional `Bridge.HasFiniteMetricAmalgamation D` law.
+3. **Build an actual manuscript amalgamation class**
+   `Bridge.finiteMetricEncodingAmalgamationClass`. Its members are
+   exactly finite complete D-metric encodings. Importantly, a
+   common source of two embeddings need not itself already be
+   presented as a metric: exact relational embeddings induce
+   matching pullback distances on it.
+4. **Use the formalized paper constructions:** Start with
+   `Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA`;
+   apply `TreeLike.restrictedEPPA_from_any_witness` with
+   `n = max D 2`. The result is a finite **irreducible-structure
+   faithful** relational EPPA witness whose small closed pieces
+   homomorphism-embed into literal trees of complete copies of A.
+5. **Complete the small pieces using the manuscript's real
+   amalgamation API**, via
+   `TreeLike.smallClosedTrees_haveCompletions` (Observation 9.4),
+   and translate its *ordinary* K-homomorphism-embedding
+   completions into `HasSmallMetricHomEmbCompletions` without
+   assuming global injectivity.
+6. **Shortest-path metric completion:** Positive integer edge
+   weights give a canonical metric on the same finite carrier.
+   Every hypothetical shortcut for an old edge has support at
+   most `D`, so the local metric certificates rule it out.
+   Source automorphisms act isometrically on the result.
+7. **Clique-size preservation:** For `D≥2`, every distance-one
+   edge in the completed metric was an original colour-one
+   edge. Every complete colour-one clique is irreducible, so
+   the faithful relational witness can move it into the copy
+   of A. Isometric inclusion supplies the reverse inequality.
+   This proves exact equality of maximum unit-clique sizes.
+8. **Reader-facing translation:** The quantified result is
+   stated only in terms of genuine bounded integer metrics,
+   finite carriers, arbitrary subset isometries, permutations
+   extending them, and numeric clique equality.
 
-4. **Local finite obstruction bound.** Require ordinary K-completions of
-   all closed substructures on at most `max D 2` vertices (or use the
-   slightly safer `max (D+1) 2`). Such completions forbid loops,
-   asymmetry and conflicting colours on a pair. They also forbid any
-   prescribed d-edge whose endpoints are connected by a labelled path
-   of total weight < d: each edge has positive weight, hence such a path
-   has fewer than d edges and visits at most d distinct vertices
-   (therefore at most D vertices). This sharper finite-support estimate
-   is the target of PR #192.
-   Even an ordinary homomorphism-embedding completion, not assumed
-   globally injective, suffices: each existing labelled edge is mapped
-   to an edge of precisely the same distance, and triangle inequalities
-   along its image still prohibit the shortcut. Consequently canonical
-   completion preserves all old relation data in the precise
-   `IsHomomorphismEmbedding` sense (on irreducible subsets).
+For `D=0`, the metric carrier has at most one point, and the
+identity witness works. For `D=1`, finite metrics are discrete;
+the already verified finite-set EPPA construction extends all
+partial bijections on the *same* carrier. The shortest-path
+'no new unit edges' observation is NOT valid at `D=1`,
+which is why the branch is treated separately.
 
-5. **Class API.** Package the metric class as a finite hereditary
-   strong-amalgamation class. Amalgamate metrics over a common induced
-   subspace by gluing the carriers and using the bounded shortest-path
-   metric on the union of their coloured edges. Prove that the canonical
-   embeddings remain exact isometries; any shortcut through the other
-   side can be contracted via triangle inequalities in the shared
-   interface. The pushout has exact overlap (strong amalgamation).
-   Establish all hypotheses of `locallyFiniteSubclass_hasCoherentEPPA`
-   and derive the class-level theorem.
+## Main Lean declarations and audit pointers
 
-6. **Reader-facing regression.** Finish with a standalone theorem whose
-   conclusion says: for every finite D-bounded integer metric A, there
-   exist a finite D-bounded integer metric B and an isometric embedding
-   i:A→B such that every partial isometry of A extends to a total
-   isometry of B. The statement must *not* merely be an internal EPPA
-   predicate. Prove D=0 rather than silently assuming D>0.
+| Part | File / theorem | Audit |
+| --- | --- | --- |
+| Full ordinary metric contract | `Examples/IntegerMetricReaderFacingEPPA.lean` | PR #202 |
+| Special cases `D=0,1` | `Examples/IntegerMetricReaderFacingEPPA.lean`, `IntegerMetricD1EPPA.lean` | PRs #202, #205 |
+| Shortest-path metric, local preservation, automorphism lift | `Examples/IntegerMetricShortestPaths.lean`, `IntegerMetricLocalShortcuts.lean`, `IntegerMetricCanonicalAutomorphismLift.lean` | PRs #190–#216, #225 |
+| Faithful maximum unit-clique equality | `Bridge.faithfulShortestPath_preserves_maximumUnitCliqueSize` | PR #209 |
+| Exact canonical automorphism-preserving strong completion | `Examples/IntegerMetricAutPreservingStrongCompletion.lean` | PR #229 (integrated) |
+| Metric↔relational exact embeddings and real rounding | `Examples/IntegerMetricEncodingIsometry.lean`, `IntegerMetricIsometriesToEmbeddings.lean`, `IntegerMetricRealRounding.lean` | PR #229 (integrated) |
+| Ordinary K-small-completion ⇒ local metric certificates | `Bridge.smallClassCompletions_imply_smallMetricCompletions` | PR #232 |
+| Metric pullback and agreement on general relational interface | `IntegerMetricPullback.lean`, `IntegerMetricParallelEmbeddings.lean` | PRs #231, #228 |
+| Finite metric gluing, nonempty/empty common interface | `IntegerMetricGluing.lean`, `IntegerMetricDisjointAmalgam.lean` | PRs #221, #222 |
+| Metric amalgamation ⇒ exact class API | `IntegerMetricAmalgamationClass.lean` | PR #234 dependency |
+| General manuscript EPPA ⇒ stronger D-metric EPPA, conditional on metric AP | `Bridge.unitCliquePreservingMetricEPPA_of_finiteMetricAmalgamation` | PR #234, green run `38160937629` |
+| Complete strengthened reader-facing theorem, all D | `Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique` | PR #235, green run `38161154070` |
 
-## Things to audit explicitly
+**Integration discipline:** Standalone PRs and stacked branches can
+have stale `AllThoseEPPA.lean` imports. PR #236 consolidates checked
+conditional metric theorem modules on the post-#230 main;
+PR #237 adds the remaining real metric gluing and unconditional theorem.
+Neither a green build in isolation nor the mathematical correctness of
+the theorem licenses claiming an *on-main* result before the final
+combined import graph is green and merged.
 
-* New binary relation symbols have *positive* arity and there are no
-  unary or nullary relation loopholes.
-* Ordinary homomorphism-embeddings need not be globally injective, even
-  on short paths; the shortcut obstruction argument must not assume it.
-* The completion must preserve all *existing* edge distances, rather
-  than merely produce some bounded metric on the same carrier.
-* A canonical completion is automorphism-equivariant, including
-  reflection of relational tuples on each irreducible closed subset.
-* The D=0 case must not be discarded by the `D>0` hypothesis of the
-  truncation lemma.
-* No external metric-space EPPA theorem may be used as an unproved
-  assumption. The objective is to test the already formalized main
-  machinery on a new nontrivial concrete class.
+GitHub Actions runs the entire Lean build and project axiom audit.
+Project proofs do not rely on `sorryAx` or custom axioms; only the
+accepted Lean/mathlib logical axioms (`propext`,
+`Classical.choice`, `Quot.sound`) are permitted.
 
-## Next mathematical obligations (after the checked foundations)
+## What remains on the project roadmap
 
-1. **Induced-pair exactness.** Finish PRs #195, #197, #199 and #200,
-   then derive exact pair models from ordinary
-   homomorphism-embedding completions of the induced singleton
-   and two-point structures. Since an old relation tuple
-   generates an irreducible closure, reflection holds on that pair,
-   even though the completion need not be globally injective.
-   Apply the checked #198 lemma to prove the shape axioms.
-2. **Actual local path realizations.** From a completion of the induced
-   support of a potentially shortening path (at most D vertices),
-   extract the finite metric certificate in the checked PR #194.
-   PR #197 provides the other key fact: all edges of such a
-   short walk were already labelled, so ordinary homomorphism
-   preservation suffices. Prove no-shortcut preservation of
-   every OLD labelled edge and automorphism preservation by #193.
-3. **Metric SAP / trees.** Prove that tree amalgamations of complete
-   copies of a D-metric A admit exact bounded metric completions.
-   Prefer shortest-path free amalgamation. For the full class-level
-   Theorem 1.6 interface also prove hereditary strong amalgamation
-   of finite D-metrics with the exact-overlap condition. A direct
-   `thm:maintree` route can use the weaker exact tree case.
-4. **Class-level theorem and regression.** Instantiate the checked
-   local-finiteness transfer and derive a standalone ordinary EPPA
-   theorem for all D>0, preferably coherent EPPA using canonical
-   equivariance; join the checked D=0 case. Spell out
-   finite isometric embeddings and partial-isometry extension.
+This strengthened integer-metric result is the **last planned small
+regression**. The remaining separately scheduled large paper application
+is the `k`-orientations with `d`-closures / Hrushovski-related case
+(Section 9.3). A final manuscript-theorem-statement/API alignment audit
+is also planned. Do not conflate these tasks with the metric regression.
 
-Keep `max D 2` as a safe local consistency bound. The existing
-abstract small-certificate and path-support theorems are NOT yet
-the complete local-finiteness proof; the concrete induced-substructure
-bridges above are essential.
-
-**Small-bound note.** For a direct edge d≤D shortened by a weighted
-walk, its total walk cost is <d and every step costs ≥1. Hence the
-number of steps is <d and the visited-vertex set has cardinality
-at most d≤D. The separate `max D 2` includes pair-consistency
-witnesses even when D=1. No optimisation of D beyond this is needed.
-
-
-## Strengthened regression (2026-10-11): preserve the unit-clique number
-
-**New primary readable assertion:** for every D, the finite EPPA witness B
-can be chosen so that its largest set of pairwise distance-1 vertices
-has exactly the same cardinality as in A. The standalone target is
-`FiniteBoundedMetricsHaveEPPAAndPreserveUnitClique D`;
-the old EPPA-only target remains available as a weaker comparator.
-See `METRIC_EPPA_READABLE_TARGET.md` and PR #202 (checked/merged).
-
-The reason to test this stronger assertion is precisely the scope of
-the formalized *irreducible-structure faithfulness* theorem, not an
-unrelated direct metric construction.
-
-**Two proof mechanisms for D >= 2:**
-
-1. Every complete monochromatic binary clique in the relational
-   witness is irreducible. Thus the faithful witness's automorphism
-   moves it into the embedded original A; reflection by the embedding
-   preserves its colour and cardinality. PR #204 isolates
-   irreducibility, PR #206 isolates exact cardinality transport.
-2. For any symmetric **positive integer** edge costs, a walk of total
-   weight 1 consists of one original weight-1 edge. For a partial
-   distance structure of bound D >= 2, an unlabelled pair is assigned
-   default cost D > 1, so canonical shortest-path completion cannot
-   add a new distance-1 edge. PR #203 isolates this fact.
-
-An isometric embedding A -> B gives the reverse clique-size inequality.
-PR #207 formalizes the elementary numerical maximum-clique lemmas.
-
-**D=1 warning, not an obstruction to the theorem.** Default cost D=1
-would turn missing edges into 1-edges; therefore the no-new-unit-edges
-statement for this completion is FALSE at D=1. Instead all genuine
-1-bounded metrics are discrete, and the finite-set EPPA theorem
-extends partial bijections on the same carrier. Choose B=A, preserving
-its unit-clique size automatically. PR #205 formalizes this application
-of the existing finite-set theorem. D=0 has a separately checked
-identity-witness proof.
-
-**Important scope guard:** The already verified class-level
-locally-finite completion transfer, by itself, only promises *some*
-completion in K. An arbitrary completion may add new distance-1
-edges, so the extra clique equality is not automatic from the
-class-level existential transfer alone. To obtain the stronger test,
-explicitly choose the canonical shortest-path metric completion
-in the final construction and preserve the irreducible-faithful
-property of the intermediate relational witness. One can use the
-checked restricted/tree-like theorem directly and invoke metric
-amalgamation to discharge its bounded local obligations.
-
-**Status:** these are independently auditable proof obligations.
-None of the PRs above may be interpreted as a proof of the entire
-all-D strengthened EPPA claim until the final derivation is checked.
-
-
-### 2026-10-11: faithful maximum unit-clique equality CLOSED; local completion bridge active
-
-The conditional theorem
-`Bridge.faithfulShortestPath_preserves_maximumUnitCliqueSize`
-is now checked and **merged** from PR #209. Full Lean build:
-1,378 jobs. Axiom audit: 3,365 declarations, standard allowed
-axioms only. This formally combines:
-
-- irreducibility and faithful transport of every old distance-one
-  relational clique;
-- fact that shortest-path completion introduces no unit edges
-  for D>=2;
-- maximum numeric unit-clique bound and the reverse inequality
-  from the isometric original copy.
-
-This is a conditional theorem: it requires the original metric A to
-remain isometric in the canonical completed intermediate witness.
-It does **not** by itself prove the existence of a complete EPPA
-witness of the metric class. The main readably quantified
-`AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique` remains an
-OPEN proposition, never assumed as an axiom.
-
-The D=0 and D=1 strengthened standalone cases are already checked
-and merged. For D>1, the next concrete dependencies are:
-
-1. **PR #210 (CI pending):** all induced subsets on at most two
-   vertices have ordinary homomorphism-embedding metric completions
-   => all old partial distance colours are loop-free, symmetric,
-   and uniquely labelled. Uses the already verified #200
-   irreducible-pair reflection. No global injectivity required.
-2. **PR #211 (CI pending, stacked):** a labelled walk is metrically
-   preserved by any map that preserves old relation edges on a
-   superset of its support, without preserving artificial default
-   costs on missing edges.
-3. **PR #212 (CI pending, stacked):** all subsets on at most
-   `max D 2` vertices admit metric homomorphism-embedding
-   completions => shortest-path completion preserves EVERY old
-   labelled edge, via the at-most-D support of any shortcut.
-4. **PR #213 (CI pending):** every relational automorphism of
-   the partial colour structure preserves the canonical direct
-   cost matrix and hence induces an isometry of its canonical
-   metric completion.
-
-Once these are audited, prove metric strong amalgamation /
-finite metric completions of A-tree amalgamations, connect
-them to the formalized restricted EPPA theorem and produce
-the actual strengthened readable all-D conclusion.
-
-**Application scope:** these metric tests are the last
-small regression application presently being pursued. The
-larger planned k-orientations application remains separately
-on the menu, and the repository's Hrushovski-construction
-application remains explicitly deferred. They should not
-be silently identified without checking their exact
-statements.
+For the complete earlier exploratory plan, failed proof attempts,
+intermediate PR status and chronological audit notes, see
+[the archived 2026-10-11 roadmap](METRIC_EPPA_ROADMAP_ARCHIVE_20261011.md).

@@ -1,6 +1,6 @@
 # Readable EPPA regression: bounded integer metric spaces
 
-The theorem we want to derive from the already-formalized general
+The theorem **proved in Lean** using the already-formalized general
 constructions has the following complete mathematical meaning.
 
 > **For every natural number D**, every finite metric space A with
@@ -24,7 +24,7 @@ podmnožinami původního prostoru odpovídá izometrie celého svědka,
 která ji rozšiřuje. **Navíc se zachová velikost největší množiny
 bodů, v níž každé dva různé body mají vzdálenost 1.**
 
-## Exactly what Lean will check
+## Exact Lean theorem and proof audit
 
 The **primary stronger contract** is
 `IntegerMetric.FiniteBoundedMetricsHaveEPPAAndPreserveUnitClique D`
@@ -42,9 +42,14 @@ The weaker original contract `FiniteBoundedMetricsHaveEPPA D`
 is retained for comparison, and is a verified logical consequence
 of the stronger statement. The all-D strengthened target is
 `AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`.
-It is currently **only a Prop-valued definition, NOT a proved
-theorem and NOT an axiom**. The case D=0 has a checked explicit
-identity-witness proof. The complete all-D claim remains open.
+It is a Prop-valued definition (not an axiom). The fully proved theorem
+`IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean`
+**inhabits that exact proposition for every D**, with no additional
+hypotheses. The case D=0 has an identity-witness proof and the case
+D=1 uses the checked finite-set EPPA construction. The full proof
+passed Lean CI and the complete project axiom audit on PR #235;
+its final import/integration is PR #237.
 
 ## What is being tested
 
@@ -53,14 +58,15 @@ The test checks whether the Lean versions of the paper's general
 EPPA constructions are strong enough to *derive this completely
 standalone statement*.
 
-We may develop whichever intermediate representation and stronger
-technical lemmas make the proof clearest. The **final proof** must
-provide the bridge from the already-verified general EPPA theorem
-(restricted/tree-like construction and locally finite completion
-transfer) to the above straightforward metric statement. A separate
-direct construction of metric EPPA alone would not test the scope of
-the manuscript formalization; it would be an independent theorem
-of a different kind.
+The completed proof **does** bridge the checked unrestricted faithful and
+restricted/tree-like EPPA theorems to the above ordinary metric statement.
+It uses ordinary finite metric amalgamation to complete the small
+A-copy trees; local homomorphism-embedding metric completions give the
+short-path certificate, while the faithful construction preserves the
+maximum unit-clique number. No external metric EPPA theorem is assumed.
+The separate locally finite subclass transfer theorem is already checked
+but is not itself needed in this more direct faithful restricted-witness
+application.
 
 Current project state is recorded in [METRIC_EPPA_ROADMAP.md](METRIC_EPPA_ROADMAP.md).
 The previously audited examples
@@ -70,7 +76,7 @@ self-contained quantified public statements.
 
 ## Why the extra clique condition is natural
 
-For D >= 2, the proof will exploit two independently checkable
+For D >= 2, the completed proof combines two independently Lean-checked
 mechanisms:
 
 1. The faithful relational EPPA construction does not create a
@@ -89,19 +95,23 @@ default cost 1, so the sentence “shortest-path completion never
 introduces unit edges” is false as stated for this construction.
 The resulting metric class is simply finite discrete spaces:
 every distinct pair has distance 1, and partial isometries are
-partial bijections. Handle D=1 separately using finite-set EPPA,
-which is already formalized, or provide an equivalent exact
-completion route. D=0 also has a separate trivial proof.
+partial bijections. The proof handles D=1 separately using the
+already-formalized finite-set EPPA theorem. D=0 uses an explicit
+identity-witness argument.
 The strengthened statement includes all D, including 0 and 1.
 The D=1 case is now formalized as
 `finiteBoundedMetricsHaveEPPAAndPreserveUnitClique_one`
 in `Examples/IntegerMetricD1EPPA.lean` (merged PR #205).
 
-**What remains to prove:** the global all-D strengthened theorem.
-The faithful clique irreducibility and cardinality transfer
-(PRs #204/#206), the no-new-unit-edge shortest-path lemma
-(PR #203), and maximum-clique-number arithmetic (PR #207)
-are separately CI/axiom-audited. Their combined conditional
-application is prepared in PR #209 and still needs its full
-integration audit and the remaining metric EPPA construction.
-Nothing is silently assumed by merely defining the target.
+**Final audit trail (2026-10-11).** The faithful maximum-clique transfer
+was checked and merged in PR #209. Exact metric shortest-path strong
+completion, partial-isometry/automorphism bridges and real-metric rounding
+were integrated in PRs #216–#230. Metric amalgamation is assembled from
+Mathlib's real `Metric.GlueSpace` for nonempty interfaces (PR #221) and
+real metric disjoint unions for empty interfaces (PR #222), with exact
+integer-distance preservation after ceiling-and-cap truncation.
+The manuscript-based conditional reduction is checked in PR #234.
+The unconditional fully quantified strengthened metric EPPA theorem passed
+the full Lean build and axiom audit in PR #235. Integration is tracked
+in PRs #236–#237. See `METRIC_EPPA_ROADMAP.md` for dependencies and
+merging information.

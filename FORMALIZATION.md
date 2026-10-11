@@ -41,7 +41,7 @@ green.
 | Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
 | Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Regression: diameter-zero integer metrics | `AllThoseEPPA/Examples/IntegerMetricBasic.lean`; `IntegerMetric.BoundedNatMetric.zero_diameter_eppa` | **Formalized** | Standalone ordinary EPPA statement for every finite metric whose distances lie in `{0}`; all carriers are empty or singleton. PR #188, full Lean CI and axiom audit green (run `38140822704`), merged `067ea76a`. |
-| Regression: finite integer metrics with distances `{0,...,D}`, uniformly in `D` | `AllThoseEPPA/Examples/IntegerMetricBasic.lean`, `IntegerMetricBridge.lean`; ongoing shortest-path completion PR #190 | **Planned** | Genuine all-D EPPA theorem is not proved yet. Metric and relational-encoding groundwork is CI-checked; next establish canonical shortest-path completion preserving old labels under a bounded-local-consistency hypothesis, then instantiate the general restricted/tree-like EPPA machinery. See `METRIC_EPPA_ROADMAP.md`. |
+| Regression: finite integer metrics with distances `{0,...,D}`, uniformly in `D`, preserving maximal unit-clique size | `AllThoseEPPA/Examples/IntegerMetricReaderFacingEPPA.lean`; `IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique` in `AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean` | **Formalized** | Genuine completely quantified EPPA for every finite D-bounded integer metric, with same distance alphabet, all partial subset isometries extended, and exactly the same largest pairwise-distance-one clique; includes D=0/1 and empty inputs. Derives from the checked unrestricted faithful and restricted/tree-like manuscript EPPA construction through metric amalgamation, local shortest-path completion, automorphism lifts and faithfulness. Full Lean build+axiom audit green on PR #235 (run `38161154070`), integration PRs #236–#237. See `METRIC_EPPA_ROADMAP.md`. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
 
 
@@ -1136,11 +1136,53 @@ induction. This verifies the proposition in a slightly more general
 setting than the manuscript, without requiring every member of K
 to be irreducible.
 
-**Resulting scope:** all principal general construction theorems
-tracked in the table (including Theorems 1.5 and 1.6 and Proposition
-11.3) are now formalized. This does not claim all applications or
-every incidental lemma of the paper. Remaining work is a final
-theorem-statement/interface audit, and application-level regressions.
-The next priority is EPPA for finite metric spaces with distances
-`{0,1,...,D}`, uniformly in the natural number `D`, using
-shortest-path completion; the Hrushovski application remains deferred.
+**Resulting scope (2026-10-11):** all principal general
+construction theorems tracked in the table (including Theorems 1.5
+and 1.6 and Proposition 11.3) and the complete strengthened metric
+EPPA regression are now Lean-verified. This does not claim all
+applications or every incidental lemma of the paper. The remaining
+planned substantial paper application is EPPA for k-orientations with
+d-closures (the Hrushovski-related Section 9.3 setting), together
+with a final theorem-statement/interface audit.
+
+### Final small regression: integer-metric EPPA, all D (2026-10-11)
+
+The checked theorem
+`IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+proves the exact proposition
+`IntegerMetric.AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`.
+Its statement quantifies over **every** natural diameter parameter D,
+**every** finite D-bounded integer metric A, a **finite D-bounded**
+metric B and an **isometric embedding**, **every** isometry between
+arbitrary subsets of A and a global B-isometry extending it, together
+with equality of maximum pairwise-distance-one clique cardinality.
+No auxiliary linear order or internal Γ-language appears in that
+conclusion. The ordinary EPPA corollary follows by forgetting the
+extra clique condition.
+
+For D≥2, the proof genuinely uses
+`Faithful.finiteOrbitUnaryStructuresHaveFaithfulCoherentEPPA` and
+`TreeLike.restrictedEPPA_from_any_witness`. Observation 9.4
+`TreeLike.smallClosedTrees_haveCompletions` transfers the local
+small-A tree certificates to actual metric K-completions. Positive
+integer shortest-path completion respects the old metric colours
+and all source automorphisms; the faithful witness transfers each
+new unit clique into A. Finite metric AP is independently obtained
+by exact real `Metric.GlueSpace` amalgamation and rounding/capping,
+plus disjoint-union metric amalgamation for an empty interface.
+D=0 and D=1 use separately checked base-case proofs.
+
+**Audit:** the complete unconditional strengthened metric theorem
+passed full Lean CI + allowed-axiom audit on PR #235
+(Actions run `38161154070`), supported by the separately checked
+conditional manuscript-based reduction PR #234
+(run `38160937629`) and nonempty metric gluing PR #221
+(run `38161139000`). A conflict-free integration of the
+previously checked source blobs is organized in PRs #236 and #237;
+their final CI and merge status must be checked before describing
+the result as *on main*. The existing restriction on `sorryAx`
+and nonstandard axioms remains in force.
+
+The chronological metric work log has been preserved in
+`METRIC_EPPA_ROADMAP_ARCHIVE_20261011.md`; the concise authoritative
+dependency map is now in `METRIC_EPPA_ROADMAP.md`.

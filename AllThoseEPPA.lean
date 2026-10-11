@@ -329,3 +329,5 @@ import AllThoseEPPA.StrongCompletionHereditaryStrongAmalgamation
 import AllThoseEPPA.StrongCompletionClassAPI
 
 import AllThoseEPPA.StrongCompletionKernelClosure
+
+import AllThoseEPPA.StrongCompletionFibreBijection

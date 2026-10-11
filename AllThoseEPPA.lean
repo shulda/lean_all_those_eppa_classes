@@ -351,3 +351,5 @@ import AllThoseEPPA.StrongCompletionLocalQuotientCarrier
 import AllThoseEPPA.StrongCompletionLocalCollapseUnaryFibres
 
 import AllThoseEPPA.StrongCompletionPushforward
+
+import AllThoseEPPA.StrongCompletionPushforwardLocalExact

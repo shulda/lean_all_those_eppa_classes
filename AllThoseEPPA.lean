@@ -357,3 +357,5 @@ import AllThoseEPPA.StrongCompletionPushforwardLocalExact
 import AllThoseEPPA.StrongCompletionPushforwardFibreCriterion
 
 import AllThoseEPPA.StrongCompletionPrimitivePairWitness
+
+import AllThoseEPPA.StrongCompletionInducedPrimitivePairSupport

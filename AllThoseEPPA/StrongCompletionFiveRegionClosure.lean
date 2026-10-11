@@ -44,19 +44,12 @@ theorem leftActive_generates_left
     (A : Structure L V) (l r : V)
     (hL : ∀ z : V, z ∈ A.leftExclusive l r →
       l ∈ A.closureAtSet z)
+    (hl : l ∈ A.leftExclusive l r)
     {z : V} (hz : z ∈ A.leftActive l r) :
     l ∈ A.closureAtSet z := by
   rcases hz with hL₁ | hL₂
   · exact hL z hL₁
-  · have hl : l ∈ A.leftExclusive l r :=
-      by
-        by_cases hlr : l ∈ A.leftExclusive l r
-        · exact hlr
-        · have hz₁ : z ∉ A.leftExclusive l r := hL₂.1
-          -- This auxiliary fact is not required below; use l∈Cl(l)
-          -- when the exclusive part has the distinguished generator.
-          exact hlr.elim
-    exact hL₂.2 hl
+  · exact hL₂.2 hl
 
 /-- Right-hand analogue of the generated-point assertion. -/
 theorem rightActive_generates_right

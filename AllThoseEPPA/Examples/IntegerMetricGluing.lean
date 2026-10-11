@@ -37,8 +37,8 @@ theorem finiteAmalgam_viaRealGlue
     (MY : BoundedNatMetric D Y)
     {Φ : Z → X} {Ψ : Z → Y}
     (hΦ : Isometry Φ) (hΨ : Isometry Ψ)
-    (hX : ∀ x y : X, dist x y = (MX.dist x y : ℝ))
-    (hY : ∀ x y : Y, dist x y = (MY.dist x y : ℝ)) :
+    (hX : ∀ x y : X, _root_.dist x y = (MX.dist x y : ℝ))
+    (hY : ∀ x y : Y, _root_.dist x y = (MY.dist x y : ℝ)) :
     ∃ (W : Type (max u v)) (_ : Finite W)
       (M : BoundedNatMetric D W)
       (ιX : X → W) (ιY : Y → W),

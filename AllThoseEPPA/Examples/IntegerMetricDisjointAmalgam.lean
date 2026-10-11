@@ -27,8 +27,8 @@ theorem finiteDisjointAmalgam_viaRealSum
     (D : ℕ) (hD : 0 < D)
     (MX : BoundedNatMetric D X)
     (MY : BoundedNatMetric D Y)
-    (hX : ∀ x y : X, dist x y = (MX.dist x y : ℝ))
-    (hY : ∀ x y : Y, dist x y = (MY.dist x y : ℝ)) :
+    (hX : ∀ x y : X, _root_.dist x y = (MX.dist x y : ℝ))
+    (hY : ∀ x y : Y, _root_.dist x y = (MY.dist x y : ℝ)) :
     ∃ (W : Type (max u v)) (_ : Finite W)
       (M : BoundedNatMetric D W)
       (ιX : X → W) (ιY : Y → W),

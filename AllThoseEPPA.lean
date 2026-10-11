@@ -297,6 +297,7 @@ import AllThoseEPPA.Examples.IntegerMetricLocalCertificates
 import AllThoseEPPA.Examples.IntegerMetricEquivariance
 import AllThoseEPPA.Examples.IntegerMetricAutomorphismCosts
 import AllThoseEPPA.Examples.IntegerMetricRealRounding
+import AllThoseEPPA.Examples.IntegerMetricGluing
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto

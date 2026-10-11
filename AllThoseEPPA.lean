@@ -380,3 +380,5 @@ import AllThoseEPPA.StrongCompletionUnaryFibreCongruence
 import AllThoseEPPA.StrongCompletionSafeDescent
 import AllThoseEPPA.StrongCompletionSafeQuotient
 import AllThoseEPPA.StrongCompletionLocalExactFactorization
+
+import AllThoseEPPA.StrongCompletionCollapseSideInjectivity

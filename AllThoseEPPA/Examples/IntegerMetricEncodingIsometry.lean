@@ -43,7 +43,7 @@ theorem distance_preserved_by_encoding_embedding
       omega
     have hTarget :=
       (e.map_rel_iff (RelSymbol.edge d) ![x,y]).mpr hOld
-    change B.dist (e x) (e y) = d.val + 1 at hTarget
+    change B.dist (e x) (e y) = A.dist x y - 1 + 1 at hTarget
     omega
 
 end Bridge

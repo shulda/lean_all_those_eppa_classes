@@ -363,3 +363,6 @@ import AllThoseEPPA.StrongCompletionPrimitivePairWitness
 import AllThoseEPPA.StrongCompletionFreeCutLocalExactness
 
 import AllThoseEPPA.StrongCompletionFreeCutHomGlue
+
+import AllThoseEPPA.StrongCompletionClosedImageUnary
+import AllThoseEPPA.StrongCompletionFreeCutSAP

@@ -349,3 +349,5 @@ import AllThoseEPPA.StrongCompletionLocalCollapse
 import AllThoseEPPA.StrongCompletionLocalQuotientCarrier
 
 import AllThoseEPPA.StrongCompletionLocalCollapseUnaryFibres
+
+import AllThoseEPPA.StrongCompletionKernelDefect

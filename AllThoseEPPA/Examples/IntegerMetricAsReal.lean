@@ -44,7 +44,7 @@ of the original metric distance. -/
 theorem NatMetric.toRealMetricSpace_dist
     {V : Type u} (M : NatMetric V) (x y : V) :
     letI : MetricSpace V := M.toRealMetricSpace
-    dist x y = (M.dist x y : ℝ) := by
+    _root_.dist x y = (M.dist x y : ℝ) := by
   rfl
 
 end IntegerMetric

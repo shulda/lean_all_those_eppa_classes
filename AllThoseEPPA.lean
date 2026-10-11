@@ -384,3 +384,5 @@ import AllThoseEPPA.StrongCompletionLocalExactFactorization
 import AllThoseEPPA.StrongCompletionCollapseSideInjectivity
 
 import AllThoseEPPA.StrongCompletionProposition113
+
+import AllThoseEPPA.StrongCompletionProposition113API

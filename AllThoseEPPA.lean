@@ -331,3 +331,5 @@ import AllThoseEPPA.StrongCompletionClassAPI
 import AllThoseEPPA.StrongCompletionKernelClosure
 
 import AllThoseEPPA.StrongCompletionFibreBijection
+
+import AllThoseEPPA.StrongCompletionTwoClosureGeometry

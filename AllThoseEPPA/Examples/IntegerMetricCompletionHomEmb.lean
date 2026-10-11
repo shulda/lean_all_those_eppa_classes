@@ -178,7 +178,8 @@ noncomputable def canonicalCompletionHom
           funext i
           fin_cases i <;> rfl
         have hPair : B.rel (RelSymbol.edge d) ![xs 0, xs 1] := by
-          simpa only [ht] using hR
+          rw [ht] at hR
+          exact hR
         exact hOld d (xs 0) (xs 1) hPair
   map_func := by
     intro n F xs
@@ -227,17 +228,22 @@ theorem canonicalCompletionHom_isHomomorphismEmbedding
               (hxs 0) (hxs 1) hxy
           · have heDist := hOld e (xs 0) (xs 1) he
             have hed : e = d := Fin.ext (by omega)
-            simpa only [ht, hed] using he
+            rw [ht]
+            rw [← hed]
+            exact he
           · have heForward :
                 B.rel (RelSymbol.edge e) ![xs 0,xs 1] :=
               hB.symmetric e (xs 1) (xs 0) he
             have heDist := hOld e (xs 0) (xs 1) heForward
             have hed : e = d := Fin.ext (by omega)
-            simpa only [ht, hed] using heForward
+            rw [ht]
+            rw [← hed]
+            exact heForward
         · intro he
           have heForward :
               B.rel (RelSymbol.edge d) ![xs 0,xs 1] := by
-            simpa only [ht] using he
+            rw [ht] at he
+            exact he
           exact hOld d (xs 0) (xs 1) heForward
   · intro n F xs hxs
     exact F.elim

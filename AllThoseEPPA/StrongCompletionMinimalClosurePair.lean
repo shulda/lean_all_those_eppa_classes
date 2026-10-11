@@ -1,5 +1,5 @@
 import Mathlib.Data.Set.Card
-import Mathlib.Tactic
+import Lean.Elab.Tactic.Omega
 import AllThoseEPPA.StrongCompletionTwoClosureGeometry
 
 /-!

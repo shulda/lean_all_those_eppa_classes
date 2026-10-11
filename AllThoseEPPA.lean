@@ -272,6 +272,7 @@ import AllThoseEPPA.Examples.Hypergraph3
 import AllThoseEPPA.Examples.Hypergraph3K4Free
 import AllThoseEPPA.Examples.IntegerMetricBasic
 import AllThoseEPPA.Examples.IntegerMetricBridge
+import AllThoseEPPA.Examples.IntegerMetricColouredPairIrreducible
 import AllThoseEPPA.Examples.IntegerMetricShortestPaths
 import AllThoseEPPA.Examples.IntegerMetricNoShortcuts
 import AllThoseEPPA.Examples.IntegerMetricWalkSupport

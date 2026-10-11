@@ -298,6 +298,8 @@ import AllThoseEPPA.Examples.IntegerMetricEquivariance
 import AllThoseEPPA.Examples.IntegerMetricAutomorphismCosts
 import AllThoseEPPA.Examples.IntegerMetricCompletionHomEmb
 import AllThoseEPPA.Examples.IntegerMetricRealRounding
+import AllThoseEPPA.Examples.IntegerMetricEncodingIsometry
+import AllThoseEPPA.Examples.IntegerMetricIsometriesToEmbeddings
 
 import AllThoseEPPA.TreeLikeInfiniteCopiesIrreducibleHomEmb
 import AllThoseEPPA.TreeLikeInfiniteCopiesInterfaceAuto

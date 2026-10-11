@@ -36,6 +36,8 @@ theorem finiteDisjointAmalgam_viaRealSum
       (∀ x y : Y, M.dist (ιY x) (ιY y) = MY.dist x y) ∧
       (∀ x : X, ∀ y : Y, ιX x ≠ ιY y) := by
   classical
+  letI : Fintype X := Fintype.ofFinite X
+  letI : Fintype Y := Fintype.ofFinite Y
   letI : MetricSpace (X ⊕ Y) := Metric.metricSpaceSum
   let M : BoundedNatMetric D (X ⊕ Y) :=
     realMetricRounded D hD
@@ -43,12 +45,12 @@ theorem finiteDisjointAmalgam_viaRealSum
   · intro x y
     apply realMetricRounded_dist_of_integer D hD
       (Sum.inl x : X ⊕ Y) (Sum.inl y) (MX.dist x y)
-    · exact (Metric.isometry_inl x y).trans (hX x y)
+    · exact ((Metric.isometry_inl (X := X) (Y := Y)).dist_eq x y).trans (hX x y)
     · exact MX.dist_le x y
   · intro x y
     apply realMetricRounded_dist_of_integer D hD
       (Sum.inr x : X ⊕ Y) (Sum.inr y) (MY.dist x y)
-    · exact (Metric.isometry_inr x y).trans (hY x y)
+    · exact ((Metric.isometry_inr (X := X) (Y := Y)).dist_eq x y).trans (hY x y)
     · exact MY.dist_le x y
   · intro x y h
     cases h

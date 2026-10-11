@@ -365,3 +365,5 @@ import AllThoseEPPA.StrongCompletionInducedPrimitivePairSupport
 import AllThoseEPPA.StrongCompletionDescendedPrimitiveInjectivity
 import AllThoseEPPA.StrongCompletionPushforwardDescendedFunctions
 import AllThoseEPPA.StrongCompletionSafeDescent
+
+import AllThoseEPPA.StrongCompletionSafeQuotient

@@ -351,3 +351,5 @@ import AllThoseEPPA.StrongCompletionLocalQuotientCarrier
 import AllThoseEPPA.StrongCompletionLocalCollapseUnaryFibres
 
 import AllThoseEPPA.StrongCompletionKernelDefect
+
+import AllThoseEPPA.StrongCompletionMinimalFactorization

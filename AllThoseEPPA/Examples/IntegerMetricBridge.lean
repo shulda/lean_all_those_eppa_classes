@@ -1,6 +1,7 @@
 import AllThoseEPPA.Examples.IntegerMetricBasic
 import AllThoseEPPA.UnrestrictedFaithfulEPPA
 import Mathlib.Algebra.Group.PUnit
+import Mathlib.Data.Fin.VecNotation
 
 /-!
 # Relational encoding of finite bounded integer metrics

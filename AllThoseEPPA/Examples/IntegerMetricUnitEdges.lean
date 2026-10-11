@@ -48,9 +48,9 @@ theorem directCost_eq_one_of_weight_eq_one
       | nil b =>
           simpa [weight] using hWeight
       | @step b c z hbc rest =>
-          have habPos : 0 < C.cost a b := C.cost_pos hab
-          have hbcPos : 0 < C.cost b c := C.cost_pos hbc
-          change C.cost a b + (C.cost b c + rest.weight C) = 1 at hWeight
+          have habPos := C.cost_pos hab
+          have hbcPos := C.cost_pos hbc
+          simp only [weight] at hWeight
           omega
 
 end Walk

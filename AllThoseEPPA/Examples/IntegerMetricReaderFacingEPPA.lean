@@ -15,13 +15,15 @@ completion APIs. Its quantified statement only mentions:
 * a partial isometry between arbitrary subsets of the old points;
 * its extension to an isometry of the whole finite witness.
 
-Two standalone regression goals are recorded: ordinary EPPA and its
+Two standalone EPPA propositions are recorded: ordinary EPPA and its
 strengthening preserving the largest clique of mutual distance one.
-The corresponding theorems for ALL D are **not proved here yet**.
-The sole proved regression in this file is the degenerate case D=0.
-The ultimate all-D theorem must be derived from the checked general
-EPPA machinery, so that it genuinely tests the formalized manuscript
-and is not merely an unrelated proof of metric EPPA.
+Their unconditional proofs for ALL D appear in
+`IntegerMetricAllDMainTheorem.lean`, under the names
+`Bridge.allFiniteBoundedMetricsHaveEPPA` and
+`Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`.
+The latter genuinely uses the checked faithful restricted/tree-like
+EPPA machinery from the formalized manuscript, rather than an external
+metric EPPA theorem. The elementary D=0 proof is also given here.
 -/
 
 namespace AllThoseEPPA
@@ -38,8 +40,8 @@ of A extends to a global isometry of B.
 
 The conclusion intentionally contains no reference to the
 project's internal notion of EPPA or to Γ-homomorphism-embeddings.
-The exact implication is what the final main-theorem regression
-must establish. -/
+This is proved by `Bridge.allFiniteBoundedMetricsHaveEPPA`
+in `IntegerMetricAllDMainTheorem.lean`. -/
 def FiniteBoundedMetricsHaveEPPA (D : ℕ) : Prop :=
   ∀ {AType : Type u} [Finite AType]
     (A : BoundedNatMetric D AType),
@@ -104,8 +106,10 @@ def FiniteBoundedMetricsHaveEPPAAndPreserveUnitClique
           (∀ x : U, g (ι x.1) = ι (p x).1)) ∧
       maximumUnitCliqueSize B = maximumUnitCliqueSize A
 
-/-- The primary strengthened all-D target; a named **proposition**,
-not an axiom and not yet a proved theorem. -/
+/-- The strengthened all-D proposition (not an axiom).
+The unconditional proof is
+`Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`
+in `IntegerMetricAllDMainTheorem.lean`. -/
 def AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique : Prop :=
   ∀ D : ℕ, FiniteBoundedMetricsHaveEPPAAndPreserveUnitClique.{u} D
 
@@ -139,9 +143,9 @@ theorem finiteBoundedMetricsHaveEPPAAndPreserveUnitClique_zero :
       exact Subsingleton.elim _ _
   · rfl
 
-/-- The full regression goal, stated uniformly in the diameter
-parameter. This proposition is currently an OPEN proof target,
-not a theorem, assumption, or axiom. -/
+/-- Ordinary metric EPPA for all diameter bounds. This named proposition
+is proved unconditionally by `Bridge.allFiniteBoundedMetricsHaveEPPA`
+in `IntegerMetricAllDMainTheorem.lean`; it is not an axiom. -/
 def AllFiniteBoundedMetricsHaveEPPA : Prop :=
   ∀ D : ℕ, FiniteBoundedMetricsHaveEPPA.{u} D
 

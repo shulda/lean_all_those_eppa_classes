@@ -141,7 +141,7 @@ noncomputable def toSymmetricCost
           rintro ⟨d, hd⟩
           exact hExists ⟨d, hB.symmetric d y x hd⟩
         rw [candidateCost_of_no_edge B hxy hExists,
-            candidateCost_of_no_edge B hxy.symm hReverse]
+            candidateCost_of_no_edge B (Ne.symm hxy) hReverse]
   · intro x y
     by_cases hxy : x = y
     · subst y

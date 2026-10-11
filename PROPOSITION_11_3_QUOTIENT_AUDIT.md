@@ -91,3 +91,11 @@ decompositions in this function-free example gives:
 This enumeration was an external finite check, not a Lean
 formalization. It should eventually become a dedicated Lean
 regression before claiming the full Proposition 11.3 is closed.
+
+The exhaustive verifier is included as
+`scripts/check_naive_pushforward_counterexample.py`.
+Run it with `python3 scripts/check_naive_pushforward_counterexample.py`.
+It enumerates every induced vertex set and every candidate proper
+free decomposition against all supported relation tuples, so the
+homomorphism-embedding checks do not rely on the graph-clique
+characterization as an untested shortcut.

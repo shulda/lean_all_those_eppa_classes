@@ -343,3 +343,5 @@ import AllThoseEPPA.StrongCompletionFiveRegionFreeCut
 import AllThoseEPPA.StrongCompletionCollisionMeasure
 
 import AllThoseEPPA.StrongCompletionClosureIsomorphism
+
+import AllThoseEPPA.StrongCompletionLocalCollapse

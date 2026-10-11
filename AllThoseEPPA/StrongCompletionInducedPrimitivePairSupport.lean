@@ -89,7 +89,7 @@ theorem irreducible_induced_primitivePairWitness
       · rintro ⟨a, ⟨i, hi⟩, hval⟩
         refine ⟨i, ?_⟩
         change (xs i).1 = z
-        rw [← hi]
+        rw [hi]
         exact hval
       · rintro ⟨i, rfl⟩
         exact ⟨xs i, ⟨i, rfl⟩, rfl⟩

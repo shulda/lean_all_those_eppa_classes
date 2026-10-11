@@ -1,5 +1,6 @@
 import AllThoseEPPA.Examples.IntegerMetricBridge
 import AllThoseEPPA.Irreducible
+import Mathlib.Tactic.FinCases
 
 /-!
 # Every already-coloured pair is irreducible
@@ -96,7 +97,13 @@ theorem colouredPair_isIrreducible
   rcases hLabel with ⟨d, hd | hd⟩
   · apply irreducible_of_binary_relation_cover
       (B.induce S hS) X Y hCover d
-    change B.rel (RelSymbol.edge d) ![x, y]
+    change B.rel (RelSymbol.edge d)
+      (Subtype.val ∘ ![X, Y])
+    have hTuple :
+        (Subtype.val ∘ ![X, Y]) = (![x, y] : Fin 2 → V) := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hTuple]
     exact hd
   · have hCoverReverse : ∀ z : S, z = Y ∨ z = X := by
       intro z
@@ -105,7 +112,13 @@ theorem colouredPair_isIrreducible
       · exact Or.inl h
     apply irreducible_of_binary_relation_cover
       (B.induce S hS) Y X hCoverReverse d
-    change B.rel (RelSymbol.edge d) ![y, x]
+    change B.rel (RelSymbol.edge d)
+      (Subtype.val ∘ ![Y, X])
+    have hTuple :
+        (Subtype.val ∘ ![Y, X]) = (![y, x] : Fin 2 → V) := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hTuple]
     exact hd
 
 end Bridge

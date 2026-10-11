@@ -70,10 +70,12 @@ private theorem exact_colours_on_edge
       · exact hy
     have hRel :=
       (hOn.2.1 (RelSymbol.edge e) ![x, y] hTuple).symm
-    change B.rel (RelSymbol.edge e) ![x, y] ↔
-      (toStructure M).rel (RelSymbol.edge e)
-        (f.toFun ∘ ![x, y])
-    simpa only [action_on_edge] using hRel
+    have hIff :
+        B.rel (RelSymbol.edge e) ![x, y] ↔
+          (toStructure M).rel (RelSymbol.edge e)
+            (f.toFun ∘ ![x, y]) := by
+      simpa only [action_on_edge] using hRel
+    simpa [toStructure, Function.comp_apply] using hIff
   exact ⟨fun e => hExact e a b ha hb,
     fun e => hExact e b a hb ha⟩
 

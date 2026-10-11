@@ -134,13 +134,13 @@ theorem toSafeRelationSaturation_isHomomorphismEmbedding
         simpa only [hFactor, Function.comp_assoc] using hb
       exact ((hf S hS hIrr).2.1 R xs hxs).mp hB
     · intro hOld
-      exact (toSafeRelationSaturation act f hf q g
-        hFactor hCompat).map_rel R xs hOld
+      simpa only [toSafeRelationSaturation, act.onRel_one] using
+        (toSafeRelationSaturation act f hf q g
+          hFactor hCompat).map_rel R xs hOld
   · intro n F xs hxs
-    change imageSet q (A.func F xs) =
-      (A.pushforwardAlong q).func F (q ∘ xs)
-    exact A.pushforward_func_eq_of_compatible
-      q hCompat F xs
+    simpa only [toSafeRelationSaturation, act.onFunc_one,
+        safeRelationSaturation_func] using
+      (A.pushforward_func_eq_of_compatible q hCompat F xs)
 
 end Homomorphism
 end Structure

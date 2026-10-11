@@ -61,7 +61,9 @@ theorem homomorphism_preserves_distance
       f.map_rel (RelSymbol.edge d) ![x, y] hRel
     have hImage' :
         N.dist (f x) (f y) = d.val + 1 := by
-      simpa only [action_on_edge, Function.comp_apply] using hImage
+      change (toStructure N).rel (RelSymbol.edge d)
+        (f.toFun ∘ ![x, y])
+      simpa only [action_on_edge] using hImage
     exact hImage'.trans hd
 
 /-- A homomorphism between full metric encodings is

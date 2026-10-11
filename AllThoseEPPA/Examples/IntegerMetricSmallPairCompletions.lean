@@ -1,4 +1,5 @@
 import AllThoseEPPA.Examples.IntegerMetricHomEmbPairModels
+import AllThoseEPPA.Examples.IntegerMetricFaithfulCliques
 import Mathlib.Data.Set.Card
 import Mathlib.Tactic.FinCases
 

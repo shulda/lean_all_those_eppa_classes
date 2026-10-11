@@ -215,3 +215,60 @@ amalgamation to discharge its bounded local obligations.
 **Status:** these are independently auditable proof obligations.
 None of the PRs above may be interpreted as a proof of the entire
 all-D strengthened EPPA claim until the final derivation is checked.
+
+
+### 2026-10-11: faithful maximum unit-clique equality CLOSED; local completion bridge active
+
+The conditional theorem
+`Bridge.faithfulShortestPath_preserves_maximumUnitCliqueSize`
+is now checked and **merged** from PR #209. Full Lean build:
+1,378 jobs. Axiom audit: 3,365 declarations, standard allowed
+axioms only. This formally combines:
+
+- irreducibility and faithful transport of every old distance-one
+  relational clique;
+- fact that shortest-path completion introduces no unit edges
+  for D>=2;
+- maximum numeric unit-clique bound and the reverse inequality
+  from the isometric original copy.
+
+This is a conditional theorem: it requires the original metric A to
+remain isometric in the canonical completed intermediate witness.
+It does **not** by itself prove the existence of a complete EPPA
+witness of the metric class. The main readably quantified
+`AllFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique` remains an
+OPEN proposition, never assumed as an axiom.
+
+The D=0 and D=1 strengthened standalone cases are already checked
+and merged. For D>1, the next concrete dependencies are:
+
+1. **PR #210 (CI pending):** all induced subsets on at most two
+   vertices have ordinary homomorphism-embedding metric completions
+   => all old partial distance colours are loop-free, symmetric,
+   and uniquely labelled. Uses the already verified #200
+   irreducible-pair reflection. No global injectivity required.
+2. **PR #211 (CI pending, stacked):** a labelled walk is metrically
+   preserved by any map that preserves old relation edges on a
+   superset of its support, without preserving artificial default
+   costs on missing edges.
+3. **PR #212 (CI pending, stacked):** all subsets on at most
+   `max D 2` vertices admit metric homomorphism-embedding
+   completions => shortest-path completion preserves EVERY old
+   labelled edge, via the at-most-D support of any shortcut.
+4. **PR #213 (CI pending):** every relational automorphism of
+   the partial colour structure preserves the canonical direct
+   cost matrix and hence induces an isometry of its canonical
+   metric completion.
+
+Once these are audited, prove metric strong amalgamation /
+finite metric completions of A-tree amalgamations, connect
+them to the formalized restricted EPPA theorem and produce
+the actual strengthened readable all-D conclusion.
+
+**Application scope:** these metric tests are the last
+small regression application presently being pursued. The
+larger planned k-orientations application remains separately
+on the menu, and the repository's Hrushovski-construction
+application remains explicitly deferred. They should not
+be silently identified without checking their exact
+statements.

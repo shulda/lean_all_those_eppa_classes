@@ -1,5 +1,6 @@
 import Mathlib.GroupTheory.Perm.Basic
 import Mathlib.Logic.Embedding.Basic
+import Mathlib.Data.Set.Card
 import Lean.Elab.Tactic.Omega
 
 /-!

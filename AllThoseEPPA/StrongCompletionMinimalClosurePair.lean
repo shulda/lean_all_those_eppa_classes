@@ -40,7 +40,7 @@ variable {L : Language.{u}} {Γ : Type v} [Group Γ]
 variable {V : Type w} [Finite V] {W : Type x}
 
 /-- The closure-size score for a pair of source vertices. -/
-def closurePairScore (A : Structure L V) (a b : V) : ℕ :=
+noncomputable def closurePairScore (A : Structure L V) (a b : V) : ℕ :=
   (A.closureAtSet a).ncard + (A.closureAtSet b).ncard
 
 /-- A pair of distinct f-collided vertices minimizing the

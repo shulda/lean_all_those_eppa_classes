@@ -36,7 +36,8 @@ green.
 | Lemma `lem:infinitecopies` / tree copies into ambient M | `AllThoseEPPA/TreeLikeInfiniteCopiesTheorem.lean`; `TreeLike.infiniteCopies_anyCompleteFreshE` | **Formalized** | For any finite complete-fresh-E Γ-structure A⁺, every literal recursive tree amalgamation D of whole A⁺ copies Γ-homomorphism-embeds after forgetting E into a possibly infinite old-language M extending all partial automorphisms of A⁻. Every embedded A⁺ copy can be normalized **pointwise and in Γ-language** to the designated A⁻ inside M. PR #131, green full CI+axiom audit `38072988333`, merged `408a075`. |
 | Closed images of homomorphism-embeddings with unary functions | `AllThoseEPPA/UnaryHomEmbImageClosure.lean` and `UnaryHomEmbClosedRangeFactor.lean` | **Formalized** | Entire image of any Γ-homomorphism-embedding is function-closed; it factors through the actual induced closed image, retaining the homomorphism-embedding property. Needed to apply the small-substructure clause of `thm:maintree` to forbidden structures. PR #132, full CI+axiom audit `38072011057`, merged `cae3924`. |
 | Herwig–Lascar generalisation `thm:main` | `AllThoseEPPA/HerwigLascarTheorem.lean`; `HerwigLascar.finiteOrbitHerwigLascar` | **Formalized** | Finite heterogeneous forbidden family and class `Forb(F)` defined via Γ-homomorphism-embeddings; if finite A has finite Γ-relabel orbit and its partial automorphisms extend inside some possibly infinite M∈Forb(F), then A has a **finite coherent irreducible-structure faithful EPPA witness B∈Forb(F)**. PRs #134–#137, each with green complete Lean CI and project axiom audit; merged onto main through `3d8d6d9`. |
-
+| Locally finite strong-completion transfer / Theorem `thm:mainstrong` (Theorem 1.6) | `AllThoseEPPA/StrongCompletionLocallyFiniteStep.lean`, `StrongCompletionLocallyFiniteClassTheorem.lean`, `StrongCompletionManuscriptSubclass.lean`, `StrongCompletionHereditaryStrongAmalgamation.lean` | **Formalized** | Ordinary and coherent EPPA transfer from an ambient class E to a hereditary locally finite automorphism-preserving subclass K of finite irreducibles with strong amalgamation. The finite Γ-strong-AP interface includes exact-overlap certification. Underlying proof works under weaker AP alone. PRs #142–#148, all fully CI-checked and integrated. Proposition 11.3 is not needed for this theorem because Definition 11.2 assumes only ordinary small-substructure completions. |
+| Proposition `prop:strongcompletion` (Proposition 11.3) | — | **Not formalized** | Separate assertion converting an ordinary completion to a strong completion in hereditary SAP classes with unary functions. The formalized proof of `thm:mainstrong` bypasses this step legitimately; its independent five-part splitting/minimal-kernel argument remains open. |
 | Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
 | Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
@@ -1020,3 +1021,85 @@ results (`prop:strongcompletion`, `thm:mainstrong`) and remaining
 application sections have **not** been formalized by this milestone.
 Plan their hypotheses, independent input lemmas, and interfaces
 separately rather than silently conflating them with `thm:main`.
+
+### 2026-10-10: locally finite EPPA transfer / Theorem 1.6 complete
+
+**This entry supersedes the earlier chronological statement that
+`thm:mainstrong` is only a future target.** The project now has an
+independently Lean-audited proof of the ordinary and coherent
+locally finite subclass transfer. All results below have
+passed the complete Lean build and standard project-wide
+axiom audit, and have been integrated to `main`:
+
+- **PR #139:** `AutomorphismPreservingCompletion.lean` formalizes
+  strong completions as **injective homomorphism-embeddings into an
+  irreducible target**, with coherent lifts of all automorphisms,
+  respecting both pointwise maps and Γ-language components. Identity
+  and composition are checked.
+- **PR #140:** `AutomorphismPreservingEPPATransfer.lean` proves
+  preservation of ordinary and coherent EPPA under such completions,
+  initially assuming an exact embedding of the distinguished A-copy.
+- **PR #142:** `StrongCompletionIrreducibleCopyEPPA.lean` proves
+  that the composite of an exact embedding of irreducible A with
+  any homomorphism-embedding is again a **genuine exact Γ-embedding**.
+  Thus the previous extra hypothesis on the A-copy is automatic.
+  The module *reuses* the previously formalized
+  `TreeLikeIrreducibleEmbeddingImage.lean`, avoiding duplicated
+  closed-range irreducibility arguments. Redundant draft PR #141
+  was closed unmerged.
+- **PR #143:** `StrongCompletionTreeAmalgamationClass.lean`
+  formalizes the manuscript's **Observation 9.4** for genuine
+  recursively built trees of whole A-copies: if A is finite,
+  irreducible, and belongs to a finite Γ-amalgamation class K,
+  every literal A-tree homomorphism-embeds into some finite K member.
+  The proof uses the previously checked general-Γ amalgamation
+  gluing rather than constructing a second pushout.
+- **PR #144:** `StrongCompletionSmallTrees.lean` composes the
+  tree-level maps with the local restricted-EPPA maps to obtain
+  an **ordinary** K-completion for each bounded closed substructure.
+- **PR #145:** `StrongCompletionLocallyFiniteStep.lean` packages
+  Definition 11.2 as a quantified finite bound n depending on
+  (A,B₀), with hypotheses of exact embeddings of irreducibles
+  into A, a global homomorphism-embedding B→B₀, and ordinary
+  completions of all small substructures. Together with
+  `thm:maintree`, it produces an EPPA witness in K, and
+  preserves coherence whenever B₀ is coherent.
+- **PR #146:** `StrongCompletionLocallyFiniteClassTheorem.lean`
+  lifts this to a class-level transfer for arbitrary finite
+  members of K, using a supply of starting E-EPPA witnesses.
+- **PR #147:** `StrongCompletionManuscriptSubclass.lean`
+  replaces that technical supply assumption by the familiar
+  class statement E has EPPA (or coherent EPPA) and K ⊆ E.
+- **PR #148:** `StrongCompletionHereditaryStrongAmalgamation.lean`
+  implements the manuscript's **literal hereditary strong-AP**
+  hypothesis, including finite members, downward closure under
+  exact Γ-embeddings, a member interface for strong amalgamation,
+  and *exact overlap* of the two amalgam images. Forgetting the
+  overlap certificate provides the AP interface of the stronger
+  preceding theorem. This completes the exact manuscript scope.
+
+**Proof simplification worth preserving.** The published proof of
+Theorem 1.6 invokes Proposition 11.3 to upgrade ordinary small
+completions to strong completions. However the manuscript's
+Definition 11.2 itself asks only for *ordinary* completions
+of small substructures before promising an automorphism-preserving
+completion of the whole candidate. Observation 9.4 supplies
+precisely these ordinary completions. Consequently the formalized
+argument derives Theorem 1.6 without depending on Proposition 11.3.
+This does **not** disprove or retract that proposition; its
+independent five-part splitting proof has simply been deferred.
+
+**Scope:** Γ-symbol permutations need not be trivial; relation
+symbols have arbitrary positive arity and functions are genuinely
+set-valued and unary, as required by `thm:maintree`.
+The target class consists of finite irreducibles. It has hereditary
+strong amalgamation and is a locally finite automorphism-preserving
+subclass of an ambient EPPA class. The conclusion is ordinary
+EPPA, upgraded to coherent EPPA if ambient witnesses can be
+chosen coherent. The output is not asserted to be
+irreducible-structure faithful after completion, since a completion
+may add relations and destroy that property.
+
+**Still separate:** Proposition 11.3, its minimal-kernel/5-piece
+proof, and subsequent application sections, especially the
+Hrushovski construction, are not finished by this milestone.

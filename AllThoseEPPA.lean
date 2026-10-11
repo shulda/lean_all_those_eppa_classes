@@ -359,3 +359,5 @@ import AllThoseEPPA.StrongCompletionPushforwardFibreCriterion
 import AllThoseEPPA.StrongCompletionPushforwardFunctionFibres
 
 import AllThoseEPPA.StrongCompletionPrimitivePairWitness
+
+import AllThoseEPPA.StrongCompletionFreeCutLocalExactness

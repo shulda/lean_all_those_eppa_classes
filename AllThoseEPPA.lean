@@ -307,6 +307,8 @@ import AllThoseEPPA.Examples.IntegerMetricParallelEmbeddings
 import AllThoseEPPA.Examples.IntegerMetricAmalgamationClass
 import AllThoseEPPA.Examples.IntegerMetricClassLocalBridge
 import AllThoseEPPA.Examples.IntegerMetricEPPAFromAmalgamation
+import AllThoseEPPA.Examples.IntegerMetricGluing
+import AllThoseEPPA.Examples.IntegerMetricAllDMainTheorem
 import AllThoseEPPA.Examples.IntegerMetricRealRounding
 import AllThoseEPPA.Examples.IntegerMetricEncodingIsometry
 import AllThoseEPPA.Examples.IntegerMetricIsometriesToEmbeddings

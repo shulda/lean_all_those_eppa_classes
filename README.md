@@ -21,8 +21,24 @@ The primary target is the general EPPA machinery:
 4. the restricted/tree-like construction and local control;
 5. the principal general corollaries and readable regression examples.
 
-The later application to Hrushovski constructions is deliberately deferred
-until the general construction is formalized and the API is satisfactory.
+The principal general theorems (including the restricted/tree-like EPPA
+construction, the Herwig–Lascar generalisation, the locally finite
+completion transfer, and Proposition 11.3) have now passed the complete
+Lean build and axiom audit; see `FORMALIZATION.md` for precise scope.
+
+The current final **small regression** is a completely readable theorem
+for finite integer metrics, uniformly in D, strengthening ordinary EPPA
+by preserving the maximum size of a clique of pairwise distance 1.
+The all-D conclusion is not yet proved; its explicit quantifier-level
+statement is in `Examples/IntegerMetricReaderFacingEPPA.lean`,
+with the proof strategy in `METRIC_EPPA_ROADMAP.md`.
+
+After the metric regression, the remaining large planned paper application
+is **EPPA for k-orientations with d-closures** (Section 9.3 of
+the paper; closely related to Hrushovski predimension constructions).
+This is the deferred Hrushovski-related application referred to in older
+project notes, not a third independently scheduled regression.
+A final manuscript-statement/API audit is also planned.
 
 ## Human-readable regression examples
 
@@ -33,9 +49,12 @@ whose mathematical meaning is easy to inspect.  Planned checkpoints include:
 - finite graphs have EPPA;
 - finite 3-uniform hypergraphs have EPPA (testing irreducible-structure
   faithfulness);
-- finite metric spaces with distances in `{0,1,...,D}` have EPPA, preferably
-  uniformly in the natural number `D` (testing the restricted/tree-like
-  machinery).
+- for every natural D, every finite metric space with distances in
+  `{0,1,...,D}` has a finite metric EPPA witness **with the same distance
+  alphabet AND the same maximum size of a unit-distance clique**
+  (testing both irreducible-structure faithfulness and the restricted/
+  tree-like machinery). The cases D=0 and D=1 are proved; the
+  full-D result remains open.
 
 These are not merely examples: they are intended as regression tests for the
 mathematical API.

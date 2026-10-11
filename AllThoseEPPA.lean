@@ -353,3 +353,5 @@ import AllThoseEPPA.StrongCompletionLocalCollapseUnaryFibres
 import AllThoseEPPA.StrongCompletionPushforward
 
 import AllThoseEPPA.StrongCompletionPushforwardLocalExact
+
+import AllThoseEPPA.StrongCompletionPushforwardFibreCriterion

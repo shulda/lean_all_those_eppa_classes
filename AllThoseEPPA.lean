@@ -282,6 +282,7 @@ import AllThoseEPPA.Examples.IntegerMetricPartialCosts
 import AllThoseEPPA.Examples.IntegerMetricShortWalkColours
 import AllThoseEPPA.Examples.IntegerMetricPairModels
 import AllThoseEPPA.Examples.IntegerMetricHomEmbPairModels
+import AllThoseEPPA.Examples.IntegerMetricSmallPairCompletions
 import AllThoseEPPA.Examples.IntegerMetricShortestPaths
 import AllThoseEPPA.Examples.IntegerMetricNoShortcuts
 import AllThoseEPPA.Examples.IntegerMetricWalkSupport

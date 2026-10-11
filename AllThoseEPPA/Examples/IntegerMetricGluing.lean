@@ -1,5 +1,6 @@
 import AllThoseEPPA.Examples.IntegerMetricRealRounding
 import Mathlib.Topology.MetricSpace.Gluing
+import Mathlib.Data.Fintype.EquivFin
 
 /-!
 # Finite bounded natural amalgams from Mathlib's real metric gluing
@@ -50,8 +51,8 @@ theorem finiteAmalgam_viaRealGlue
   letI : Fintype Y := Fintype.ofFinite Y
   letI : Finite (X ⊕ Y) := inferInstance
   have hFin : Finite (Metric.GlueSpace hΦ hΨ) := by
-    unfold Metric.GlueSpace
-    infer_instance
+    unfold Metric.GlueSpace SeparationQuotient
+    exact Quotient.finite _
   let M : BoundedNatMetric D (Metric.GlueSpace hΦ hΨ) :=
     realMetricRounded D hD
   refine ⟨Metric.GlueSpace hΦ hΨ, hFin, M,

@@ -1,4 +1,5 @@
-import Mathlib.Tactic
+import Mathlib.GroupTheory.Perm.Basic
+import Lean.Elab.Tactic.Omega
 
 /-!
 # Integer metrics and diameter truncation

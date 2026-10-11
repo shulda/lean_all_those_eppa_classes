@@ -177,6 +177,7 @@ theorem strongCompletion_of_completion_rank
             StrongCompletionKernel.kernelDefect_second_lt_composite
               q g hSurj hNoninjQ
           rw [← hFactor] at hs
+          change StrongCompletionKernel.kernelDefect g < n
           simpa only [hRank] using hs
         have hStrongD : K.toAmalgamationClass.HasStrongCompletion D :=
           ih (StrongCompletionKernel.kernelDefect h.toFun)

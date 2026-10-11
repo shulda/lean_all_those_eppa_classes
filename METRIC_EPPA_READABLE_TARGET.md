@@ -93,8 +93,15 @@ partial bijections. Handle D=1 separately using finite-set EPPA,
 which is already formalized, or provide an equivalent exact
 completion route. D=0 also has a separate trivial proof.
 The strengthened statement includes all D, including 0 and 1.
+The D=1 case is now formalized as
+`finiteBoundedMetricsHaveEPPAAndPreserveUnitClique_one`
+in `Examples/IntegerMetricD1EPPA.lean` (merged PR #205).
 
-**What remains to prove:** the global all-D strengthened theorem,
-and specifically the faithful-clique transport, unit-edge
-preservation for D >= 2, and a readable D=1 bridge. None of
-these is silently assumed by merely defining the target.
+**What remains to prove:** the global all-D strengthened theorem.
+The faithful clique irreducibility and cardinality transfer
+(PRs #204/#206), the no-new-unit-edge shortest-path lemma
+(PR #203), and maximum-clique-number arithmetic (PR #207)
+are separately CI/axiom-audited. Their combined conditional
+application is prepared in PR #209 and still needs its full
+integration audit and the remaining metric EPPA construction.
+Nothing is silently assumed by merely defining the target.

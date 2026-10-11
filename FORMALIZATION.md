@@ -37,7 +37,7 @@ green.
 | Closed images of homomorphism-embeddings with unary functions | `AllThoseEPPA/UnaryHomEmbImageClosure.lean` and `UnaryHomEmbClosedRangeFactor.lean` | **Formalized** | Entire image of any Γ-homomorphism-embedding is function-closed; it factors through the actual induced closed image, retaining the homomorphism-embedding property. Needed to apply the small-substructure clause of `thm:maintree` to forbidden structures. PR #132, full CI+axiom audit `38072011057`, merged `cae3924`. |
 | Herwig–Lascar generalisation `thm:main` | `AllThoseEPPA/HerwigLascarTheorem.lean`; `HerwigLascar.finiteOrbitHerwigLascar` | **Formalized** | Finite heterogeneous forbidden family and class `Forb(F)` defined via Γ-homomorphism-embeddings; if finite A has finite Γ-relabel orbit and its partial automorphisms extend inside some possibly infinite M∈Forb(F), then A has a **finite coherent irreducible-structure faithful EPPA witness B∈Forb(F)**. PRs #134–#137, each with green complete Lean CI and project axiom audit; merged onto main through `3d8d6d9`. |
 | Locally finite strong-completion transfer / Theorem `thm:mainstrong` (Theorem 1.6) | `AllThoseEPPA/StrongCompletionLocallyFiniteStep.lean`, `StrongCompletionLocallyFiniteClassTheorem.lean`, `StrongCompletionManuscriptSubclass.lean`, `StrongCompletionHereditaryStrongAmalgamation.lean` | **Formalized** | Ordinary and coherent EPPA transfer from an ambient class E to a hereditary locally finite automorphism-preserving subclass K of finite irreducibles with strong amalgamation. The finite Γ-strong-AP interface includes exact-overlap certification. Underlying proof works under weaker AP alone. PRs #142–#148, all fully CI-checked and integrated. Proposition 11.3 is not needed for this theorem because Definition 11.2 assumes only ordinary small-substructure completions. |
-| Proposition `prop:strongcompletion` (Proposition 11.3) | — | **Not formalized** | Separate assertion converting an ordinary completion to a strong completion in hereditary SAP classes with unary functions. The formalized proof of `thm:mainstrong` bypasses this step legitimately; its independent five-part splitting/minimal-kernel argument remains open. |
+| Proposition `prop:strongcompletion` (Proposition 11.3) | `AllThoseEPPA/StrongCompletionProposition113.lean`, `StrongCompletionProposition113API.lean`; `TreeLike.hereditaryStrongAmalgamation_completion_iff_strong`, `TreeLike.strongCompletion_proposition_11_3`, `HereditaryFiniteStrongAmalgamationClass.canUpgradeCompletions` | **Formalized** | Every ordinary Γ-homomorphism-embedding completion in a hereditary finite SAP class upgrades to an injective homomorphism-embedding completion. The proof uses a minimum-closure collided pair, controlled relation saturation, exact unary-function fibres, two genuine quotient homomorphism-embeddings, sidewise strong-amalgamation gluing, and strong induction on the kernel defect; unlike `thm:mainstrong`, this independent proposition does require the kernel/splitting argument. Integrated in PR #189, merged `878346bd` on 2026-10-11; full Lean build 1,358 jobs and axiom audit 3,024 declarations green (Actions run `38140786833`). |
 | Regression: finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3.lean`; `Hypergraph3.eppa` | **Formalized** | Genuine ordinary EPPA of unordered 3-element hyperedges, self-contained quantified statement; explicit induced embedding and permutation extension, derived from the checked coherent faithful general theorem. PR #104, green full CI and axiom audit (`38063998340`). |
 | Regression: K₄³-free finite 3-uniform hypergraphs have EPPA | `AllThoseEPPA/Examples/Hypergraph3K4Free.lean`; `Hypergraph3.eppaK4Free` | **Formalized** | Produces a finite K₄³-free witness, with induced inclusion and extension of every partial hypergraph automorphism. Irreducible-structure faithfulness is essential for the forbidden 4-vertex configuration; preserves the independent unrestricted 3-uniform regression. PR #104, green CI and axiom audit. |
 | Hrushovski-construction application | — | Deferred | Deliberately postponed until the general machinery is complete and stable. |
@@ -1103,3 +1103,42 @@ may add relations and destroy that property.
 **Still separate:** Proposition 11.3, its minimal-kernel/5-piece
 proof, and subsequent application sections, especially the
 Hrushovski construction, are not finished by this milestone.
+
+### 2026-10-11: Proposition 11.3 complete; general theorem core closed
+
+**This checkpoint supersedes earlier notes calling Proposition 11.3 open.**
+PR [#189](https://github.com/shulda/lean_all_those_eppa_classes/pull/189)
+was merged onto `main` at `878346bd53e316a7daf131e2eb94b678f5aa8eb5`.
+The full Lean build passed (1,358 jobs). The project's axiom audit
+checked 3,024 declarations under `AllThoseEPPA`: all dependencies
+were within `propext`, `Classical.choice`, and `Quot.sound`
+(GitHub Actions run `38140786833`).
+
+The new public-facing API has both directions of
+`K.HasCompletion A ↔ K.HasStrongCompletion A` for every finite
+source A in a hereditary finite Γ-strong-amalgamation class, with
+set-valued unary functions and arbitrary positive-arity relation
+symbols. It also discharges the earlier named
+`K.CanUpgradeCompletions` predicate without introducing any
+additional axiom or assuming the desired upgrade.
+
+The substantial intermediate formalization proves local collapse of
+a minimum-score collided pair, a five-region free cut, exact unary
+function-fibre congruence, and a *controlled relation saturation*
+which makes BOTH factors genuine Γ-homomorphism-embeddings. The
+induction parameter is `|A| - |f(A)|`, quantified over finite source
+types, so the quotient need not be in K. If the descended factor
+is injective, strong amalgamation separates the two free-cut sides;
+otherwise the two strict kernel-defect reductions complete the
+induction. This verifies the proposition in a slightly more general
+setting than the manuscript, without requiring every member of K
+to be irreducible.
+
+**Resulting scope:** all principal general construction theorems
+tracked in the table (including Theorems 1.5 and 1.6 and Proposition
+11.3) are now formalized. This does not claim all applications or
+every incidental lemma of the paper. Remaining work is a final
+theorem-statement/interface audit, and application-level regressions.
+The next priority is EPPA for finite metric spaces with distances
+`{0,1,...,D}`, uniformly in the natural number `D`, using
+shortest-path completion; the Hrushovski application remains deferred.

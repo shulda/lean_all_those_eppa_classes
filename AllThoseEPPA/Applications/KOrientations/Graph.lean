@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.Data.Fintype.EquivFin
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Set.Finite.Basic
 
 /-!
 # Directed graph core for \(k\)-orientations with \(d\)-closures

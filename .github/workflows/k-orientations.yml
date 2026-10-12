@@ -44,3 +44,4 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.ClosureMinimal
           lake build AllThoseEPPA.Applications.KOrientations.Encoding
           lake build AllThoseEPPA.Applications.KOrientations.StructureBridge
+          lake build AllThoseEPPA.Applications.KOrientations.ClosedSubstructures

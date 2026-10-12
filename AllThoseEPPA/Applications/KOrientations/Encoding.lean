@@ -57,8 +57,8 @@ def dLanguage : Language where
     decide
 
 /-- Relabelling for the first, unary-function stage is trivial. -/
-def successorAction : successorLanguage.Action PUnit :=
-  Language.Action.trivial successorLanguage PUnit
+def successorAction : successorLanguage.Action PUnit.{1} :=
+  Language.Action.trivial successorLanguage PUnit.{1}
 
 /-- Interpret the binary edge and unary successor function exactly. -/
 def successorStructure {V : Type u} (G : Digraph V) :

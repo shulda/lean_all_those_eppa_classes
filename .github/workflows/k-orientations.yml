@@ -42,6 +42,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.Graph
           lake build AllThoseEPPA.Applications.KOrientations.GraphPermutations
           lake build AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
+          lake build AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
           lake build AllThoseEPPA.Applications.KOrientations.Closures
           lake build AllThoseEPPA.Applications.KOrientations.ClosureMinimal
           lake build AllThoseEPPA.Applications.KOrientations.Encoding

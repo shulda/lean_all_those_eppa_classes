@@ -30,6 +30,10 @@ would invalidate the application.
 
 The source module `AuxiliaryLanguage.lean` introduces the full non-root template labels with ordered, pairwise distinct root tuples, their arity-indexed `R_P` / `E_P` relation symbols, and the root-only auxiliary structure. Its only function symbol is unary, making it eligible for the public unrestricted EPPA theorem after the symbol-action step.
 
+## First invocation of the main theorem
+
+The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.
+
 ## Next mathematical layers
 
 1. Encode \(s(G)\) and \(d(G)\) as actual `AllThoseEPPA.Structure` objects, using the exact set-valued-function semantics from `Structure.lean`.

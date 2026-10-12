@@ -5,6 +5,7 @@ import AllThoseEPPA.Applications.KOrientations.Encoding
 import AllThoseEPPA.Applications.KOrientations.StructureBridge
 import AllThoseEPPA.Applications.KOrientations.ClosedSubstructures
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
+import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!
 # EPPA for \(k\)-orientations with \(d\)-closures — application umbrella

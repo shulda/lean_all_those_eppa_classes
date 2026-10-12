@@ -46,3 +46,4 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.StructureBridge
           lake build AllThoseEPPA.Applications.KOrientations.ClosedSubstructures
           lake build AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
+          lake build AllThoseEPPA.Applications.KOrientations.FirstWitness

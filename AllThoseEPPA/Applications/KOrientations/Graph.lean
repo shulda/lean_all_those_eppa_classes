@@ -125,11 +125,12 @@ theorem roots_antitone_edge [Fintype V] (k : ℕ)
     G.roots k y ⊆ G.roots k x :=
   G.roots_antitone k (G.reaches_of_edge h)
 
-/-- A concrete finite \(k\)-orientation. -/
+end Digraph
+
+/-- A concrete finite \(k\)-orientation, still without the rootedness
+assumption needed for the \(d\)-expansion. -/
 structure KOrientation (V : Type u) [Fintype V] (k : ℕ) where
   graph : Digraph V
   bound : graph.HasOutdegreeAtMost k
-
-end Digraph
 
 end AllThoseEPPA.Applications.KOrientations

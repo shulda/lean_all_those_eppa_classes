@@ -42,6 +42,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `SuccessorFaithfulFunctions.lean` shows that, in the faithful first-stage witness, every directed edge points to a vertex in the source's unary successor closure. This is a local compatibility theorem, not yet the converse equality with full graph reachability.
 
+## Unary successor reflexivity
+
+`SuccessorFaithfulUnary.lean` proves every unary function value stays in the associated one-point closure, and that every vertex belongs to its own successor value in an irreducible-structure faithful first-stage witness. Both are needed to reconstruct exact reachability.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

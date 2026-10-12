@@ -23,7 +23,7 @@ namespace AllThoseEPPA.Applications.KOrientations
 universe u v
 
 /-- The edge symbol is fixed by the trivial language action. -/
-@[simp] theorem successorAction_on_edge (g : PUnit) :
+@[simp] theorem successorAction_on_edge (g : PUnit.{1}) :
     successorAction.onRel g EdgeSymbol.edge = EdgeSymbol.edge := by
   rfl
 

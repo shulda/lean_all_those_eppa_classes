@@ -1,0 +1,20 @@
+import AllThoseEPPA.Applications.KOrientations.Graph
+import AllThoseEPPA.Applications.KOrientations.Closures
+import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
+
+/-!
+# EPPA for \(k\)-orientations with \(d\)-closures — application umbrella
+
+The project intentionally lives under
+\`AllThoseEPPA/Applications/KOrientations/\` and is developed separately
+from the already certified main EPPA theorems.
+
+This file currently imports only the graph/closure foundations.
+It does **not** assert that the full EPPA application is formalized.
+
+Mathematical source: Section \`sec:orientations\` in *All those EPPA
+classes*, with the October 2026 audit in the separate manuscript
+repository. The next planned layers are the \(s\)- and \(d\)-language
+structures, the two faithful coherent EPPA constructions, and
+the choice-free reconstruction \`(x,W)\`.
+-/

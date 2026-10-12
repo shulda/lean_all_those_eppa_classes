@@ -25,7 +25,7 @@ theorem successorStructure_finiteRelabelOrbit {V : Type u}
     (successorStructure G).HasFiniteRelabelOrbit successorAction := by
   unfold Structure.HasFiniteRelabelOrbit
   exact Set.finite_range
-    (fun g : PUnit =>
+    (fun g : PUnit.{1} =>
       (successorStructure G).relabel successorAction g)
 
 /-- The first-stage *unrestricted* witness for the successor-closure

@@ -70,6 +70,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.
 
+## Finite template automorphism group
+
+`GraphPermutations.lean` proves graph automorphisms preserve outdegree, root status, directed paths and the complete set of reachable roots. `GraphAutomorphismGroup.lean` defines the finite graph-automorphism group as a subgroup of `Equiv.Perm V`, suitable for the nonfaithful Γ-action on the auxiliary relation symbols. Neither uses the valuation construction.
+
 ## Next mathematical layers
 
 1. Encode \(s(G)\) and \(d(G)\) as actual `AllThoseEPPA.Structure` objects, using the exact set-valued-function semantics from `Structure.lean`.

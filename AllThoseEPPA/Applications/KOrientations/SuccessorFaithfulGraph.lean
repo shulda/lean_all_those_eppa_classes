@@ -1,4 +1,4 @@
-import Mathlib.Data.Fin.Tuple.Basic
+import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 import AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
 import AllThoseEPPA.Applications.KOrientations.Encoding

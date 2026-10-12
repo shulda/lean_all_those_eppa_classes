@@ -53,7 +53,7 @@ theorem reaches_trans {x y z : V}
   | refl _ =>
       exact hyz
   | step h _ ih =>
-      exact Reaches.step h ih
+      exact Reaches.step h (ih hyz)
 
 /-- The successor set in the paper, including the argument itself. -/
 def successors (x : V) : Set V :=

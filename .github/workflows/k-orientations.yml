@@ -46,4 +46,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.StructureBridge
           lake build AllThoseEPPA.Applications.KOrientations.ClosedSubstructures
           lake build AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
-          lake build AllThoseEPPA.Applications.KOrientations.FirstWitness
+          lake build AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.PatternTransport
+          # The previously checked FirstWitness imports the full main theorem facade;
+          # its continued regression coverage is provided by the standard full Lean CI.

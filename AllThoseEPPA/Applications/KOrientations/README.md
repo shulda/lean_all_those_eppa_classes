@@ -30,6 +30,10 @@ would invalidate the application.
 
 The source module `AuxiliaryLanguage.lean` introduces the full non-root template labels with ordered, pairwise distinct root tuples, their arity-indexed `R_P` / `E_P` relation symbols, and the root-only auxiliary structure. Its only function symbol is unary, making it eligible for the public unrestricted EPPA theorem after the symbol-action step.
 
+## Faithful local transfer and pattern equivariance
+
+`FaithfulLocalTransfer.lean` packages one-point and relation-tuple closure transportation by irreducible-structure faithfulness. `PatternTransport.lean` formalizes how a root-pattern label changes under a permutation preserving root status and complete root sets. Both are prerequisites for deriving the first witness's structural axioms and for the nontrivial auxiliary symbol action.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

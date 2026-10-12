@@ -6,6 +6,7 @@ import AllThoseEPPA.Applications.KOrientations.SecondWitness
 import AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer
 import AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
 import AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
+import AllThoseEPPA.Applications.KOrientations.SecondStageIncidence
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding

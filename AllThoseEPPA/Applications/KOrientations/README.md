@@ -54,6 +54,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `FaithfulReachability.lean` shows that directed paths in the source graph are preserved by the exact embedding into the first faithful witness, and that total witness automorphisms preserve graph reachability. This enables the reverse inclusion between the witness's unary successor function and graph-theoretic reachability.
 
+## Exact successor interpretation
+
+`FaithfulSuccessorExact.lean` aims to prove that every faithful first-stage witness interprets its unary successor value **exactly** as reflexive graph reachability. The forward implication uses irreducible-structure faithfulness and transported paths; the reverse uses reflexivity, edge inclusion and transitivity. This is a key class-membership obligation and must compile before being called verified.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

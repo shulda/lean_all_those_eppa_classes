@@ -12,6 +12,7 @@ import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulFunctions
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulUnary
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulTransitive
 import AllThoseEPPA.Applications.KOrientations.FaithfulReachability
+import AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

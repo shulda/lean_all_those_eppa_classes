@@ -1,5 +1,5 @@
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
-import Mathlib.Data.Fintype.Perm
+import Mathlib.GroupTheory.Perm.Subgroup
 
 /-!
 # Finite graph-automorphism group as the auxiliary language action group

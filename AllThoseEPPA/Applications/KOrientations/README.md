@@ -34,6 +34,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `FaithfulLocalTransfer.lean` packages one-point and relation-tuple closure transportation by irreducible-structure faithfulness. `PatternTransport.lean` formalizes how a root-pattern label changes under a permutation preserving root status and complete root sets. Both are prerequisites for deriving the first witness's structural axioms and for the nontrivial auxiliary symbol action.
 
+## Orienting the faithful witness
+
+`SuccessorFaithfulGraph.lean` uses genuine irreducible-structure faithfulness and graph-relation transport to prove the raw first-stage witness has no antiparallel edges or loops. This reconstructs its directed graph without assuming that unrestricted EPPA preserves the class. The bounded outdegree and exact unary successor interpretation remain open obligations.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

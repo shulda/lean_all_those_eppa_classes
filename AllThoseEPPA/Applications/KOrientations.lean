@@ -10,6 +10,7 @@ import AllThoseEPPA.Applications.KOrientations.PatternTransport
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulGraph
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulFunctions
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulUnary
+import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulTransitive
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

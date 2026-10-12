@@ -26,6 +26,10 @@ successor-closure structure and on a finite auxiliary root language,
 not directly on the \(d\)-expansion. Pretending that \(F_n\) are unary
 would invalidate the application.
 
+## Auxiliary root language
+
+The source module `AuxiliaryLanguage.lean` introduces the full non-root template labels with ordered, pairwise distinct root tuples, their arity-indexed `R_P` / `E_P` relation symbols, and the root-only auxiliary structure. Its only function symbol is unary, making it eligible for the public unrestricted EPPA theorem after the symbol-action step.
+
 ## Next mathematical layers
 
 1. Encode \(s(G)\) and \(d(G)\) as actual `AllThoseEPPA.Structure` objects, using the exact set-valued-function semantics from `Structure.lean`.

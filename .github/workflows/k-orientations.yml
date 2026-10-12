@@ -46,6 +46,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.SecondWitness
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
           lake build AllThoseEPPA.Applications.KOrientations.Closures
           lake build AllThoseEPPA.Applications.KOrientations.ClosureMinimal
           lake build AllThoseEPPA.Applications.KOrientations.Encoding

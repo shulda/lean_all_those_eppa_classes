@@ -36,7 +36,7 @@ theorem embedding_successor_iff
       Structure.imageSet ι.toFun (G.successors a) =
         B.func SuccessorSymbol.successor ![ι a] := by
     simpa only [successorStructure_successors,
-      successorAction_on_func] using hmap
+      Matrix.cons_val_zero, successorAction_on_func] using hmap
   constructor
   · intro hb
     rw [← heq]

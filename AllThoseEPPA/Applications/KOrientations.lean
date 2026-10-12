@@ -8,6 +8,7 @@ import AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
 import AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
 import AllThoseEPPA.Applications.KOrientations.PatternTransport
 import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulGraph
+import AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulFunctions
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

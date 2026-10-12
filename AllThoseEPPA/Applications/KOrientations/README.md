@@ -38,6 +38,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `SuccessorFaithfulGraph.lean` uses genuine irreducible-structure faithfulness and graph-relation transport to prove the raw first-stage witness has no antiparallel edges or loops. This reconstructs its directed graph without assuming that unrestricted EPPA preserves the class. The bounded outdegree and exact unary successor interpretation remain open obligations.
 
+## Faithful edge/successor compatibility
+
+`SuccessorFaithfulFunctions.lean` shows that, in the faithful first-stage witness, every directed edge points to a vertex in the source's unary successor closure. This is a local compatibility theorem, not yet the converse equality with full graph reachability.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

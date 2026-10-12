@@ -126,7 +126,7 @@ theorem roots_antitone_edge [Fintype V] (k : ℕ)
   G.roots_antitone k (G.reaches_of_edge h)
 
 /-- A concrete finite \(k\)-orientation. -/
-structure KOrientation (V : Type u) [Fintype V] where
+structure KOrientation (V : Type u) [Fintype V] (k : ℕ) where
   graph : Digraph V
   bound : graph.HasOutdegreeAtMost k
 

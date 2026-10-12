@@ -22,7 +22,7 @@ universe u
 
 namespace Digraph
 
-variable {V : Type u} [Fintype V] (G : Digraph V)
+variable {V : Type u} (G : Digraph V)
 
 /-- The successor closure of any set, including paths of length zero. -/
 def successorClosure (S : Set V) : Set V :=
@@ -38,6 +38,8 @@ theorem successorClosure_closed (S : Set V) {x y : V}
     y ∈ G.successorClosure S := by
   rcases hx with ⟨u, hu, hux⟩
   exact ⟨u, hu, G.reaches_trans hux hxy⟩
+
+variable [Fintype V]
 
 /-- The value of the \(n\)-ary root-fibre function \(F_n\).
 

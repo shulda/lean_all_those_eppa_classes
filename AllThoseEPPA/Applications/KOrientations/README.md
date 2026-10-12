@@ -50,6 +50,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `SuccessorFaithfulTransitive.lean` transports vertices of a one-point closure into the original successor structure, proves membership transport under automorphisms/embeddings, and establishes the unary function's transitivity F(F(x)) ⊆ F(x).
 
+## Transporting directed paths
+
+`FaithfulReachability.lean` shows that directed paths in the source graph are preserved by the exact embedding into the first faithful witness, and that total witness automorphisms preserve graph reachability. This enables the reverse inclusion between the witness's unary successor function and graph-theoretic reachability.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

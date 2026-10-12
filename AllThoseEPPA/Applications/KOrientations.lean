@@ -1,6 +1,8 @@
 import AllThoseEPPA.Applications.KOrientations.Graph
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
 import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
+import AllThoseEPPA.Applications.KOrientations.SecondWitness
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding

@@ -26,6 +26,31 @@ construction, the Herwig–Lascar generalisation, the locally finite
 completion transfer, and Proposition 11.3) have now passed the complete
 Lean build and axiom audit; see `FORMALIZATION.md` for precise scope.
 
+## Reusing the *main theorems* in other Lean projects
+
+**Primary public import:**
+
+```lean
+import AllThoseEPPA.MainTheorems
+```
+
+This is the intended entry point for new EPPA formalizations.
+It exposes the unrestricted coherent faithful EPPA construction,
+the restricted/tree-like theorem, the finite-forbidden-family
+Herwig–Lascar theorem, the ordinary and coherent locally finite
+subclass transfer, and Proposition 11.3.
+
+Start with the **[main theorems public API guide](MAIN_THEOREMS_API.md)**.
+It contains a theorem-to-Lean map, exact assumptions (Γ-symbol actions,
+finite relabel orbit, set-valued unary functions, forbidden families,
+SAP and local completion), dependency installation, and checked
+application patterns.
+The [consumer smoke test](AllThoseEPPA/Examples/MainTheoremsPublicAPIUsage.lean)
+uses only this facade and runs in CI.
+
+The metric and hypergraph results discussed next are **regression
+examples**, not the primary reusable construction API.
+
 The **final small regression is now Lean-checked**: for every natural D,
 every finite metric A with integer distances in {0,...,D} admits a finite
 D-bounded metric EPPA witness B with **exactly the same maximum size of a
@@ -46,7 +71,7 @@ This is the deferred Hrushovski-related application referred to in older
 project notes, not a third independently scheduled regression.
 A final manuscript-statement/API audit is also planned.
 
-## Using the metric result in another Lean project
+## Using the metric regression in another Lean project
 
 The supported external import is:
 

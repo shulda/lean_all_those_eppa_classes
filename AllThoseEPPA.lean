@@ -430,3 +430,7 @@ import AllThoseEPPA.StrongCompletionCollapseSideInjectivity
 import AllThoseEPPA.StrongCompletionProposition113
 
 import AllThoseEPPA.StrongCompletionProposition113API
+
+-- Public facade for reusable general theorems (not regression examples).
+import AllThoseEPPA.MainTheorems
+import AllThoseEPPA.Examples.MainTheoremsPublicAPIUsage

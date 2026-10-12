@@ -35,7 +35,7 @@ private theorem ext_fields
 
 /-- Transport all of a pattern (centre **and** ordered root tuple)
 under an actual graph automorphism. -/
-def transport (g : G.graphAut) (P : RootPattern G k n) :
+def transportAut (g : G.graphAut) (P : RootPattern G k n) :
     RootPattern G k n where
   center := g.1 P.center
   nonroot := by
@@ -55,16 +55,16 @@ def transport (g : G.graphAut) (P : RootPattern G k n) :
     · rintro ⟨i, rfl⟩
       exact ⟨P.tuple i, ⟨i, rfl⟩, rfl⟩
 
-@[simp] theorem transport_one (P : RootPattern G k n) :
-    transport (1 : G.graphAut) P = P := by
+@[simp] theorem transportAut_one (P : RootPattern G k n) :
+    transportAut (1 : G.graphAut) P = P := by
   apply ext_fields
-  · simp [transport]
+  · simp [transportAut]
   · funext i
-    simp [transport]
+    simp [transportAut]
 
-theorem transport_mul (g h : G.graphAut)
+theorem transportAut_mul (g h : G.graphAut)
     (P : RootPattern G k n) :
-    transport (g * h) P = transport g (transport h P) := by
+    transportAut (g * h) P = transportAut g (transportAut h P) := by
   apply ext_fields
   · change (g * h : G.graphAut).1 P.center =
       g.1 (h.1 P.center)
@@ -74,16 +74,16 @@ theorem transport_mul (g h : G.graphAut)
       g.1 (h.1 (P.tuple i))
     simp
 
-@[simp] theorem transport_inv_left (g : G.graphAut)
+@[simp] theorem transportAut_inv_left (g : G.graphAut)
     (P : RootPattern G k n) :
-    transport g⁻¹ (transport g P) = P := by
-  rw [← transport_mul]
+    transportAut g⁻¹ (transportAut g P) = P := by
+  rw [← transportAut_mul]
   simp
 
-@[simp] theorem transport_inv_right (g : G.graphAut)
+@[simp] theorem transportAut_inv_right (g : G.graphAut)
     (P : RootPattern G k n) :
-    transport g (transport g⁻¹ P) = P := by
-  rw [← transport_mul]
+    transportAut g (transportAut g⁻¹ P) = P := by
+  rw [← transportAut_mul]
   simp
 
 end RootPattern
@@ -94,8 +94,8 @@ def auxiliaryRelTransport {V : Type u} [Fintype V]
     (G : Digraph V) (k : ℕ) {n : ℕ}
     (g : G.graphAut) : AuxiliaryRel G k n → AuxiliaryRel G k n
   | .edge => .edge
-  | .root P => .root (RootPattern.transport g P)
-  | .incoming P => .incoming (RootPattern.transport g P)
+  | .root P => .root (RootPattern.transportAut g P)
+  | .incoming P => .incoming (RootPattern.transportAut g P)
 
 /-- The induced equivalence of relation symbols, including the
 correct inverse-automorphism action. -/
@@ -110,28 +110,28 @@ def auxiliaryRelPermutation {V : Type u} [Fintype V]
     | edge => rfl
     | root P =>
         change AuxiliaryRel.root
-          (RootPattern.transport g⁻¹ (RootPattern.transport g P)) =
+          (RootPattern.transportAut g⁻¹ (RootPattern.transportAut g P)) =
           AuxiliaryRel.root P
-        rw [RootPattern.transport_inv_left]
+        rw [RootPattern.transportAut_inv_left]
     | incoming P =>
         change AuxiliaryRel.incoming
-          (RootPattern.transport g⁻¹ (RootPattern.transport g P)) =
+          (RootPattern.transportAut g⁻¹ (RootPattern.transportAut g P)) =
           AuxiliaryRel.incoming P
-        rw [RootPattern.transport_inv_left]
+        rw [RootPattern.transportAut_inv_left]
   right_inv := by
     intro R
     cases R with
     | edge => rfl
     | root P =>
         change AuxiliaryRel.root
-          (RootPattern.transport g (RootPattern.transport g⁻¹ P)) =
+          (RootPattern.transportAut g (RootPattern.transportAut g⁻¹ P)) =
           AuxiliaryRel.root P
-        rw [RootPattern.transport_inv_right]
+        rw [RootPattern.transportAut_inv_right]
     | incoming P =>
         change AuxiliaryRel.incoming
-          (RootPattern.transport g (RootPattern.transport g⁻¹ P)) =
+          (RootPattern.transportAut g (RootPattern.transportAut g⁻¹ P)) =
           AuxiliaryRel.incoming P
-        rw [RootPattern.transport_inv_right]
+        rw [RootPattern.transportAut_inv_right]
 
 /-- The genuine monoid homomorphism on each arity's relation symbols. -/
 def auxiliaryRelAction {V : Type u} [Fintype V]
@@ -144,29 +144,29 @@ def auxiliaryRelAction {V : Type u} [Fintype V]
     | edge => rfl
     | root P =>
         change AuxiliaryRel.root
-          (RootPattern.transport (1 : G.graphAut) P) =
+          (RootPattern.transportAut (1 : G.graphAut) P) =
           AuxiliaryRel.root P
-        rw [RootPattern.transport_one]
+        rw [RootPattern.transportAut_one]
     | incoming P =>
         change AuxiliaryRel.incoming
-          (RootPattern.transport (1 : G.graphAut) P) =
+          (RootPattern.transportAut (1 : G.graphAut) P) =
           AuxiliaryRel.incoming P
-        rw [RootPattern.transport_one]
+        rw [RootPattern.transportAut_one]
   map_mul' := by
     intro g h
     ext R
     cases R with
     | edge => rfl
     | root P =>
-        change AuxiliaryRel.root (RootPattern.transport (g * h) P) =
-          AuxiliaryRel.root (RootPattern.transport g
-            (RootPattern.transport h P))
-        rw [RootPattern.transport_mul]
+        change AuxiliaryRel.root (RootPattern.transportAut (g * h) P) =
+          AuxiliaryRel.root (RootPattern.transportAut g
+            (RootPattern.transportAut h P))
+        rw [RootPattern.transportAut_mul]
     | incoming P =>
-        change AuxiliaryRel.incoming (RootPattern.transport (g * h) P) =
-          AuxiliaryRel.incoming (RootPattern.transport g
-            (RootPattern.transport h P))
-        rw [RootPattern.transport_mul]
+        change AuxiliaryRel.incoming (RootPattern.transportAut (g * h) P) =
+          AuxiliaryRel.incoming (RootPattern.transportAut g
+            (RootPattern.transportAut h P))
+        rw [RootPattern.transportAut_mul]
 
 /-- Full, possibly nonfaithful language action on the root-sort
 auxiliary symbols.  Only relation labels are moved; the one

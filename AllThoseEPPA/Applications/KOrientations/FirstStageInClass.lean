@@ -37,17 +37,23 @@ functions, with no assumption on the language. -/
 private theorem structure_eq_of_fields
     {L : Language} {V : Type v}
     (A C : Structure L V)
-    (hRel : A.rel = C.rel)
-    (hFunc : A.func = C.func) :
+    (hRel : ∀ (n : ℕ) (R : L.RelSymbol n) (xs : Fin n → V),
+      A.rel R xs = C.rel R xs)
+    (hFunc : ∀ (n : ℕ) (F : L.FuncSymbol n) (xs : Fin n → V),
+      A.func F xs = C.func F xs) :
     A = C := by
   cases A with
   | mk rA fA =>
     cases C with
     | mk rC fC =>
-      change rA = rC at hRel
-      change fA = fC at hFunc
-      cases hRel
-      cases hFunc
+      have hr : rA = rC := by
+        funext n R xs
+        exact hRel n R xs
+      have hf : fA = fC := by
+        funext n F xs
+        exact hFunc n F xs
+      cases hr
+      cases hf
       rfl
 
 /-- Exact class membership: the raw first EPPA witness is precisely
@@ -65,8 +71,10 @@ theorem faithfulWitness_eq_successorStructure
     B = successorStructure
       (faithfulWitnessKOrientation G k hBound B ι hFaith).graph := by
   let H := faithfulWitnessKOrientation G k hBound B ι hFaith
-  have hRel : B.rel = (successorStructure H.graph).rel := by
-    funext n R xs
+  have hRel :
+      ∀ (n : ℕ) (R : successorLanguage.RelSymbol n) (xs : Fin n → β),
+        B.rel R xs = (successorStructure H.graph).rel R xs := by
+    intro n R xs
     cases R with
     | edge =>
         have htup : xs = ![xs 0, xs 1] := by
@@ -74,8 +82,10 @@ theorem faithfulWitness_eq_successorStructure
           fin_cases i <;> rfl
         rw [htup]
         rfl
-  have hFunc : B.func = (successorStructure H.graph).func := by
-    funext n F xs
+  have hFunc :
+      ∀ (n : ℕ) (F : successorLanguage.FuncSymbol n) (xs : Fin n → β),
+        B.func F xs = (successorStructure H.graph).func F xs := by
+    intro n F xs
     cases F with
     | successor =>
         change B.func SuccessorSymbol.successor xs =
@@ -96,7 +106,7 @@ theorem exists_firstStageKOrientationWitness
     {α : Type u} [Fintype α]
     (G : Digraph α) (k : ℕ)
     (hBound : G.HasOutdegreeAtMost k) :
-    ∃ (β : Type u) (_ : Finite β)
+    ∃ (β : Type u) (_ : Fintype β)
       (H : KOrientation β k)
       (B : Structure successorLanguage β)
       (ι : Structure.Embedding successorAction (successorStructure G) B),
@@ -109,7 +119,7 @@ theorem exists_firstStageKOrientationWitness
   letI : Fintype β := Fintype.ofFinite β
   let H : KOrientation β k :=
     faithfulWitnessKOrientation G k hBound B ι hFaith
-  refine ⟨β, hβ, H, B, ι, ?_, hCoherent, hFaith⟩
+  refine ⟨β, inferInstance, H, B, ι, ?_, hCoherent, hFaith⟩
   exact faithfulWitness_eq_successorStructure G k hBound B ι hFaith
 
 end AllThoseEPPA.Applications.KOrientations

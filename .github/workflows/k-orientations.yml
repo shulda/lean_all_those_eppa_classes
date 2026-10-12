@@ -55,5 +55,6 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulReachability
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
+          lake build AllThoseEPPA.Applications.KOrientations.FirstStageInClass
           # The previously checked FirstWitness imports the full main theorem facade;
           # its continued regression coverage is provided by the standard full Lean CI.

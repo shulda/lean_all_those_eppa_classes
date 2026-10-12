@@ -1189,3 +1189,25 @@ and nonstandard axioms remains in force.
 The chronological metric work log has been preserved in
 `METRIC_EPPA_ROADMAP_ARCHIVE_20261011.md`; the concise authoritative
 dependency map is now in `METRIC_EPPA_ROADMAP.md`.
+
+### 2026-10-12: reusable API for the main general theorems
+
+For new formalizations, import
+`AllThoseEPPA.MainTheorems` (not the metric regression facade).
+The public entry points `MainTheorems.unrestrictedFaithfulCoherentEPPA`,
+`restrictedLocallyTreeLikeEPPA`, `herwigLascar`,
+`locallyFiniteEPPA`, `locallyFiniteCoherentEPPA` and
+`completionIffStrong` wrap the already verified general
+proofs, retaining their actual hypotheses and conclusions.
+See [`MAIN_THEOREMS_API.md`](MAIN_THEOREMS_API.md) for installation,
+all assumptions and user-facing examples. The import-only consumer
+test `AllThoseEPPA/Examples/MainTheoremsPublicAPIUsage.lean`
+checks cross-module reuse and unpacking of actual finite witnesses.
+
+**Distinguish** the unrestricted theorem's finite Γ-relabel orbit;
+the restricted theorem's required starting EPPA witness; the
+Herwig–Lascar theorem's ambient Forb(F) structure; and the
+locally finite theorem's automorphism-preserving strong-completion
+hypothesis. The public facade is not a claim of unconditional
+EPPA for all hereditary classes.
+

@@ -46,15 +46,13 @@ private theorem structure_eq_of_fields
   | mk rA fA =>
     cases C with
     | mk rC fC =>
-      have hr : rA = rC := by
-        funext n R xs
+      -- Direct congruence keeps the implicit arity binder of each
+      -- dependent interpretation function in scope.
+      congr 1
+      · funext n R xs
         exact hRel n R xs
-      have hf : fA = fC := by
-        funext n F xs
+      · funext n F xs
         exact hFunc n F xs
-      cases hr
-      cases hf
-      rfl
 
 /-- Exact class membership: the raw first EPPA witness is precisely
 the canonical successor structure of its reconstructed k-orientation.

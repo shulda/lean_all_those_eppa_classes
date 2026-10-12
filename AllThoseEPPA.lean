@@ -434,3 +434,6 @@ import AllThoseEPPA.StrongCompletionProposition113API
 -- Public facade for reusable general theorems (not regression examples).
 import AllThoseEPPA.MainTheorems
 import AllThoseEPPA.Examples.MainTheoremsPublicAPIUsage
+
+-- Application modules have their own directory; import here for CI validation.
+import AllThoseEPPA.Applications.KOrientations

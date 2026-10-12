@@ -2,6 +2,7 @@ import AllThoseEPPA.Applications.KOrientations.Graph
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding
+import AllThoseEPPA.Applications.KOrientations.StructureBridge
 
 /-!
 # EPPA for \(k\)-orientations with \(d\)-closures — application umbrella

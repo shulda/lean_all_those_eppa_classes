@@ -58,6 +58,10 @@ The source module `AuxiliaryLanguage.lean` introduces the full non-root template
 
 `FaithfulSuccessorExact.lean` aims to prove that every faithful first-stage witness interprets its unary successor value **exactly** as reflexive graph reachability. The forward implication uses irreducible-structure faithfulness and transported paths; the reverse uses reflexivity, edge inclusion and transitivity. This is a key class-membership obligation and must compile before being called verified.
 
+## Bound on the faithful witness's outdegree
+
+`FaithfulOutdegree.lean` proves that every outneighbourhood lies in a movable one-point closure. A single automorphism embeds the whole outneighbourhood injectively in an original outneighbourhood; its cardinal is therefore at most k. This is the remaining numerical axiom of the successor-closure class after the exact reachability theorem.
+
 ## First invocation of the main theorem
 
 The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.

@@ -63,9 +63,11 @@ theorem faithful_auxiliary_relation_movable
   have hAction :
       act.onRel ι.lang (act.onRel (ι.lang⁻¹ * f.lang) R) =
         act.onRel f.lang R := by
+    change (auxiliaryAction G k).onRel ι.lang
+      ((auxiliaryAction G k).onRel (ι.lang⁻¹ * f.lang) R) =
+        (auxiliaryAction G k).onRel f.lang R
     rw [← Language.Action.onRel_mul]
-    rw [← mul_assoc]
-    simp
+    simp [← mul_assoc]
   apply (ι.map_rel_iff (act.onRel (ι.lang⁻¹ * f.lang) R) ys).1
   rw [hAction, ← hTuple]
   exact hRelB

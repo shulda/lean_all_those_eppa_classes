@@ -46,8 +46,9 @@ theorem reconstructedEdge_mixed_not_both
         (fun t : Fin n => ys (Fin.succ t)) :=
     faithful_auxiliary_incoming_implies_root
       G k S B ι hFaith P ys hE
-  have haSupport : a ∈ p.support :=
-    RootMatches.support_mem p hMatch
+  have haSupport : a ∈ p.support := by
+    rw [← hZ]
+    exact ⟨j, hzj⟩
   have haTail :
       a ∈ Set.range (fun t : Fin n => ys (Fin.succ t)) := by
     rw [hU]

@@ -76,6 +76,9 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageNestedPatternLift
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNonrootSurjectivity
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionExactDegrees
+          lake build AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceRooted
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionSupportEquivariance
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportCriterion
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdges

@@ -6,6 +6,7 @@ import AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
 import AllThoseEPPA.Applications.KOrientations.SecondWitness
 import AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootDigraph
+import AllThoseEPPA.Applications.KOrientations.SecondStageSuccessorAxioms
 import AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
 import AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
 import AllThoseEPPA.Applications.KOrientations.SecondStageIncidence

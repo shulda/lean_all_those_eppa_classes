@@ -39,7 +39,7 @@ theorem auxiliarySource_rootTuple_isClosed
         simpa only [← hi] using hz
       have hxroot : (xs i).val ∈ G.roots k P.center := by
         rw [P.roots_eq]
-        exact ⟨i, hCoords i⟩
+        exact ⟨i, (hCoords i).symm⟩
       have hzroot : z.val ∈ G.roots k P.center :=
         ⟨z.property.2, G.reaches_trans hxroot.2 hStep⟩
       rw [P.roots_eq] at hzroot

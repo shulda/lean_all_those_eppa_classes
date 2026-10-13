@@ -9,6 +9,7 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
 import AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
 import AllThoseEPPA.Applications.KOrientations.SecondStageIncidence
 import AllThoseEPPA.Applications.KOrientations.SecondStageMatching
+import AllThoseEPPA.Applications.KOrientations.ReconstructionNestedNeighbourRigidity
 import AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
 import AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
 import AllThoseEPPA.Applications.KOrientations.ReconstructionEdges

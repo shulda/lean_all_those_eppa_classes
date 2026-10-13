@@ -1,5 +1,6 @@
 import AllThoseEPPA.Applications.KOrientations.SecondStageNestedPatternLift
 import AllThoseEPPA.Applications.KOrientations.ReconstructionNonrootOutdegree
+import AllThoseEPPA.Applications.KOrientations.ReconstructionRootNeighbourCorrespondence
 
 /-!
 # Surjectivity of the reconstructed nonroot neighbourhood projection

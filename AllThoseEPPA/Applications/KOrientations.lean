@@ -51,6 +51,7 @@ import AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
 import AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
 import AllThoseEPPA.Applications.KOrientations.FirstStageInClass
 import AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceRooted
+import AllThoseEPPA.Applications.KOrientations.ReconstructionFirstStageRootSort
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

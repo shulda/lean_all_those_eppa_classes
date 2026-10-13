@@ -12,6 +12,7 @@ import AllThoseEPPA.Applications.KOrientations.SecondStageMatching
 import AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
 import AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
 import AllThoseEPPA.Applications.KOrientations.ReconstructionEdges
+import AllThoseEPPA.Applications.KOrientations.ReconstructionEdgeAction
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding

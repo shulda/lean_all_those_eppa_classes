@@ -1,6 +1,7 @@
 import AllThoseEPPA.Applications.KOrientations.Graph
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
 import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
+import AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
 import AllThoseEPPA.Applications.KOrientations.SecondWitness
 import AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer

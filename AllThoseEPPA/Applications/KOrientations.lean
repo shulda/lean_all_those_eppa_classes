@@ -21,6 +21,7 @@ import AllThoseEPPA.Applications.KOrientations.SecondStageSuccessorAxioms
 import AllThoseEPPA.Applications.KOrientations.SecondStageExactUnaryClosure
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootTupleClosed
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootAnchor
+import AllThoseEPPA.Applications.KOrientations.SecondStageRootIncomingAnchor
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding

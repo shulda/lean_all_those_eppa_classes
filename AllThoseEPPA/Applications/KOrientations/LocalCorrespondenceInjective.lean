@@ -84,7 +84,7 @@ private theorem localCorrespondence_root_witness
   classical
   let t : RootsIn G k S :=
     Classical.choose (ha a (B.mem_closureAtSet a))
-  refine ⟨t, Classical.choose_spec _, ?_⟩
+  refine ⟨t, Classical.choose_spec (ha a (B.mem_closureAtSet a)), ?_⟩
   rfl
 
 /-- Claim P1, the local correspondence is injective on its entire
@@ -123,9 +123,16 @@ theorem localCorrespondence_injective
       | inr q =>
           obtain ⟨ra, _, hra⟩ :=
             localCorrespondence_root_witness G k S B ι f a hz
+          have hEqRoot :
+              ra.val = (ι.lang⁻¹ * f.lang : G.graphAut).1 q.center := by
+            calc
+              ra.val =
+                  localCorrespondence G k S B ι f ⟨.inl a, hz⟩ := hra.symm
+              _ = localCorrespondence G k S B ι f ⟨.inr q, ht⟩ := hEq
+              _ = (ι.lang⁻¹ * f.lang : G.graphAut).1 q.center := rfl
           have hr : G.IsRoot k
               ((ι.lang⁻¹ * f.lang : G.graphAut).1 q.center) := by
-            rw [← hra, ← hEq]
+            rw [← hEqRoot]
             exact ra.property.2
           have hq : G.IsRoot k q.center :=
             (G.graphAut_root_iff k
@@ -136,9 +143,16 @@ theorem localCorrespondence_injective
       | inl b =>
           obtain ⟨rb, _, hrb⟩ :=
             localCorrespondence_root_witness G k S B ι f b ht
+          have hEqRoot :
+              (ι.lang⁻¹ * f.lang : G.graphAut).1 p.center = rb.val := by
+            calc
+              (ι.lang⁻¹ * f.lang : G.graphAut).1 p.center =
+                  localCorrespondence G k S B ι f ⟨.inr p, hz⟩ := rfl
+              _ = localCorrespondence G k S B ι f ⟨.inl b, ht⟩ := hEq
+              _ = rb.val := hrb
           have hr : G.IsRoot k
               ((ι.lang⁻¹ * f.lang : G.graphAut).1 p.center) := by
-            rw [← hrb, hEq]
+            rw [hEqRoot]
             exact rb.property.2
           have hp : G.IsRoot k p.center :=
             (G.graphAut_root_iff k

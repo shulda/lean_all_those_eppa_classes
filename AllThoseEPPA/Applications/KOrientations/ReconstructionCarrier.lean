@@ -129,6 +129,17 @@ instance reconstructedCarrier_finite
   unfold ReconstructedCarrier
   infer_instance
 
+/-- Choose a finite enumeration of the canonical reconstructed carrier,
+whose finiteness is already proved above. This instance is
+noncomputable because realized root-support subsets have no
+preferred ordering. -/
+noncomputable instance reconstructedCarrier_fintype
+    {V : Type u} [Fintype V] {W : Type v} [Finite W]
+    (G : Digraph V) (k : ℕ)
+    (B : Structure (auxiliaryLanguage G k) W) :
+    Fintype (ReconstructedCarrier G k B) :=
+  Fintype.ofFinite _
+
 /-- Root vertices carry their intrinsic B₁-closure as support.
 Non-root vertices carry precisely their canonical realized set W. -/
 def reconstructedSupport

@@ -79,5 +79,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootTupleClosed
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNonrootOutdegree
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionSupportMonotone
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquivariance
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportInclusion
           # The previously checked FirstWitness imports the full main theorem facade;
           # its continued regression coverage is provided by the standard full Lean CI.

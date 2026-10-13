@@ -48,6 +48,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageIncidence
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageMatching
           lake build AllThoseEPPA.Applications.KOrientations.Closures
           lake build AllThoseEPPA.Applications.KOrientations.ClosureMinimal
           lake build AllThoseEPPA.Applications.KOrientations.Encoding
@@ -64,5 +65,6 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
           lake build AllThoseEPPA.Applications.KOrientations.FirstStageInClass
+          lake build AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge
           # The previously checked FirstWitness imports the full main theorem facade;
           # its continued regression coverage is provided by the standard full Lean CI.

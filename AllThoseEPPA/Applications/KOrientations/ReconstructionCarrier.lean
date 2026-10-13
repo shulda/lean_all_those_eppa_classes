@@ -92,7 +92,7 @@ theorem support_nonempty (p : CanonicalNonroot G k B) :
   obtain ⟨n, P, xs, _, _, hU⟩ := p.witnessed
   refine ⟨xs ⟨0, P.positive⟩, ?_⟩
   rw [← hU]
-  exact Set.mem_range_self ⟨0, P.positive⟩
+  exact Set.mem_range_self (⟨0, P.positive⟩ : Fin n)
 
 end CanonicalNonroot
 

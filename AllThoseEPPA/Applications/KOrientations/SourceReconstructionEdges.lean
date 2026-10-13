@@ -81,7 +81,11 @@ theorem source_root_nonroot_edge
       (AuxiliaryRel.incoming
         (RootPattern.transportAut ι.lang d.pattern))
       (ι.toFun ∘ ys) := by
-    simpa only [auxiliaryAction] using hm
+    change B.rel
+      (AuxiliaryRel.incoming
+        (RootPattern.transportAut ι.lang d.pattern))
+      (ι.toFun ∘ ys) at hm
+    exact hm
   change IncomingRealized G k B (ι a) (d.toCanonical B ι)
   refine ⟨d.n, RootPattern.transportAut ι.lang d.pattern,
     (ι.toFun ∘ ys), ?_, hB, ?_, ?_⟩

@@ -28,6 +28,7 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionRootNeighbourCorres
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootAnchor
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootIncomingAnchor
 import AllThoseEPPA.Applications.KOrientations.CommonMoveRootRigidity
+import AllThoseEPPA.Applications.KOrientations.ReconstructionRootOutdegree
 import AllThoseEPPA.Applications.KOrientations.Closures
 import AllThoseEPPA.Applications.KOrientations.ClosureMinimal
 import AllThoseEPPA.Applications.KOrientations.Encoding

@@ -38,7 +38,8 @@ theorem existsUnique_support
   refine ⟨⟨w, support_mem p h⟩, h, ?_⟩
   intro z hz
   apply Subtype.ext
-  exact right_unique p S ι hFaith h hz
+  exact (right_unique p S ι hFaith
+    (r := r.val) (w₁ := w) (w₂ := z.val) h hz).symm
 
 /-- Conversely every element of the realized support has a
 unique template-root partner. -/
@@ -55,7 +56,8 @@ theorem existsUnique_root
   refine ⟨⟨r, root_mem p h⟩, h, ?_⟩
   intro z hz
   apply Subtype.ext
-  exact left_unique p S ι hFaith h hz
+  exact (left_unique p S ι hFaith
+    (r₁ := r) (r₂ := z.val) (w := w.val) h hz).symm
 
 /-- The choice-free canonical matching η_(x,W), an actual equivalence
 of the full reachable-root set of the template centre and the

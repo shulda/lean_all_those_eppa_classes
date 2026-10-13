@@ -45,6 +45,7 @@ import AllThoseEPPA.Applications.KOrientations.FaithfulReachability
 import AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
 import AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
 import AllThoseEPPA.Applications.KOrientations.FirstStageInClass
+import AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceClosed
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

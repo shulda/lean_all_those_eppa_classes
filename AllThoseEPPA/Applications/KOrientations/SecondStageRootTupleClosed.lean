@@ -1,4 +1,5 @@
 import AllThoseEPPA.Applications.KOrientations.SourceRootTupleClosed
+import AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
 import AllThoseEPPA.Applications.KOrientations.SecondStageSuccessorAxioms
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
@@ -97,7 +98,7 @@ theorem faithful_auxiliary_rootTuple_isClosed
       obtain ⟨j, hj⟩ := hbRange
       have hEqf : f z = f (xs j) := by
         calc
-          f z = ι b := hfb
+          f z = ι b := hfb.symm
           _ = ι (zs j) := congrArg ι hj.symm
           _ = f (xs j) := (hPts j).symm
       exact ⟨j, (f.toEquiv.injective hEqf).symm⟩

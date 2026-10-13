@@ -67,6 +67,7 @@ theorem auxiliary_embedding_successor_iff
     rw [← heq] at hb
     obtain ⟨c, hc, hcb⟩ := hb
     have he : c = b := ι.injective hcb
+    change G.Reaches a.val c.val at hc
     simpa only [he] using hc
 
 /-- Exact set-valued successor membership is transported both ways
@@ -142,7 +143,12 @@ theorem faithful_auxiliary_edge_mem_successors
     (auxiliary_embedding_successor_iff G k S B ι
       (zs 0) (zs 1)).mp hReach
   have hfxy : f y ∈ B.func AuxiliaryFunc.successor ![f x] := by
-    simpa only [hpts (0 : Fin 2), hpts (1 : Fin 2)] using himg
+    have hfx : f x = ι (zs 0) := by
+      simpa [Function.comp_def] using (hpts (0 : Fin 2))
+    have hfy : f y = ι (zs 1) := by
+      simpa [Function.comp_def] using (hpts (1 : Fin 2))
+    rw [hfy, hfx]
+    exact himg
   exact (auxiliary_automorphism_successor_iff G k B f x y).mpr hfxy
 
 /-- Self-membership of unary successors transfers from the

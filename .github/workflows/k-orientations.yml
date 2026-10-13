@@ -66,5 +66,16 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
           lake build AllThoseEPPA.Applications.KOrientations.FirstStageInClass
           lake build AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdges
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdgeAction
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootDigraph
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructedDigraph
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNestedNeighbourRigidity
+          lake build AllThoseEPPA.Applications.KOrientations.SourceRootTupleClosed
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageSuccessorAxioms
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageExactUnaryClosure
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootTupleClosed
           # The previously checked FirstWitness imports the full main theorem facade;
           # its continued regression coverage is provided by the standard full Lean CI.

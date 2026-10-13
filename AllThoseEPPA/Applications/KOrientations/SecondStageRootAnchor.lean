@@ -89,8 +89,8 @@ theorem move_rootEdge
       (ι.toFun ∘ ![anchor.source,t]) := by
     funext i
     fin_cases i
-    · simpa only [Function.comp_def] using anchor.source_eq
-    · simpa only [Function.comp_def] using ht
+    · simpa [Function.comp_def] using anchor.source_eq
+    · simpa [Function.comp_def] using ht
   rw [hTuple] at hB
   have hSrc : (auxiliaryRootStructure G k S).rel
       AuxiliaryRel.edge ![anchor.source,t] := by

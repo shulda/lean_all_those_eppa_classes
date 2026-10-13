@@ -48,7 +48,8 @@ theorem reconstructedRootNeighbour_existsUnique
     reconstructedRootNeighbour_exists G k B p hRoot hEdge
   refine ⟨w, ⟨hwedge, hwmatch⟩, ?_⟩
   intro z hz
-  exact RootMatches.right_unique p S ι hFaith hwmatch hz.2
+  exact (RootMatches.right_unique p S ι hFaith
+    (r := r) (w₁ := w) (w₂ := z) hwmatch hz.2).symm
 
 /-- On any matched pair r↔w, the reconstructed edge p→w holds
 if and only if the original template edge x→r holds. -/

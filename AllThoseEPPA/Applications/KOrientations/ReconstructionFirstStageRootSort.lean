@@ -24,6 +24,7 @@ root set of the reconstructed graph is precisely its B₁ sort. -/
 theorem faithful_reconstructed_isRoot_iff_from_firstStage
     {U : Type u} {V : Type v} {W : Type w}
     [Fintype U] [Fintype V] [Fintype W]
+    (k : ℕ)
     (A : KOrientation U k) (hRooted : A.graph.HasReachableRoots k)
     (G : KOrientation V k)
     (ι₀ : Structure.Embedding successorAction
@@ -54,6 +55,7 @@ exactly k outgoing neighbours in the final directed graph. -/
 theorem faithful_reconstructed_nonroot_degree_from_firstStage
     {U : Type u} {V : Type v} {W : Type w}
     [Fintype U] [Fintype V] [Fintype W]
+    (k : ℕ)
     (A : KOrientation U k) (hRooted : A.graph.HasReachableRoots k)
     (G : KOrientation V k)
     (ι₀ : Structure.Embedding successorAction

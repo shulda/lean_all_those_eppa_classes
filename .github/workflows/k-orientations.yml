@@ -70,6 +70,7 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootAnchor
           lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootIncomingAnchor
           lake build AllThoseEPPA.Applications.KOrientations.CommonMoveRootRigidity
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootOutdegree
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdges

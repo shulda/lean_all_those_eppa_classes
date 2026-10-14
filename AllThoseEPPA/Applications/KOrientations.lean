@@ -53,6 +53,11 @@ import AllThoseEPPA.Applications.KOrientations.FirstStageInClass
 import AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceRooted
 import AllThoseEPPA.Applications.KOrientations.ReconstructionSupportEquivariance
 import AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportCriterion
+import AllThoseEPPA.Applications.KOrientations.ReconstructionPathAction
+import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceInjective
+import AllThoseEPPA.Applications.KOrientations.LocalRootEdgeTransfer
+import AllThoseEPPA.Applications.KOrientations.LocalNonrootRootEdgeTransfer
+import AllThoseEPPA.Applications.KOrientations.LocalNonrootEdgeTransfer
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

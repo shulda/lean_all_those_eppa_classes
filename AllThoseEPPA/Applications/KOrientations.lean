@@ -92,6 +92,7 @@ import AllThoseEPPA.Applications.KOrientations.SourceChartBijection
 import AllThoseEPPA.Applications.KOrientations.SourceChartLocalCorrespondence
 import AllThoseEPPA.Applications.KOrientations.SourceChartGraphIso
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphDTraceIso
+import AllThoseEPPA.Applications.KOrientations.NestedClosedIrreducible
 import AllThoseEPPA.Applications.KOrientations.LocalChartDIsomorphism
 import AllThoseEPPA.Applications.KOrientations.LocalChartDTraceIso
 import AllThoseEPPA.Applications.KOrientations.OnePointChartContainment

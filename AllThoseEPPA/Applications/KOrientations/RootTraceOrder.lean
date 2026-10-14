@@ -75,11 +75,11 @@ theorem faithful_reconstructed_closed_eq_iff_rootTrace_eq
     rw [h]
   · intro h
     apply Set.Subset.antisymm
-    · exact (faithful_reconstructed_closed_subset_iff_rootTrace_subset
+    · apply (faithful_reconstructed_closed_subset_iff_rootTrace_subset
         G k S hBound hClosed hRooted B ι hFaith D E hD hE).mpr
-        (Set.Subset.of_eq h)
-    · exact (faithful_reconstructed_closed_subset_iff_rootTrace_subset
+      rw [h]
+    · apply (faithful_reconstructed_closed_subset_iff_rootTrace_subset
         G k S hBound hClosed hRooted B ι hFaith E D hE hD).mpr
-        (Set.Subset.of_eq h.symm)
+      rw [← h]
 
 end AllThoseEPPA.Applications.KOrientations

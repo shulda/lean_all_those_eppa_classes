@@ -55,7 +55,9 @@ private theorem roots_eq_tupleRange_iff_in_closed_subset
       have hv : xs i ∈ {r : S | r.val ∈ G.roots k z.val} := by
         rw [hr]
         exact ⟨i, rfl⟩
-      simpa only [hi] using hv
+      have hval : (xs i).val ∈ G.roots k z.val := hv
+      rw [hi] at hval
+      exact hval
 
 /-- Any isomorphism of successor-closed pieces preserves and reflects
 every fibre F_n between tuples and vertices in those pieces. -/
@@ -100,7 +102,7 @@ theorem closedGraph_dFiber_iff
       Set.range (fun i : Fin n => (e (xs i)).val) =
         g '' Set.range xs := by
     change Set.range (g ∘ xs) = g '' Set.range xs
-    exact Set.range_comp
+    rw [Set.range_comp]
   have hRootSet :
       G.roots k z.val = Set.range (fun i => (xs i).val) ↔
       H.roots k (e z).val =

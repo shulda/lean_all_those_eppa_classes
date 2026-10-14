@@ -35,7 +35,7 @@ theorem sourceReconstructedVertex_preserves_reaches
       (sourceReconstructedVertex G k S hClosed hRooted B ι ⟨x,hx⟩)
       (sourceReconstructedVertex G k S hClosed hRooted B ι
         ⟨y, hClosed x y hx h⟩) := by
-  induction h generalizing hx with
+  induction h with
   | refl a =>
       exact Digraph.Reaches.refl _
   | @step a b c hEdge hRest ih =>

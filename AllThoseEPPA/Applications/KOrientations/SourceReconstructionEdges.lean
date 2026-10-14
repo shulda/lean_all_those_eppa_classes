@@ -1,5 +1,6 @@
 import AllThoseEPPA.Applications.KOrientations.SourceReconstructionNonroot
 import AllThoseEPPA.Applications.KOrientations.ReconstructionEdges
+import AllThoseEPPA.Applications.KOrientations.SecondStageRootDigraph
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Tactic.FinCases
 
@@ -95,8 +96,6 @@ theorem source_root_nonroot_edge
         ι (ys (Fin.succ i))) =
       Set.range (ι.toFun ∘ d.tuple)
     congr 1
-    funext i
-    rfl
 
 /-- A source nonroot-to-root edge lifts using the intrinsic
 root-matching relation induced by its witnessed R_P enumeration. -/

@@ -48,8 +48,9 @@ noncomputable def sourceReconstructedVertex
     (ι : Structure.Embedding (auxiliaryAction G k)
       (auxiliaryRootStructure G k S) B)
     (x : {a : V // a ∈ S}) :
-    ReconstructedCarrier G k B :=
-  if hRoot : G.IsRoot k x.val then
+    ReconstructedCarrier G k B := by
+  classical
+  exact if hRoot : G.IsRoot k x.val then
     .inl (ι ⟨x.val, x.property, hRoot⟩)
   else
     .inr ((chosenSourceNonroot G k S hClosed hRooted

@@ -71,6 +71,11 @@ theorem faithful_reconstructed_rootTrace_isClosed
   intro n F xs hxs y hy
   cases F with
   | successor =>
+      have hTuple : xs = ![xs 0] := by
+        funext i
+        fin_cases i
+        rfl
+      rw [hTuple] at hy
       have hySupport :
           y ∈ reconstructedSupport G k B (.inl (xs 0)) := by
         change y ∈ B.closureAtSet (xs 0)

@@ -120,7 +120,7 @@ theorem sourceReconstructedVertex_injective
           (⟨y.val, y.property, hy⟩ : RootsIn G k S) :=
         ι.injective (Sum.inl.inj hxy)
       have hval : x.val = y.val :=
-        congrArg Subtype.val hpre
+        congrArg (fun (r : RootsIn G k S) => (r : V)) hpre
       exact Subtype.ext hval
     · simp only [sourceReconstructedVertex, dif_pos hx, dif_neg hy]
         at hxy

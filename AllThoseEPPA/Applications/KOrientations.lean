@@ -89,8 +89,10 @@ import AllThoseEPPA.Applications.KOrientations.SourceChartGraphIso
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphDFiberEquivalence
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphAllDFunctions
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphDInducedIso
+import AllThoseEPPA.Applications.KOrientations.ClosedGraphDTraceIso
 import AllThoseEPPA.Applications.KOrientations.LocalChartDClosed
 import AllThoseEPPA.Applications.KOrientations.LocalChartDIsomorphism
+import AllThoseEPPA.Applications.KOrientations.LocalChartDTraceIso
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

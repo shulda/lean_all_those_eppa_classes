@@ -53,6 +53,7 @@ import AllThoseEPPA.Applications.KOrientations.FirstStageInClass
 import AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceRooted
 import AllThoseEPPA.Applications.KOrientations.ReconstructionSupportEquivariance
 import AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportCriterion
+import AllThoseEPPA.Applications.KOrientations.ReconstructionDFiberCriterion
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

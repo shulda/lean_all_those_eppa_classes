@@ -44,7 +44,7 @@ theorem source_root_support_eq
       ι.toFun '' ((auxiliaryRootStructure G k S).func
           AuxiliaryFunc.successor ![a]) =
         B.func AuxiliaryFunc.successor ![ι a] := by
-    simpa only [auxiliaryAction_on_successor] using hm
+    simpa only [auxiliaryAction_on_successor, Structure.imageSet] using hm
   have hSource :
       (auxiliaryRootStructure G k S).func
         AuxiliaryFunc.successor ![a] =
@@ -124,7 +124,6 @@ theorem sourceReconstructedVertex_support_reachable
       (.inl (ι a) : ReconstructedCarrier G k B) := by
     have hRoot : G.IsRoot k a.val := a.property.2
     simp only [sourceReconstructedVertex, dif_pos hRoot]
-    rfl
   rw [hTarget] at hReach
   have hEq : ι a = r := hra
   simpa only [hEq] using hReach

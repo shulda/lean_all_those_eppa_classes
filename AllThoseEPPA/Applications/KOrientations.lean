@@ -13,6 +13,7 @@ import AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
 import AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
 import AllThoseEPPA.Applications.KOrientations.ReconstructionEdges
 import AllThoseEPPA.Applications.KOrientations.ReconstructionEdgeAction
+import AllThoseEPPA.Applications.KOrientations.ReconstructionGraphAutomorphism
 import AllThoseEPPA.Applications.KOrientations.RootMatchingEquivariance
 import AllThoseEPPA.Applications.KOrientations.SecondStageRootDigraph
 import AllThoseEPPA.Applications.KOrientations.ReconstructedDigraph

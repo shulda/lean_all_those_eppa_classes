@@ -84,6 +84,8 @@ jobs:
           lake build AllThoseEPPA.Applications.KOrientations.LocalRootEdgeTransfer
           lake build AllThoseEPPA.Applications.KOrientations.LocalNonrootRootEdgeTransfer
           lake build AllThoseEPPA.Applications.KOrientations.LocalNonrootEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalRootIncomingEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceGraph
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
           lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
           lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdges

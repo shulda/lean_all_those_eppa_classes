@@ -58,6 +58,8 @@ import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceInjective
 import AllThoseEPPA.Applications.KOrientations.LocalRootEdgeTransfer
 import AllThoseEPPA.Applications.KOrientations.LocalNonrootRootEdgeTransfer
 import AllThoseEPPA.Applications.KOrientations.LocalNonrootEdgeTransfer
+import AllThoseEPPA.Applications.KOrientations.LocalRootIncomingEdgeTransfer
+import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceGraph
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

@@ -153,7 +153,7 @@ theorem local_root_nonroot_edge_iff
       (auxiliaryRootStructure_incoming G k n S
         (RootPattern.transportAut g P) ts).mp hSource
     have hEdge : G.edge t.val (g.1 P.center) := by
-      simpa only [ts] using hData.2.1
+      simpa [ts, RootPattern.transportAut] using hData.2.1
     simpa only [hCentre] using hEdge
   · intro hEdge
     obtain ⟨n,P,xs,hCentre,hRel,hU⟩ := p.witnessed
@@ -193,7 +193,7 @@ theorem local_root_nonroot_edge_iff
       · change G.edge t.val (g.1 P.center)
         simpa only [hCentre] using hEdge
       · intro i
-        simpa only [ts] using hRData.2 i
+        simpa [ts, RootPattern.transportAut] using hRData.2 i
     have hIncoming : B.rel (AuxiliaryRel.incoming P) ys :=
       (auxiliary_incoming_iff_moved_source
         G k S B ι f P ys ts hPts).mpr hSourceE

@@ -79,6 +79,7 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionSupportsReachable
 import AllThoseEPPA.Applications.KOrientations.ReconstructionDConditional
 import AllThoseEPPA.Applications.KOrientations.ReconstructionRootedDResult
 import AllThoseEPPA.Applications.KOrientations.LocalChartDClosed
+import AllThoseEPPA.Applications.KOrientations.ClosedChartCover
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

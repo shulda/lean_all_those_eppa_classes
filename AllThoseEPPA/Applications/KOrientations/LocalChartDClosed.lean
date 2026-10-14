@@ -42,4 +42,27 @@ theorem faithful_reconstructed_local_chart_isDClosed
   exact isMovedSupport_set_isDClosed_of_exact_roots
     G k S B ι hFaith f hRoots
 
+
+/-- The same local chart is literally a closed substructure in the
+general set-valued-function Structure API used by the EPPA theorem. -/
+theorem faithful_reconstructed_local_chart_isClosed
+    {V : Type u} {W : Type v} [Fintype V] [Fintype W]
+    (G : Digraph V) (k : ℕ) (S : Set V)
+    (hBound : G.HasOutdegreeAtMost k)
+    (hClosed : ∀ a b : V, a ∈ S → G.Reaches a b → b ∈ S)
+    (hRooted : ∀ a : V, a ∈ S → (G.roots k a).Nonempty)
+    (B : Structure (auxiliaryLanguage G k) W)
+    (ι : Structure.Embedding (auxiliaryAction G k)
+      (auxiliaryRootStructure G k S) B)
+    (hFaith : Structure.IsIrreducibleStructureFaithful
+      (auxiliaryAction G k) ι)
+    (f : Structure.Automorphism (auxiliaryAction G k) B) :
+    (dStructure (faithfulReconstructedDigraph G k S B ι hFaith) k).IsClosed
+      {z | IsMovedSupport G k S B ι f} := by
+  exact (dStructure_isClosed_iff
+    (faithfulReconstructedDigraph G k S B ι hFaith) k
+    {z | IsMovedSupport G k S B ι f}).mpr
+    (faithful_reconstructed_local_chart_isDClosed
+      G k S hBound hClosed hRooted B ι hFaith f)
+
 end AllThoseEPPA.Applications.KOrientations

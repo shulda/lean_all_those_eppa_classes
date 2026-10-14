@@ -66,14 +66,12 @@ noncomputable def closedGraph_outNeighborsEquiv
     have he : toT (F y) = e (toS y) :=
       Subtype.ext rfl
     rw [he, e.symm_apply_apply]
-    rfl
   · intro z
     apply Subtype.ext
     change (e (toS (R z))).val = z.val
     have he : toS (R z) = e.symm (toT z) :=
       Subtype.ext rfl
     rw [he, e.apply_symm_apply]
-    rfl
 
 /-- Exact outdegree is invariant under isomorphism of closed pieces. -/
 theorem closedGraph_outdegree_eq

@@ -50,6 +50,9 @@ import AllThoseEPPA.Applications.KOrientations.ClosedSubstructures
 import AllThoseEPPA.Applications.KOrientations.ClosedRootTrace
 import AllThoseEPPA.Applications.KOrientations.SupportedClosedPieces
 import AllThoseEPPA.Applications.KOrientations.RootTraceClosureFormula
+import AllThoseEPPA.Applications.KOrientations.SupportIrreducibility
+import AllThoseEPPA.Applications.KOrientations.NestedClosedIrreducible
+import AllThoseEPPA.Applications.KOrientations.SupportFreeSide
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
 import AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
 import AllThoseEPPA.Applications.KOrientations.PatternTransport

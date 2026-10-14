@@ -68,6 +68,7 @@ theorem localCorrespondence_inverseSourceChart
         sourceReconstructedVertex G k S hClosed hRooted B ι x =
           (.inl (ι t) : ReconstructedCarrier G k B) := by
       simp only [sourceReconstructedVertex, dif_pos hx]
+      rfl
     have hVal :
         (inverseSourceChart G k S hClosed hRooted B ι hFaith f x).val =
           (.inl (f.symm (ι t)) : ReconstructedCarrier G k B) := by
@@ -97,6 +98,7 @@ theorem localCorrespondence_inverseSourceChart
         sourceReconstructedVertex G k S hClosed hRooted B ι x =
           (.inr p : ReconstructedCarrier G k B) := by
       simp only [sourceReconstructedVertex, dif_neg hx]
+      rfl
     have hVal :
         (inverseSourceChart G k S hClosed hRooted B ι hFaith f x).val =
           (.inr q : ReconstructedCarrier G k B) := by
@@ -115,8 +117,12 @@ theorem localCorrespondence_inverseSourceChart
       Subtype.ext hVal
     rw [hChart]
     change (ι.lang⁻¹ * f.lang : G.graphAut).1 q.center = x.val
-    change (ι.lang⁻¹ * f.lang : G.graphAut).1
-      (f.symm.lang.1 (ι.lang.1 x.val)) = x.val
+    have hCenter : q.center =
+        f.symm.lang.1 (ι.lang.1 x.val) := by
+      change (CanonicalNonroot.map f.symm
+        (d.toCanonical B ι)).center = _
+      rw [CanonicalNonroot.map_center, d.toCanonical_center]
+    rw [hCenter]
     have hGroup :
         (ι.lang⁻¹ * f.lang : G.graphAut) * f.symm.lang =
           ι.lang⁻¹ := by

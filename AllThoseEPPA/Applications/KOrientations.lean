@@ -1,5 +1,8 @@
 import AllThoseEPPA.Applications.KOrientations.Graph
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphPathEquivalence
+import AllThoseEPPA.Applications.KOrientations.ClosedGraphDegreeEquivalence
+import AllThoseEPPA.Applications.KOrientations.ClosedGraphRootSets
+import AllThoseEPPA.Applications.KOrientations.LocalDomainAction
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
 import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
 import AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge

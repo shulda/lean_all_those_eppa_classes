@@ -55,6 +55,8 @@ theorem closedGraph_dFunction_image
         refine ⟨e.symm z, ?_, e.apply_symm_apply z⟩
         apply (closedGraph_dFiber_iff G H k S T hS hT e hEdge
           xs (e.symm z)).mpr
+        change z.val ∈ H.dFiber k
+          (fun i => (e (xs i)).val) at hz
         simpa only [e.apply_symm_apply] using hz
 
 end AllThoseEPPA.Applications.KOrientations

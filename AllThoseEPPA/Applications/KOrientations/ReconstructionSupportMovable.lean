@@ -53,7 +53,7 @@ theorem faithful_reconstructed_support_movable
       apply hMove w
       apply B.subset_closureSet (Set.range xs)
       change w ∈ p.support at hw
-      rw [← hU]
+      rw [← hU] at hw
       exact hw
 
 end AllThoseEPPA.Applications.KOrientations

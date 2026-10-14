@@ -96,15 +96,19 @@ theorem tuple_range_eq_roots
   constructor
   · rintro ⟨i, rfl⟩
     change (d.tuple i).val ∈ G.roots k x
-    rw [← d.center_eq, d.pattern.roots_eq]
-    exact ⟨i, (ht i).symm⟩
+    have hMem : (d.tuple i).val ∈ G.roots k d.pattern.center := by
+      rw [d.pattern.roots_eq]
+      exact ⟨i, (ht i).symm⟩
+    simpa only [d.center_eq] using hMem
   · intro hr
     change r.val ∈ G.roots k x at hr
-    rw [← d.center_eq, d.pattern.roots_eq] at hr
-    obtain ⟨i, hi⟩ := hr
+    have hMem : r.val ∈ G.roots k d.pattern.center := by
+      simpa only [d.center_eq] using hr
+    rw [d.pattern.roots_eq] at hMem
+    obtain ⟨i, hi⟩ := hMem
     refine ⟨i, ?_⟩
     apply Subtype.ext
-    exact (ht i).trans hi.symm
+    exact (ht i).trans hi
 
 /-- The intrinsic support of the reconstructed source copy is
 exactly the image of the complete template root set. -/

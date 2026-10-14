@@ -56,8 +56,8 @@ private theorem roots_eq_tupleRange_iff_in_closed_subset
         rw [hr]
         exact ⟨i, rfl⟩
       have hval : (xs i).val ∈ G.roots k z.val := hv
-      rw [hi] at hval
-      exact hval
+      have hEq : (xs i).val = w := hi
+      exact hEq ▸ hval
 
 /-- Any isomorphism of successor-closed pieces preserves and reflects
 every fibre F_n between tuples and vertices in those pieces. -/

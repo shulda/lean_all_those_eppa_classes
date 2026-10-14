@@ -42,6 +42,7 @@ theorem closedGraph_successors_image
     change G.Reaches x.val (e.symm z).val
     apply (reaches_iff_of_equiv_on_successor_closed
       G H S T hS hT e hEdge x (e.symm z)).mpr
+    change H.Reaches (e x).val z.val at hz
     simpa only [e.apply_symm_apply] using hz
 
 /-- Equivalently, a closed induced graph isomorphism transports the

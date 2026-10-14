@@ -85,6 +85,7 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionRootedDResult
 import AllThoseEPPA.Applications.KOrientations.SourceChartDomain
 import AllThoseEPPA.Applications.KOrientations.SourceChartBijection
 import AllThoseEPPA.Applications.KOrientations.SourceChartLocalCorrespondence
+import AllThoseEPPA.Applications.KOrientations.SourceChartGraphIso
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

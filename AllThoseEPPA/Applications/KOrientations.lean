@@ -62,6 +62,7 @@ import AllThoseEPPA.Applications.KOrientations.LocalNonrootEdgeTransfer
 import AllThoseEPPA.Applications.KOrientations.LocalRootIncomingEdgeTransfer
 import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceGraph
 import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceReachability
+import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceDClosed
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

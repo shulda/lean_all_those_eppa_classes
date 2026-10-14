@@ -58,10 +58,10 @@ theorem faithful_reconstructed_local_chart_isClosed
       (auxiliaryAction G k) ι)
     (f : Structure.Automorphism (auxiliaryAction G k) B) :
     (dStructure (faithfulReconstructedDigraph G k S B ι hFaith) k).IsClosed
-      {z | IsMovedSupport G k S B ι f} := by
+      {z | IsMovedSupport G k S B ι f z} := by
   exact (dStructure_isClosed_iff
     (faithfulReconstructedDigraph G k S B ι hFaith) k
-    {z | IsMovedSupport G k S B ι f}).mpr
+    {z | IsMovedSupport G k S B ι f z}).mpr
     (faithful_reconstructed_local_chart_isDClosed
       G k S hBound hClosed hRooted B ι hFaith f)
 

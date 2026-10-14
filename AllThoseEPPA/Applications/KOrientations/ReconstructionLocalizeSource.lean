@@ -145,7 +145,8 @@ theorem faithful_localize_reconstructed_nonroot
     calc
       f '' p.support = f '' Set.range xs :=
         congrArg (fun T : Set W => f '' T) hU.symm
-      _ = Set.range (f ∘ xs) := Set.range_comp.symm
+      _ = Set.range (f ∘ xs) := by
+        rw [Set.range_comp]
       _ = Set.range (ι.toFun ∘ ts) := hRange
   have hpq : CanonicalNonroot.map f p = d.toCanonical B ι :=
     CanonicalNonroot.eq_of_center_support

@@ -48,7 +48,7 @@ theorem dFiber_perm_iff
       exact hi (congrArg g hij)
     · intro i
       exact (G.isRoot_iff_perm k g hEdge (xs i)).mp (hr i)
-    · exact (Set.image_injective g.injective) hs
+    · exact (Set.image_injective.mpr g.injective) hs
   · rintro ⟨hn, hi, hr, hs⟩
     refine ⟨hn, ?_, ?_, ?_⟩
     · intro i j hij
@@ -97,6 +97,7 @@ theorem dStructure_func_image_perm
       · intro hy
         refine ⟨g.symm y, ?_, g.apply_symm_apply y⟩
         apply (G.reaches_iff_perm g hEdge).mp
+        change G.Reaches (g (xs 0)) y at hy
         simpa only [g.apply_symm_apply] using hy
   | fiber n hpos =>
       change g '' G.dFiber k xs = G.dFiber k (g ∘ xs)

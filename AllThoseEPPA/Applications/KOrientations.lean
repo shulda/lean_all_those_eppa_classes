@@ -2,6 +2,7 @@ import AllThoseEPPA.Applications.KOrientations.Graph
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphPathEquivalence
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphDegreeEquivalence
 import AllThoseEPPA.Applications.KOrientations.ClosedGraphRootSets
+import AllThoseEPPA.Applications.KOrientations.ClosedGraphSuccessorEquivalence
 import AllThoseEPPA.Applications.KOrientations.LocalDomainAction
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
 import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
@@ -81,6 +82,8 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionLocalizeSource
 import AllThoseEPPA.Applications.KOrientations.ReconstructionSupportsReachable
 import AllThoseEPPA.Applications.KOrientations.ReconstructionDConditional
 import AllThoseEPPA.Applications.KOrientations.ReconstructionRootedDResult
+import AllThoseEPPA.Applications.KOrientations.SourceChartDomain
+import AllThoseEPPA.Applications.KOrientations.SourceChartBijection
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

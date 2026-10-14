@@ -37,32 +37,40 @@ noncomputable def closedGraph_outNeighborsEquiv
     fun y => ⟨y.val,
       hT (e x).val y.val (e x).property
         ((H.mem_outNeighbors (e x).val y.val).mp y.property)⟩
+  let F : (G.outNeighbors x.val) → (H.outNeighbors (e x).val) :=
+    fun y => ⟨(e (toS y)).val,
+      (H.mem_outNeighbors (e x).val _).mpr
+        ((hEdge x (toS y)).mp
+          ((G.mem_outNeighbors x.val y.val).mp y.property))⟩
+  let R : (H.outNeighbors (e x).val) → (G.outNeighbors x.val) :=
+    fun z => by
+      let t : S := e.symm (toT z)
+      have hImage : e t = toT z :=
+        e.apply_symm_apply (toT z)
+      have hz : H.edge (e x).val (toT z).val :=
+        (H.mem_outNeighbors (e x).val z.val).mp z.property
+      have hEdgeH : H.edge (e x).val (e t).val := by
+        rw [hImage]
+        exact hz
+      exact ⟨t.val,
+        (G.mem_outNeighbors x.val _).mpr
+          ((hEdge x t).mpr hEdgeH)⟩
   refine
-    { toFun := fun y => ⟨(e (toS y)).val, ?_⟩
-      invFun := fun z => ⟨(e.symm (toT z)).val, ?_⟩
+    { toFun := F
+      invFun := R
       left_inv := ?_
       right_inv := ?_ }
-  · apply (H.mem_outNeighbors (e x).val _).mpr
-    exact (hEdge x (toS y)).mp
-      ((G.mem_outNeighbors x.val y.val).mp y.property)
-  · apply (G.mem_outNeighbors x.val _).mpr
-    have h := (hEdge x (e.symm (toT z))).mpr
-    have heq : e (e.symm (toT z)) = toT z :=
-      e.apply_symm_apply (toT z)
-    have hz : H.edge (e x).val (toT z).val :=
-      (H.mem_outNeighbors (e x).val z.val).mp z.property
-    exact h (by simpa only [heq] using hz)
   · intro y
     apply Subtype.ext
-    change (e.symm (toT ⟨(e (toS y)).val, _⟩)).val = y.val
-    have he : toT ⟨(e (toS y)).val, _⟩ = e (toS y) :=
+    change (e.symm (toT (F y))).val = y.val
+    have he : toT (F y) = e (toS y) :=
       Subtype.ext rfl
     rw [he, e.symm_apply_apply]
     rfl
   · intro z
     apply Subtype.ext
-    change (e (toS ⟨(e.symm (toT z)).val, _⟩)).val = z.val
-    have he : toS ⟨(e.symm (toT z)).val, _⟩ = e.symm (toT z) :=
+    change (e (toS (R z))).val = z.val
+    have he : toS (R z) = e.symm (toT z) :=
       Subtype.ext rfl
     rw [he, e.apply_symm_apply]
     rfl

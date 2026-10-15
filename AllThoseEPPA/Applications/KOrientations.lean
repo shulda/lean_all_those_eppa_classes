@@ -92,6 +92,7 @@ import AllThoseEPPA.Applications.KOrientations.ReconstructionRootedDResult
 import AllThoseEPPA.Applications.KOrientations.LocalChartDClosed
 import AllThoseEPPA.Applications.KOrientations.ClosedChartCover
 import AllThoseEPPA.Applications.KOrientations.OriginalRootImageClosed
+import AllThoseEPPA.Applications.KOrientations.OriginalSourceChart
 import AllThoseEPPA.Applications.KOrientations.ReconstructedDAutomorphismEmbedding
 import AllThoseEPPA.Applications.KOrientations.SourceChartDomain
 import AllThoseEPPA.Applications.KOrientations.SourceChartBijection

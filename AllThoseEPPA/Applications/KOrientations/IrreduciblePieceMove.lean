@@ -1,4 +1,5 @@
 import AllThoseEPPA.Applications.KOrientations.IrreducibleRootTrace
+import AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceInjective
 import AllThoseEPPA.Applications.KOrientations.ReconstructionSupportEquivariance
 
 /-!

@@ -76,4 +76,62 @@ theorem closed_dTrace_root_relation_transport_iff
       (AuxiliaryRel.root (RootPattern.transportAut g P)) ys
   exact hl.trans ((and_congr hc ht).trans hr.symm)
 
+
+/-- The incoming E_P relations are also reflected, including the
+source-root-to-labelled-centre edge condition. -/
+theorem closed_dTrace_incoming_relation_transport_iff
+    {V : Type u} [Fintype V] (G : Digraph V) (k : ℕ)
+    (S : Set V) (T T' : Set S)
+    (hT : (dTraceStructure G k S).IsClosed T)
+    (hT' : (dTraceStructure G k S).IsClosed T')
+    (g : G.graphAut)
+    (hImage : g.1 '' (Subtype.val '' T) = Subtype.val '' T')
+    {n : ℕ} (P : RootPattern G k n)
+    (xs ys : Fin (n + 1) → RootsIn G k S)
+    (hxs : ∀ i, (⟨(xs i).val, (xs i).property.1⟩ : S) ∈ T)
+    (hys : ∀ i, (⟨(ys i).val, (ys i).property.1⟩ : S) ∈ T')
+    (hxy : ∀ i, (ys i).val = g.1 (xs i).val) :
+    (auxiliaryRootStructure G k S).rel
+        (AuxiliaryRel.incoming P) xs ↔
+      (auxiliaryRootStructure G k S).rel
+        ((auxiliaryAction G k).onRel g
+          (AuxiliaryRel.incoming P)) ys := by
+  have hc :
+      P.center ∈ Subtype.val '' T ↔
+        (RootPattern.transportAut g P).center ∈
+          Subtype.val '' T' := by
+    change P.center ∈ Subtype.val '' T ↔
+      g.1 P.center ∈ Subtype.val '' T'
+    exact center_mem_image_transport G g _ _ hImage P.center
+  have hedge :
+      G.edge (xs 0).val P.center ↔
+      G.edge (ys 0).val (RootPattern.transportAut g P).center := by
+    change G.edge (xs 0).val P.center ↔
+      G.edge (ys 0).val (g.1 P.center)
+    simpa only [hxy 0] using (g.2 (xs 0).val P.center).symm
+  have ht :
+      (∀ i : Fin n, (xs (Fin.succ i)).val = P.tuple i) ↔
+      (∀ i : Fin n, (ys (Fin.succ i)).val =
+        (RootPattern.transportAut g P).tuple i) := by
+    constructor
+    · intro h i
+      change (ys (Fin.succ i)).val = g.1 (P.tuple i)
+      rw [hxy (Fin.succ i), h i]
+    · intro h i
+      apply g.1.injective
+      calc
+        g.1 (xs (Fin.succ i)).val =
+            (ys (Fin.succ i)).val :=
+          (hxy (Fin.succ i)).symm
+        _ = g.1 (P.tuple i) := h i
+  have hl := closed_dTrace_aux_incoming_rel_iff
+    G k S T hT P xs hxs
+  have hr := closed_dTrace_aux_incoming_rel_iff
+    G k S T' hT' (RootPattern.transportAut g P) ys hys
+  change (auxiliaryRootStructure G k S).rel
+      (AuxiliaryRel.incoming P) xs ↔
+    (auxiliaryRootStructure G k S).rel
+      (AuxiliaryRel.incoming (RootPattern.transportAut g P)) ys
+  exact hl.trans ((and_congr hc (and_congr hedge ht)).trans hr.symm)
+
 end AllThoseEPPA.Applications.KOrientations

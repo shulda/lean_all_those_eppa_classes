@@ -103,6 +103,7 @@ import AllThoseEPPA.Applications.KOrientations.SourceChartGraphHom
 import AllThoseEPPA.Applications.KOrientations.NestedClosedIrreducible
 import AllThoseEPPA.Applications.KOrientations.SupportIrreducibility
 import AllThoseEPPA.Applications.KOrientations.SupportFreeSide
+import AllThoseEPPA.Applications.KOrientations.IrreducibleRootTrace
 import AllThoseEPPA.Applications.KOrientations.OriginalRootImageClosed
 import AllThoseEPPA.Applications.KOrientations.ClosedLatticeEquiv
 import AllThoseEPPA.Applications.KOrientations.ReconstructedDAutomorphismEmbedding

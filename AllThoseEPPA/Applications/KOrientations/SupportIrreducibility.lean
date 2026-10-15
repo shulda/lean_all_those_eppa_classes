@@ -50,11 +50,18 @@ theorem faithful_reconstructedSupport_auxiliary_isIrreducible
           Set.range xs := B.closureSet_eq_self hClosed
       have hIrred :
           (B.induce (Set.range xs) hClosed).IsIrreducible := by
-        simpa only [Structure.closureStructure, hEq] using
-          (B.relationTupleClosure_isIrreducible
-            (AuxiliaryRel.root P) xs hRel)
+        have hClosure :=
+          B.relationTupleClosure_isIrreducible
+            (AuxiliaryRel.root P) xs hRel
+        change (B.induce
+          (B.closureSet (Set.range xs))
+          (B.isClosed_closureSet (Set.range xs))).IsIrreducible
+            at hClosure
+        rw [hEq] at hClosure
+        exact hClosure
       change (B.induce p.support
         (canonicalNonroot_support_isClosed G k S B ι hFaith p)).IsIrreducible
-      simpa only [hRange] using hIrred
+      rw [← hRange]
+      exact hIrred
 
 end AllThoseEPPA.Applications.KOrientations

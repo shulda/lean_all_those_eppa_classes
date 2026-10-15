@@ -51,6 +51,7 @@ import AllThoseEPPA.Applications.KOrientations.ClosedRootTrace
 import AllThoseEPPA.Applications.KOrientations.SupportedClosedPieces
 import AllThoseEPPA.Applications.KOrientations.RootTraceClosureFormula
 import AllThoseEPPA.Applications.KOrientations.RootTraceOrder
+import AllThoseEPPA.Applications.KOrientations.ClosedLatticeEquiv
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
 import AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
 import AllThoseEPPA.Applications.KOrientations.PatternTransport

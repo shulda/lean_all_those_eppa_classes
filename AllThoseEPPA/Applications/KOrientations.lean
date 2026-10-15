@@ -100,6 +100,14 @@ import AllThoseEPPA.Applications.KOrientations.LocalChartDIsomorphism
 import AllThoseEPPA.Applications.KOrientations.LocalChartDTraceIso
 import AllThoseEPPA.Applications.KOrientations.OnePointChartContainment
 import AllThoseEPPA.Applications.KOrientations.SourceChartGraphHom
+import AllThoseEPPA.Applications.KOrientations.NestedClosedIrreducible
+import AllThoseEPPA.Applications.KOrientations.SupportIrreducibility
+import AllThoseEPPA.Applications.KOrientations.SupportFreeSide
+import AllThoseEPPA.Applications.KOrientations.OriginalRootImageClosed
+import AllThoseEPPA.Applications.KOrientations.ClosedLatticeEquiv
+import AllThoseEPPA.Applications.KOrientations.ReconstructedDAutomorphismEmbedding
+import AllThoseEPPA.Applications.KOrientations.FullDAutomorphism
+import AllThoseEPPA.Applications.KOrientations.FullDAutomorphismFunctorial
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
 /-!

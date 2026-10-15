@@ -99,6 +99,7 @@ import AllThoseEPPA.Applications.KOrientations.ClosedGraphDTraceIso
 import AllThoseEPPA.Applications.KOrientations.LocalChartDIsomorphism
 import AllThoseEPPA.Applications.KOrientations.LocalChartDTraceIso
 import AllThoseEPPA.Applications.KOrientations.IdentityChartSupport
+import AllThoseEPPA.Applications.KOrientations.OriginalSourceDTraceEmbedding
 import AllThoseEPPA.Applications.KOrientations.OnePointChartContainment
 import AllThoseEPPA.Applications.KOrientations.SourceChartGraphHom
 import AllThoseEPPA.Applications.KOrientations.FirstWitness

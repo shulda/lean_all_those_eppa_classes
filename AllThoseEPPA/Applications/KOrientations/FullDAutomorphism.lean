@@ -42,8 +42,10 @@ noncomputable def Embedding.toAutomorphismOfBijective
       map_func := ?_ }
     source_eq_univ := ?_
     target_eq_univ := ?_ }
-  · simpa only [Equiv.toPartialEquiv_source] using A.isClosed_univ
-  · simpa only [Equiv.toPartialEquiv_target] using A.isClosed_univ
+  · rw [Equiv.toPartialEquiv_source]
+    exact A.isClosed_univ
+  · rw [Equiv.toPartialEquiv_target]
+    exact A.isClosed_univ
   · intro n R xs _
     change A.rel (act.onRel e.lang R) (e.toFun ∘ xs) ↔ A.rel R xs
     exact e.map_rel_iff R xs

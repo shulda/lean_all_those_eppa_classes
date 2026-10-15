@@ -92,9 +92,10 @@ noncomputable def sourceSupportedPieceEquiv
   refine Equiv.ofBijective F ?_
   constructor
   · intro x y hxy
-    apply e.injective
-    apply Subtype.ext
-    exact congrArg Subtype.val hxy
+    have hF : (F x).val = (F y).val :=
+      congrArg Subtype.val hxy
+    have hval : (e x).val = (e y).val := hF
+    exact e.injective (Subtype.ext hval)
   · intro z
     let zz : LocalReconstructedCarrier G k S B ι f :=
       ⟨z.val,
@@ -102,7 +103,8 @@ noncomputable def sourceSupportedPieceEquiv
           z.property⟩
     obtain ⟨x, hx⟩ := e.surjective zz
     refine ⟨x, ?_⟩
-    apply Subtype.ext
-    exact congrArg Subtype.val hx
+    have hval : (e x).val = zz.val :=
+      congrArg Subtype.val hx
+    exact Subtype.ext hval
 
 end AllThoseEPPA.Applications.KOrientations

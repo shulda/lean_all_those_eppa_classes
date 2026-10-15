@@ -55,6 +55,7 @@ import AllThoseEPPA.Applications.KOrientations.NestedClosedIrreducible
 import AllThoseEPPA.Applications.KOrientations.SupportFreeSide
 import AllThoseEPPA.Applications.KOrientations.IrreducibleRootTrace
 import AllThoseEPPA.Applications.KOrientations.IrreduciblePieceMove
+import AllThoseEPPA.Applications.KOrientations.IrreduciblePieceSource
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
 import AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
 import AllThoseEPPA.Applications.KOrientations.PatternTransport

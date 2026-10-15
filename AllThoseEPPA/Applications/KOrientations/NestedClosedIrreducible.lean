@@ -123,9 +123,9 @@ theorem irreducible_closed_subset_one_side_of_freeDecomposition
               (⟨z.val, hTU z.property⟩ : U) ∈
                 (A.induce U hU).func F ys := hz
           rw [hZero] at hzU
-          exact (Set.not_mem_empty _ hzU).elim
+          exact False.elim (by simpa using hzU)
         · intro hz
-          exact (Set.not_mem_empty _ hz).elim }
+          exact False.elim (by simpa using hz) }
   letI : IsEmpty ((A.induce T hT).FreeDecomposition) := hIrr
   exact isEmptyElim dT
 

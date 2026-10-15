@@ -23,6 +23,18 @@ namespace AllThoseEPPA.Applications.KOrientations
 
 universe u v
 
+/-- Irreducibility of an induced substructure depends only on the
+underlying closed vertex set, not on its chosen proof of closedness. -/
+private theorem irreducible_induce_transport_set_eq
+    {L : Language.{u}} {X : Type v}
+    (A : Structure L X) {T U : Set X}
+    (hT : A.IsClosed T) (hU : A.IsClosed U)
+    (hEq : T = U)
+    (hIrr : (A.induce T hT).IsIrreducible) :
+    (A.induce U hU).IsIrreducible := by
+  subst U
+  exact hIrr
+
 /-- Every reconstructed point carries an irreducible substructure
 on its full intrinsic B₁-root support. -/
 theorem faithful_reconstructedSupport_auxiliary_isIrreducible
@@ -48,20 +60,19 @@ theorem faithful_reconstructedSupport_auxiliary_isIrreducible
           G k S B ι hFaith P xs hRel
       have hEq : B.closureSet (Set.range xs) =
           Set.range xs := B.closureSet_eq_self hClosed
+      have hIrrClosure :
+          (B.induce (B.closureSet (Set.range xs))
+            (B.isClosed_closureSet (Set.range xs))).IsIrreducible :=
+        B.relationTupleClosure_isIrreducible
+          (AuxiliaryRel.root P) xs hRel
       have hIrred :
-          (B.induce (Set.range xs) hClosed).IsIrreducible := by
-        have hClosure :=
-          B.relationTupleClosure_isIrreducible
-            (AuxiliaryRel.root P) xs hRel
-        change (B.induce
-          (B.closureSet (Set.range xs))
-          (B.isClosed_closureSet (Set.range xs))).IsIrreducible
-            at hClosure
-        rw [hEq] at hClosure
-        exact hClosure
+          (B.induce (Set.range xs) hClosed).IsIrreducible :=
+        irreducible_induce_transport_set_eq B
+          (B.isClosed_closureSet (Set.range xs)) hClosed hEq hIrrClosure
       change (B.induce p.support
         (canonicalNonroot_support_isClosed G k S B ι hFaith p)).IsIrreducible
-      rw [← hRange]
-      exact hIrred
+      exact irreducible_induce_transport_set_eq B hClosed
+        (canonicalNonroot_support_isClosed G k S B ι hFaith p)
+        hRange hIrred
 
 end AllThoseEPPA.Applications.KOrientations

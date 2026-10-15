@@ -213,7 +213,7 @@ theorem faithful_reconstructed_irreducible_rootTrace
                   exact (hSmall i).trans hR
           exact (hCross hNotMixed).elim
         · intro hz
-          exact (Set.not_mem_empty _ hz).elim }
+          exact (by simpa using hz : False).elim }
   letI : IsEmpty ((A.induce D hD).FreeDecomposition) := hIrr
   exact isEmptyElim dD
 

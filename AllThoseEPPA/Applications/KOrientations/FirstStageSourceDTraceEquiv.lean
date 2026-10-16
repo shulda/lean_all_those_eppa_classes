@@ -40,7 +40,7 @@ noncomputable def firstStageSourceSubtypeEquiv
       (successorStructure A) (successorStructure G)) :
     (Set.univ : Set V) ≃ Set.range ι.toFun := by
   classical
-  let f : (Set.univ : Set V) → Set.range ι.toFun :=
+  let f : {x : V // x ∈ Set.univ} → {y : W // y ∈ Set.range ι.toFun} :=
     fun x => ⟨ι x.val, ⟨x.val, rfl⟩⟩
   refine Equiv.ofBijective f ⟨?_, ?_⟩
   · intro x y hxy
@@ -91,8 +91,8 @@ noncomputable def firstStageSourceDTraceEmbedding
       A.edge x.val y.val ↔
         G.edge (e x).val (e y).val := by
     intro x y
-    change A.edge x.val y.val ↔
-      G.edge (ι x.val) (ι y.val)
+    dsimp only [e]
+    rw [firstStageSourceSubtypeEquiv_val, firstStageSourceSubtypeEquiv_val]
     exact (successorEmbedding_edge_iff A G ι x.val y.val).symm
   exact closedGraph_dTraceEmbedding A G k
     (Set.univ : Set V) (Set.range ι.toFun) hS hT e hEdge

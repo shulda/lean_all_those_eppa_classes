@@ -1,97 +1,40 @@
-# \(k\)-orientations with \(d\)-closures: Lean application
+# Rooted k-orientations with d-closures — Lean application
 
-This directory contains the **large, separately organized application**
-of the main EPPA theorems to finite \(k\)-orientations with
-successor- and root-fibre closures (the oriented theorem `thm:DF`
-of *All those EPPA classes*).
+**Status: the actual full d(A) theorem is proved.** The dedicated [application PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242) contains the original positive-arity d-closure EPPA application from Section 9.3 (`thm:DF`) of *All those EPPA classes*. The combined application commit `eeea61348615` passed the [complete Lean build and allowed-axioms audit](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553) on 2026-10-16.
 
-The paper and mathematical audit live in the private manuscript repo:
-[`K_ORIENTATIONS_AUDIT_2026-10-12.md`](https://github.com/shulda/Eppouzy---formalizace/blob/audit-k-orientations-d-closures-20261012/K_ORIENTATIONS_AUDIT_2026-10-12.md).
-The proposed Lean architecture and choice-free reconstruction are:
-[`K_ORIENTATIONS_LEAN_DESIGN.md`](https://github.com/shulda/Eppouzy---formalizace/blob/audit-k-orientations-d-closures-20261012/K_ORIENTATIONS_LEAN_DESIGN.md).
+**For downstream use**, import `AllThoseEPPA.KOrientationsEPPA` and read [`K_ORIENTATIONS_EPPA_API.md`](../../../K_ORIENTATIONS_EPPA_API.md). The original theorem is:
 
-## Files and responsibility
+```lean
+AllThoseEPPA.Applications.KOrientations.exists_rootedKOrientation_faithfulCoherentDEPPa
+```
 
-| Module | Responsibility |
-| --- | --- |
-| [`Graph.lean`](Graph.lean) | Oriented graph, reflexive directed paths, exact outdegree, roots, root-set monotonicity |
-| [`Closures.lean`](Closures.lean) | Set-valued successor closure and all arity-indexed \(F_n\)-fibres, closure criterion, closedness |
-| [`ClosureMinimal.lean`](ClosureMinimal.lean) | Least \(d\)-closed superset theorem via an explicit enumeration of every vertex's entire nonempty root set |
-| [`../KOrientations.lean`](../KOrientations.lean) | Application-level import, used by the root library for regression checking |
+It is a finite rooted **k-orientation** theorem: every point must be able to reach an outdegree-<k root. The witness remains finite, rooted, and of outdegree at most k; its **original full** higher-arity `dStructure` embedding has coherent EPPA and irreducible-structure faithfulness. Unrooted orientations and unoriented reducts are not covered by this theorem.
 
-The target \(d\)-structure has **infinitely many function symbols**
-\(F_n\) (\(n\ge1\)). The general public EPPA theorem applies **only to
-unary-function languages**. Accordingly, it must be invoked on the
-successor-closure structure and on a finite auxiliary root language,
-not directly on the \(d\)-expansion. Pretending that \(F_n\) are unary
-would invalidate the application.
+## Overview
 
-## Auxiliary root language
+The proof deliberately uses two separate applications of the general faithful coherent EPPA theorem, since the **actual d-language includes function symbols of every positive arity** and cannot be passed to the general unary-function theorem directly.
 
-The source module `AuxiliaryLanguage.lean` introduces the full non-root template labels with ordered, pairwise distinct root tuples, their arity-indexed `R_P` / `E_P` relation symbols, and the root-only auxiliary structure. Its only function symbol is unary, making it eligible for the public unrestricted EPPA theorem after the symbol-action step.
+- **First stage — successor language.** `Graph.lean`, `Closures.lean`, `Encoding.lean`, `StructureBridge.lean`, and `FirstWitness.lean` encode the original graph by its set-valued unary successor operation. `SuccessorFaithful*.lean`, `FaithfulOutdegree.lean`, and `FirstStageInClass.lean` prove that the unrestricted first witness is **exactly** the successor structure of a genuine finite bounded-outdegree orientation. The original source need not have a d-closed image in this successor witness.
+- **Second stage — root language.** `AuxiliaryLanguage.lean`, `GraphAutomorphismGroup.lean`, `AuxiliaryAction.lean`, `SecondWitness.lean`, and the `SelectedSecond*.lean` files construct the auxiliary Γ-root language and choose another finite coherent faithful witness. The group Γ can be `Aut(G)` with genuinely **nontrivial language-symbol action**, including the κ component.
+- **Reconstruction.** `ReconstructionCarrier.lean` and the associated `Reconstruction*.lean`, `RootMatching*.lean` and `SourceReconstruction*.lean` modules build a finite orientation using canonical entire root supports, with the exact edge and root-set correspondence. `ReconstructionRootedDResult.lean` proves the reconstructed graph again has the required rooted d-closure structure.
+- **Original all-arity embedding.** `SourceSupportedDTraceIso.lean`, `FirstStageFullDSourceEmbedding.lean`, `OriginalDReconstructedEmbedding.lean` and `OriginalDFaithfulReconstruction.lean` construct and certify an exact embedding of the **original** entire d(A), not just a conveniently supported surrogate. `SelectedOriginalRootGluing.lean` and `SelectedOriginalNonrootGluing.lean` give separate pointwise ExtendsAlong squares for every old domain vertex.
+- **Coherence and final selection.** `SelectedReconstructedCoherence.lean`, `SelectedOriginalFullDExtendsAlong.lean` and `SelectedOriginalFullDCoherentExtension.lean` show both real selected automorphism families induce one public coherent-extension operation on ALL original d-partial isomorphisms. `RootedKOrientationDFinalEPPA.lean` combines them with the two existential witness constructions and verifies witness finiteness, rootedness, coherent EPPA and irreducible-structure faithfulness.
 
-## Faithful local transfer and pattern equivariance
+## Mathematical pitfalls explicitly addressed
 
-`FaithfulLocalTransfer.lean` packages one-point and relation-tuple closure transportation by irreducible-structure faithfulness. `PatternTransport.lean` formalizes how a root-pattern label changes under a permutation preserving root status and complete root sets. Both are prerequisites for deriving the first witness's structural axioms and for the nontrivial auxiliary symbol action.
+1. The `dStructure` has genuine symbols `F_n` for every `n≥1`; they are not unary functions disguised as higher-arity notation.
+2. The original old vertex image in the first successor witness is successor-closed; it is **not assumed** to be ambient d-closed.
+3. The second Γ-auxiliary-language automorphisms are allowed to move relation symbols. Discarding the κ group-language component would make the coherent composition assertion false.
+4. A freshly reconstructed nonroot vertex carries its full canonical root support and a canonical centre. Distinct old vertices are not identified by arbitrary representative selection.
+5. The actual original d(A) embedding is the same one for which coherent EPPA and irreducible-structure faithfulness are proved. Both roots and nonroots of original partial-domain maps are handled.
 
-## Orienting the faithful witness
+## Use and audit
 
-`SuccessorFaithfulGraph.lean` uses genuine irreducible-structure faithfulness and graph-relation transport to prove the raw first-stage witness has no antiparallel edges or loops. This reconstructs its directed graph without assuming that unrestricted EPPA preserves the class. The bounded outdegree and exact unary successor interpretation remain open obligations.
+- Supported import and exact formal theorem statement: [public API](../../../K_ORIENTATIONS_EPPA_API.md).
+- Import-only regression for consumers: [`Examples/KOrientationsDFPublicAPIUsage.lean`](../../Examples/KOrientationsDFPublicAPIUsage.lean).
+- Authoritative original source theorem: [`RootedKOrientationDFinalEPPA.lean`](RootedKOrientationDFinalEPPA.lean).
+- Stable general theorem API, **distinct from this large application**: [`MainTheorems.lean`](../../MainTheorems.lean).
+- Dedicated application branch: [PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242).
+- Verified final all-arity theorem on the application branch: [full Lean CI 38926049553](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553). The public import and its smoke test undergo a further separate CI run before integration.
 
-## Faithful edge/successor compatibility
-
-`SuccessorFaithfulFunctions.lean` shows that, in the faithful first-stage witness, every directed edge points to a vertex in the source's unary successor closure. This is a local compatibility theorem, not yet the converse equality with full graph reachability.
-
-## Unary successor reflexivity
-
-`SuccessorFaithfulUnary.lean` proves every unary function value stays in the associated one-point closure, and that every vertex belongs to its own successor value in an irreducible-structure faithful first-stage witness. Both are needed to reconstruct exact reachability.
-
-## Transitivity of unary successor values
-
-`SuccessorFaithfulTransitive.lean` transports vertices of a one-point closure into the original successor structure, proves membership transport under automorphisms/embeddings, and establishes the unary function's transitivity F(F(x)) ⊆ F(x).
-
-## Transporting directed paths
-
-`FaithfulReachability.lean` shows that directed paths in the source graph are preserved by the exact embedding into the first faithful witness, and that total witness automorphisms preserve graph reachability. This enables the reverse inclusion between the witness's unary successor function and graph-theoretic reachability.
-
-## Exact successor interpretation
-
-`FaithfulSuccessorExact.lean` aims to prove that every faithful first-stage witness interprets its unary successor value **exactly** as reflexive graph reachability. The forward implication uses irreducible-structure faithfulness and transported paths; the reverse uses reflexivity, edge inclusion and transitivity. This is a key class-membership obligation and must compile before being called verified.
-
-## Bound on the faithful witness's outdegree
-
-`FaithfulOutdegree.lean` proves that every outneighbourhood lies in a movable one-point closure. A single automorphism embeds the whole outneighbourhood injectively in an original outneighbourhood; its cardinal is therefore at most k. This is the remaining numerical axiom of the successor-closure class after the exact reachability theorem.
-
-## First witness as an exact successor-class member
-
-`FirstStageInClass.lean` packages the recovered orientation and k-bound, proves the **exact equality** between the unrestricted faithful witness and its graph's canonical successor expansion, and returns a first-stage coherent EPPA witness already in the correct class. This is a crucial type-level bridge to the second-stage root construction.
-
-## First invocation of the main theorem
-
-The `FirstWitness.lean` file now applies the checked unrestricted irreducible-structure faithful coherent EPPA theorem to the successor language with trivial group action. The witness is intentionally named *unrestricted*: proving its membership in the successor-closure k-orientation class is a separate remaining obligation, not part of the general EPPA theorem.
-
-## Finite template automorphism group
-
-`GraphPermutations.lean` proves graph automorphisms preserve outdegree, root status, directed paths and the complete set of reachable roots. `GraphAutomorphismGroup.lean` defines the finite graph-automorphism group as a subgroup of `Equiv.Perm V`, suitable for the nonfaithful Γ-action on the auxiliary relation symbols. Neither uses the valuation construction.
-
-## Next mathematical layers
-
-1. Encode \(s(G)\) and \(d(G)\) as actual `AllThoseEPPA.Structure` objects, using the exact set-valued-function semantics from `Structure.lean`.
-2. Prove the \(s\)-class is free-amalgamating and get \(B_0\) using `MainTheorems.unrestrictedFaithfulCoherentEPPA` plus the irreducible-structure-faithful free-amalgamation transfer.
-3. Build finite relation symbols \(R_P,E_P\) and the \(\Gamma\)-root structure \(A_1\), preferably taking \(\Gamma=\operatorname{Aut}(B_0)\) itself as a nonfaithful symbol action.
-4. Apply the **second** unrestricted faithful coherent EPPA theorem to get \(B_1\).
-5. Implement the choice-free reconstructed vertices \((x,W)\), their canonical root matching, four edge clauses, and automorphisms.
-6. Establish \(B\in \mathcal D_d^k\), irreducible-structure faithfulness, EPPA, then coherence.
-7. Add a readable final theorem and a small consumer smoke test.
-
-## Verification policy
-
-- New proof declarations should have explicit proof terms or `by` scripts. No `sorry`, `admit`, or application-specific axioms.
-- **Do not claim the full theorem is proved until the final result type is inhabited and compiled.**
-- The dedicated branch is developed as a draft PR. The existing CI for the **public Lean** repository is the project's already configured build mechanism; no workflows are added.
-- No GitHub Actions are to be used or created in the **private manuscript** repository. TeX compilation there is local-only.
-- Initial modules are authored here but require Lean/Mathlib compilation; the assistant's current sandbox has neither Lean installed nor network access to install it. Keep their status distinct from the already certified general EPPA API.
-
-The current scaffold is not a statement of EPPA for unoriented
-reducts. The possible relationship with EHN's \(\mathcal G_F\) is
-deliberately deferred.
+The proof uses no application-specific axioms, `sorry` or `admit`. The CI's allowed axiom set remains `propext`, `Classical.choice`, and `Quot.sound`. All testing is in the **public Lean repository**, never in the private manuscript repository.

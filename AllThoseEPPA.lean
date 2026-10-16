@@ -435,5 +435,8 @@ import AllThoseEPPA.StrongCompletionProposition113API
 import AllThoseEPPA.MainTheorems
 import AllThoseEPPA.Examples.MainTheoremsPublicAPIUsage
 
--- Application modules have their own directory; import here for CI validation.
+-- Section 9.3: the genuine higher-arity d-closure k-orientation EPPA
+-- theorem, its supported public facade, and a downstream import-only smoke test.
 import AllThoseEPPA.Applications.KOrientations
+import AllThoseEPPA.KOrientationsEPPA
+import AllThoseEPPA.Examples.KOrientationsDFPublicAPIUsage

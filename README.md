@@ -64,12 +64,24 @@ This proof genuinely invokes the already-verified unrestricted faithful
 and restricted/tree-like EPPA constructions, rather than an external metric
 EPPA theorem. See `METRIC_EPPA_ROADMAP.md` for the dependency and audit map.
 
-After the metric regression, the remaining large planned paper application
-is **EPPA for k-orientations with d-closures** (Section 9.3 of
-the paper; closely related to Hrushovski predimension constructions).
-This is the deferred Hrushovski-related application referred to in older
-project notes, not a third independently scheduled regression.
-A final manuscript-statement/API audit is also planned.
+**The remaining large paper application has now also been Lean-checked:**
+finite rooted k-orientations with the genuine higher-arity d-closures
+(Section 9.3, manuscript `thm:DF`). Every finite rooted
+outdegree-≤k orientation has a finite rooted witness with coherent
+EPPA and irreducible-structure faithfulness for its ORIGINAL
+full d(A), not merely the unary successor reduct.
+The verified result is
+[`Applications.KOrientations.exists_rootedKOrientation_faithfulCoherentDEPPa`](AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean)
+on the dedicated [application draft #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242),
+[full theorem CI 38926049553](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553).
+It is intentionally developed separately from the already stable
+general-theorem API; full application integration and a final
+paper-statement/interface audit are the remaining release tasks.
+
+**Supported external import:** `import AllThoseEPPA.KOrientationsEPPA`.
+See [the exact assumptions, theorem statement and consumer
+smoke test](K_ORIENTATIONS_EPPA_API.md). The result does not
+assert EPPA for arbitrary unrooted orientations or unoriented reducts.
 
 ## Using the metric regression in another Lean project
 

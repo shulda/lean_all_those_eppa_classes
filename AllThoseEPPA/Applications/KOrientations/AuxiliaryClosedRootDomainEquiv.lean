@@ -43,7 +43,10 @@ noncomputable def auxiliaryClosedRootDomainEquiv
     have hyV : g.1 x.val.val ∈ Subtype.val '' T' := by
       rw [← hImage]
       exact ⟨x.val.val, hxV, rfl⟩
-    obtain ⟨b, hb, hval⟩ := hyV
+    let b : S := Classical.choose hyV
+    have hb : b ∈ T' := (Classical.choose_spec hyV).1
+    have hval : b.val = g.1 x.val.val :=
+      (Classical.choose_spec hyV).2
     have hInS : g.1 x.val.val ∈ S := by
       exact hval ▸ b.property
     have hRoot : G.IsRoot k (g.1 x.val.val) :=
@@ -54,12 +57,18 @@ noncomputable def auxiliaryClosedRootDomainEquiv
       (auxiliaryClosedRootDomain_mem_iff G k S T' y).mpr
         ⟨b, hb, hval⟩
     exact ⟨y, hyT⟩
+  have hfval (x : auxiliaryClosedRootDomain G k S T) :
+      (f x).val.val = g.1 x.val.val := rfl
   refine Equiv.ofBijective f ?_
   constructor
   · intro x y h
-    have hxy : g.1 x.val.val = g.1 y.val.val :=
-      congrArg (fun z : auxiliaryClosedRootDomain G k S T' =>
-        z.val.val) h
+    have hxy : g.1 x.val.val = g.1 y.val.val := by
+      calc
+        g.1 x.val.val = (f x).val.val := (hfval x).symm
+        _ = (f y).val.val :=
+          congrArg (fun z : auxiliaryClosedRootDomain G k S T' =>
+            z.val.val) h
+        _ = g.1 y.val.val := hfval y
     apply Subtype.ext
     apply Subtype.ext
     exact g.1.injective hxy
@@ -85,7 +94,9 @@ noncomputable def auxiliaryClosedRootDomainEquiv
     refine ⟨⟨x, hx⟩, ?_⟩
     apply Subtype.ext
     apply Subtype.ext
-    exact hMapped
+    calc
+      (f ⟨x, hx⟩).val.val = g.1 x.val := hfval ⟨x, hx⟩
+      _ = y.val.val := hMapped
 
 /-- The equivalence sends each source root to its ACTUAL
 B₀-automorphism image in the ambient vertex set; only the

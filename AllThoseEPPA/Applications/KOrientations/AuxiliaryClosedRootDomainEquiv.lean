@@ -69,10 +69,13 @@ noncomputable def auxiliaryClosedRootDomainEquiv
     have hpreimage : y.val.val ∈ g.1 '' (Subtype.val '' T) := by
       rw [hImage]
       exact hyV
-    obtain ⟨a, ha, hav⟩ := hpreimage
+    obtain ⟨v, ⟨a, ha, hva⟩, hgy⟩ := hpreimage
+    have hMapped : g.1 a.val = y.val.val := by
+      rw [hva]
+      exact hgy
     have hRoot : G.IsRoot k a.val := by
       apply (G.graphAut_root_iff k g a.val).mp
-      rw [hav]
+      rw [hMapped]
       exact y.val.property.2
     let x : RootsIn G k S :=
       ⟨a.val, ⟨a.property, hRoot⟩⟩
@@ -82,7 +85,7 @@ noncomputable def auxiliaryClosedRootDomainEquiv
     refine ⟨⟨x, hx⟩, ?_⟩
     apply Subtype.ext
     apply Subtype.ext
-    exact hav
+    exact hMapped
 
 /-- The equivalence sends each source root to its ACTUAL
 B₀-automorphism image in the ambient vertex set; only the

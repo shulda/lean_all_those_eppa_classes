@@ -10,6 +10,7 @@ import AllThoseEPPA.Applications.KOrientations.LocalDomainAction
 import AllThoseEPPA.Applications.KOrientations.GraphPermutations
 import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
 import AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge
+import AllThoseEPPA.Applications.KOrientations.FirstStageExactDomainImage
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
 import AllThoseEPPA.Applications.KOrientations.SecondWitness
 import AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer

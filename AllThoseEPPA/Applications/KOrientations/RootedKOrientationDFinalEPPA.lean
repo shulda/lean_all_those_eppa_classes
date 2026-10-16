@@ -28,8 +28,10 @@ EPPA extension on the ORIGINAL domain. The same embedding is
 irreducible-structure faithful. This theorem is the final existence
 form of the reconstructed k-orientation d-closure EPPA application,
 conditional only on finite input rooted k-orientation assumptions.
-It must NOT be called verified until the full exact-head Lean build,
-application regression and allowed axioms audit pass.
+Verified by the full Lean library build and allowed-axioms audit
+on the original exact candidate and on the integrated application
+draft (2026-10-16, commit eeea61348615; Actions run 38926049553).
+The proof states no EPPA theorem for arbitrary unrooted orientations.
 -/
 
 namespace AllThoseEPPA.Applications.KOrientations

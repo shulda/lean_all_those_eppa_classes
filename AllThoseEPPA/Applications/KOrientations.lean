@@ -130,6 +130,11 @@ import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCoherentCompos
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCompositeImage
 import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedGraphDomainImage
 
+import AllThoseEPPA.Applications.KOrientations.DTraceClosedImageTransport
+import AllThoseEPPA.Applications.KOrientations.FirstStageSourceDTraceEquiv
+import AllThoseEPPA.Applications.KOrientations.FirstStageFullDSourceEmbedding
+import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedAuxRootPartialAutomorphism
+
 /-!
 # EPPA for \(k\)-orientations with \(d\)-closures — application umbrella
 

@@ -155,19 +155,25 @@ import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCompositeImage
 import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedGraphDomainImage
 
 /-!
-# EPPA for \(k\)-orientations with \(d\)-closures — application umbrella
+# EPPA for k-orientations with d-closures — complete application umbrella
 
-The project intentionally lives under
-\`AllThoseEPPA/Applications/KOrientations/\` and is developed separately
-from the already certified main EPPA theorems.
+This dedicated application is the full Section 9.3 / `thm:DF`
+formalization from *All those EPPA classes*. In particular,
+`RootedKOrientationDFinalEPPA.lean` PROVES existence of an actual
+finite rooted k-orientation witness for every finite rooted
+k-orientation, with coherent EPPA and irreducible-structure
+faithfulness for the genuine original full d(A) structure,
+including positive-arity set-valued functions F_n for ALL n.
 
-This file currently imports the graph/closure foundations and their
-exact interpretations in the paper's `Structure` language.
-It does **not** assert that the full EPPA application is formalized.
+The proof uses two distinct finite faithful coherent EPPA
+witness selections: a trivial-language-action successor stage
+and a generally NONTRIVIAL automorphism-group root-language stage.
+The original input's image need not be ambient d-closed, and the
+reconstruction uses the whole canonical root support, not
+an arbitrary selection of representatives.
 
-Mathematical source: Section \`sec:orientations\` in *All those EPPA
-classes*, with the October 2026 audit in the separate manuscript
-repository. The next planned layers are the \(s\)- and \(d\)-language
-structures, the two faithful coherent EPPA constructions, and
-the choice-free reconstruction \`(x,W)\`.
+This umbrella imports the verified proof modules for full CI
+checking. Consumers should prefer `AllThoseEPPA.KOrientationsEPPA`.
+See `K_ORIENTATIONS_EPPA_API.md` for a precise theorem statement,
+scope, a direct import-only smoke test, and links to the proof CI.
 -/

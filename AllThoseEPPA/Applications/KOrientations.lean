@@ -120,6 +120,15 @@ import AllThoseEPPA.Applications.KOrientations.FullDAutomorphism
 import AllThoseEPPA.Applications.KOrientations.FullDAutomorphismFunctorial
 import AllThoseEPPA.Applications.KOrientations.FirstWitness
 
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootDomains
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootDomainEquiv
+import AllThoseEPPA.Applications.KOrientations.PartialEquivSubtypeBridge
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootUnaryExactImage
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryRootPartialIsomorphism
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCoherentComposition
+import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCompositeImage
+import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedGraphDomainImage
+
 /-!
 # EPPA for \(k\)-orientations with \(d\)-closures — application umbrella
 

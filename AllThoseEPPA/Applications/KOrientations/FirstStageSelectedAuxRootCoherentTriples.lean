@@ -79,68 +79,59 @@ theorem firstStage_selectedAuxRootPartialAutomorphism_coherentTriple
   have hGroup : gr = gq * gp :=
     firstStage_coherentSelector_graphAut_coherentTriple
       A G k ι s p q r ⟨hpq, hReq⟩
-  have hClosed1 : (dTraceStructure G k S).IsClosed T₁ :=
-    firstStage_dPartialSourceTrace_isClosed A G k ι p
-  have hClosed2 : (dTraceStructure G k S).IsClosed T₂ :=
-    firstStage_dPartialTargetTrace_isClosed A G k ι p
-  have hClosed3 : (dTraceStructure G k S).IsClosed T₃ :=
-    firstStage_dPartialTargetTrace_isClosed A G k ι q
-  have hpImage : gp.1 '' (Subtype.val '' T₁) =
-      Subtype.val '' T₂ :=
-    firstStage_selectedGraphAut_dTraceDomainImage A G k ι s p
-  have hqImage : gq.1 '' (Subtype.val '' T₂) =
-      Subtype.val '' T₃ := by
-    have h := firstStage_selectedGraphAut_dTraceDomainImage
-      A G k ι s q
-    change gq.1 '' (Subtype.val '' (E.toFun '' q.source)) =
-      Subtype.val '' T₃ at h
-    change gq.1 '' (Subtype.val '' (E.toFun '' p.target)) =
-      Subtype.val '' T₃
+  -- Work with the three ACTUAL selected partial automorphisms.
+  -- Only their real source/range sets and the selected group elements
+  -- matter: their total functions outside the sources need not agree.
+  let ap := firstStage_selectedAuxRootPartialAutomorphism A G k ι s p
+  let aq := firstStage_selectedAuxRootPartialAutomorphism A G k ι s q
+  let ar := firstStage_selectedAuxRootPartialAutomorphism A G k ι s r
+  have hDom : ap.target = aq.source := by
+    change auxiliaryClosedRootDomain G k S (E.toFun '' p.target) =
+      auxiliaryClosedRootDomain G k S (E.toFun '' q.source)
     rw [hpq]
-    exact h
-  have hCombined : (gq * gp).1 '' (Subtype.val '' T₁) =
-      Subtype.val '' T₃ :=
-    auxiliaryClosedRootDomain_image_comp G S T₁ T₂ T₃
-      gp gq hpImage hqImage
-  let a₁ := auxiliaryClosedRootPartialIsomorphism
-    G k S T₁ T₂ hClosed1 hClosed2 gp hpImage
-  let a₂ := auxiliaryClosedRootPartialIsomorphism
-    G k S T₂ T₃ hClosed2 hClosed3 gq hqImage
-  let a₃ := auxiliaryClosedRootPartialIsomorphism
-    G k S T₁ T₃ hClosed1 hClosed3 (gq * gp) hCombined
-  have hGeneric : Structure.PartialIsomorphism.CoherentTriple
-      a₁ a₂ a₃ :=
-    auxiliaryClosedRootPartialIsomorphism_coherentTriple_of_images
-      G k S T₁ T₂ T₃ hClosed1 hClosed2 hClosed3
-      gp gq hpImage hqImage
-  have ha₁ : a₁ =
-      firstStage_selectedAuxRootPartialAutomorphism A G k ι s p := rfl
-  have ha₂ : a₂ =
-      firstStage_selectedAuxRootPartialAutomorphism A G k ι s q := by
-    dsimp only [a₂, T₂]
-    rw [hpq]
-    rfl
-  have hImageR : gr.1 '' (Subtype.val '' (E.toFun '' r.source)) =
-      Subtype.val '' (E.toFun '' r.target) :=
-    firstStage_selectedGraphAut_dTraceDomainImage A G k ι s r
-  have hThird : Structure.PartialIsomorphism.Equivalent
-      (firstStage_selectedAuxRootPartialAutomorphism A G k ι s r)
-      a₃ := by
-    apply auxiliaryClosedRootPartialIsomorphism_equivalent_of_equal_data
-      G k S
-      (E.toFun '' r.source) (E.toFun '' r.target)
-      T₁ T₃
-      (firstStage_dPartialSourceTrace_isClosed A G k ι r)
-      (firstStage_dPartialTargetTrace_isClosed A G k ι r)
-      hClosed1 hClosed3 gr (gq * gp)
-      hImageR hCombined
-    · exact congrArg (fun T : Set V => E.toFun '' T) hrSource
-    · exact congrArg (fun T : Set V => E.toFun '' T) hrTarget
-    · exact hGroup
-  rw [ha₁, ha₂] at hGeneric
-  obtain ⟨hDom, hComposed⟩ := hGeneric
   refine ⟨hDom, ?_⟩
-  exact ⟨hThird.1.trans hComposed.1,
-    Setoid.trans hThird.2 hComposed.2⟩
+  refine ⟨?_, ⟨?_, ?_⟩⟩
+  · -- Actual selected language-group elements multiply coherently.
+    change gr = gq * gp
+    exact hGroup
+  · -- The composite partial map has the original selected source.
+    change auxiliaryClosedRootDomain G k S (E.toFun '' r.source) =
+      auxiliaryClosedRootDomain G k S (E.toFun '' p.source)
+    rw [hrSource]
+  · -- The vertex action is the composition ON ITS SOURCE.
+    intro x hx
+    have hxR : x ∈ auxiliaryClosedRootDomain G k S (E.toFun '' r.source) := hx
+    have hxP : x ∈ auxiliaryClosedRootDomain G k S (E.toFun '' p.source) := by
+      simpa only [hrSource] using hxR
+    have hpx : (ap x).val = gp.1 x.val :=
+      auxiliaryClosedRootPartialEquiv_value
+        G k S (E.toFun '' p.source) (E.toFun '' p.target)
+        gp (firstStage_selectedGraphAut_dTraceDomainImage A G k ι s p)
+        x hxP
+    have hxQ : ap x ∈ auxiliaryClosedRootDomain G k S
+        (E.toFun '' q.source) := by
+      have hmap : ap x ∈ aq.source := by
+        rw [← hDom]
+        exact ap.map_source hxP
+      exact hmap
+    have hqx : (aq (ap x)).val = gq.1 (ap x).val :=
+      auxiliaryClosedRootPartialEquiv_value
+        G k S (E.toFun '' q.source) (E.toFun '' q.target)
+        gq (firstStage_selectedGraphAut_dTraceDomainImage A G k ι s q)
+        (ap x) hxQ
+    have hrx : (ar x).val = gr.1 x.val :=
+      auxiliaryClosedRootPartialEquiv_value
+        G k S (E.toFun '' r.source) (E.toFun '' r.target)
+        gr (firstStage_selectedGraphAut_dTraceDomainImage A G k ι s r)
+        x hxR
+    apply Subtype.ext
+    change (ar x).val = (aq (ap x)).val
+    calc
+      (ar x).val = gr.1 x.val := hrx
+      _ = (gq * gp).1 x.val :=
+        congrArg (fun h : G.graphAut => h.1 x.val) hGroup
+      _ = gq.1 (gp.1 x.val) := by simp
+      _ = gq.1 (ap x).val := congrArg gq.1 hpx.symm
+      _ = (aq (ap x)).val := hqx.symm
 
 end AllThoseEPPA.Applications.KOrientations

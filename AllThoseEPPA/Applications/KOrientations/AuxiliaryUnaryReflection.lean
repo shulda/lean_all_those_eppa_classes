@@ -1,5 +1,5 @@
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryDomainLabelSaturation
-import AllThoseEPPA.Applications.KOrientations.GraphPermutations
+import AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
 
 /-!
 # Exact unary successor reflection on matching source-root pairs

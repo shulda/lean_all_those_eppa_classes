@@ -1,0 +1,105 @@
+name: k-Orientations focused Lean check
+on:
+  push:
+    branches:
+      - application/k-orientations-d-closures-20261012
+    paths:
+      - 'AllThoseEPPA/Applications/KOrientations/**'
+      - 'AllThoseEPPA/Applications/KOrientations.lean'
+      - '.github/workflows/k-orientations.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: k-orientations-focused-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  foundational-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Download targeted Mathlib cache
+        run: |
+          lake exe cache get \
+            Mathlib.Data.Fintype.EquivFin \
+            Mathlib.Data.Finset.Card \
+            Mathlib.Data.Set.Finite.Basic \
+            Mathlib.Algebra.Group.PUnit \
+            Mathlib.GroupTheory.Perm.Basic \
+            Mathlib.Data.Fin.Basic \
+            Mathlib.Data.Set.Basic
+      - name: Build orientation foundational modules in order
+        run: |
+          set -euxo pipefail
+          lake build AllThoseEPPA.Applications.KOrientations.Graph
+          lake build AllThoseEPPA.Applications.KOrientations.GraphPermutations
+          lake build AllThoseEPPA.Applications.KOrientations.GraphAutomorphismGroup
+          lake build AllThoseEPPA.Applications.KOrientations.AuxiliaryAction
+          lake build AllThoseEPPA.Applications.KOrientations.SecondWitness
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRelationTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionCarrier
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionVertexAction
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageIncidence
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageMatching
+          lake build AllThoseEPPA.Applications.KOrientations.Closures
+          lake build AllThoseEPPA.Applications.KOrientations.ClosureMinimal
+          lake build AllThoseEPPA.Applications.KOrientations.Encoding
+          lake build AllThoseEPPA.Applications.KOrientations.StructureBridge
+          lake build AllThoseEPPA.Applications.KOrientations.ClosedSubstructures
+          lake build AllThoseEPPA.Applications.KOrientations.AuxiliaryLanguage
+          lake build AllThoseEPPA.Applications.KOrientations.FaithfulLocalTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.PatternTransport
+          lake build AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulGraph
+          lake build AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulFunctions
+          lake build AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulUnary
+          lake build AllThoseEPPA.Applications.KOrientations.SuccessorFaithfulTransitive
+          lake build AllThoseEPPA.Applications.KOrientations.FaithfulReachability
+          lake build AllThoseEPPA.Applications.KOrientations.FaithfulSuccessorExact
+          lake build AllThoseEPPA.Applications.KOrientations.FaithfulOutdegree
+          lake build AllThoseEPPA.Applications.KOrientations.FirstStageInClass
+          lake build AllThoseEPPA.Applications.KOrientations.FirstStageAutomorphismBridge
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootNeighbourCorrespondence
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootAnchor
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootIncomingAnchor
+          lake build AllThoseEPPA.Applications.KOrientations.CommonMoveRootRigidity
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootOutdegree
+          lake build AllThoseEPPA.Applications.KOrientations.RootPatternExistence
+          lake build AllThoseEPPA.Applications.KOrientations.SourcePatternRealization
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageNestedPatternLift
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNonrootSurjectivity
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionExactDegrees
+          lake build AllThoseEPPA.Applications.KOrientations.EmbeddedSuccessorSourceRooted
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionSupportEquivariance
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportCriterion
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionPathAction
+          lake build AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceInjective
+          lake build AllThoseEPPA.Applications.KOrientations.LocalRootEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalNonrootRootEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalNonrootEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalRootIncomingEdgeTransfer
+          lake build AllThoseEPPA.Applications.KOrientations.LocalCorrespondenceGraph
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingRelation
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquiv
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdges
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionEdgeAction
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootDigraph
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructedDigraph
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNestedNeighbourRigidity
+          lake build AllThoseEPPA.Applications.KOrientations.SourceRootTupleClosed
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageSuccessorAxioms
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageExactUnaryClosure
+          lake build AllThoseEPPA.Applications.KOrientations.SecondStageRootTupleClosed
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionNonrootOutdegree
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionSupportMonotone
+          lake build AllThoseEPPA.Applications.KOrientations.RootMatchingEquivariance
+          lake build AllThoseEPPA.Applications.KOrientations.ReconstructionRootSupportInclusion
+          # The previously checked FirstWitness imports the full main theorem facade;
+          # its continued regression coverage is provided by the standard full Lean CI.

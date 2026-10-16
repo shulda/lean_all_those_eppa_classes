@@ -1211,3 +1211,61 @@ locally finite theorem's automorphism-preserving strong-completion
 hypothesis. The public facade is not a claim of unconditional
 EPPA for all hereditary classes.
 
+
+
+### 2026-10-16: exact Section 9.3 / `thm:DF` for rooted k-orientations
+
+**The complete, previously pending k-orientation d-closure application
+has now been Lean-verified.** The result is
+`Applications.KOrientations.exists_rootedKOrientation_faithfulCoherentDEPPa`
+in [`RootedKOrientationDFinalEPPA.lean`](AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean).
+It holds for **every finite oriented graph A** with outdegree ≤ k and
+with every vertex reaching an outdegree-<k root, and produces a
+**finite rooted k-orientation K**, with an exact embedding of
+the ORIGINAL `dStructure A k` into `dStructure K.graph k`,
+coherent EPPA and irreducible-structure faithfulness for that
+**same** embedding.
+
+In particular this is **not** a unary-only surrogate: the original
+`dStructure` has real set-valued operations F_n of every positive
+arity. It is also not an EPPA theorem for arbitrary unrooted
+orientations or for the unoriented reduct.
+
+**Proof architecture and nontrivial checks.** The general unrestricted
+faithful coherent EPPA theorem is applied **twice**, first in the
+genuine successor language and second in the original Γ-root
+auxiliary language with possible **nonidentity** Γ-action on symbols.
+The first witness is shown to be the successor structure of a real
+bounded-degree oriented graph; the second witness yields the
+finite canonical root-support reconstruction. The full original
+d(A) embedding, all root/nonroot partial-domain ExtendsAlong
+squares, equivalent partial-map compatibility, ordered coherent
+triples and genuine irreducible-structure faithfulness are proved
+in separate modules before the final existential assembly.
+
+The long application is developed under the dedicated
+[public draft PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242),
+separately from the previously released stable `main`
+facade `AllThoseEPPA.MainTheorems`. Its exact certified
+combined commit is
+[`eeea61348615e65f81457a5371d8262a48046c6c`](https://github.com/shulda/lean_all_those_eppa_classes/commit/eeea61348615e65f81457a5371d8262a48046c6c),
+with [full Lean CI and allowed-axioms audit
+`38926049553`](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553)
+**SUCCESS**. The proof's separately green components
+were integrated into this certified combined application
+via #280 (coherent second selection), #284 (complete root support),
+#285 (original root/nonroot gluing, embedding, faithfulness)
+and #289 (full original ExtendsAlong, coherent extension and final
+finite existential theorem).
+
+The external-project interface is
+[`AllThoseEPPA.KOrientationsEPPA`](AllThoseEPPA/KOrientationsEPPA.lean)
+with the consumer regression
+[`Examples/KOrientationsDFPublicAPIUsage.lean`](AllThoseEPPA/Examples/KOrientationsDFPublicAPIUsage.lean).
+Exact assumptions, class membership, declaration names and
+usage are described in
+[`K_ORIENTATIONS_EPPA_API.md`](K_ORIENTATIONS_EPPA_API.md).
+These facade and documentation files are added AFTER the original
+already-certified existence proof and require an independent
+combined CI run before stable integration. No new axioms,
+`sorry`, or `admit` are introduced by the application.

@@ -129,6 +129,7 @@ import AllThoseEPPA.Applications.KOrientations.AuxiliaryRootPartialIsomorphism
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCoherentComposition
 import AllThoseEPPA.Applications.KOrientations.AuxiliaryClosedRootCompositeImage
 import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedGraphDomainImage
+import AllThoseEPPA.Applications.KOrientations.FirstStageSelectedGraphCoherence
 
 /-!
 # EPPA for \(k\)-orientations with \(d\)-closures — application umbrella

@@ -178,6 +178,5 @@ theorem firstStage_selectedReconstructedDAutomorphism_originalRoot_gluing
     _ = sourceReconstructedVertex G k (Set.range ι.toFun)
         hClosed hSourceRooted B κ ⟨ι (p x), ⟨p x, rfl⟩⟩ := by
           simp only [sourceReconstructedVertex, dif_pos hTargetRoot]
-          rfl
 
 end AllThoseEPPA.Applications.KOrientations

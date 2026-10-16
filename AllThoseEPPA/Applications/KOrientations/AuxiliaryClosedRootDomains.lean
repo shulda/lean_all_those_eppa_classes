@@ -44,7 +44,9 @@ theorem auxiliaryClosedRootDomain_mem_iff
   · rintro ⟨a, ha, heq⟩
     have hEq : a = (⟨x.val, x.property.1⟩ : S) :=
       Subtype.ext heq
-    exact hEq ▸ ha
+    change (⟨x.val, x.property.1⟩ : S) ∈ T
+    rw [← hEq]
+    exact ha
 
 /-- The actual auxiliary unary set-valued successor outputs at a
 root of a d-closed T all remain in its root domain. This proves

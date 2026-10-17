@@ -9,7 +9,16 @@ https://github.com/shulda/lean_all_those_eppa_classes/wiki.
 This setup follows
 [the Milliken wiki's publishing design](https://github.com/janhubicka/lean-milliken/blob/main/docs/wiki/Publishing.md).
 
-## Initializing a newly enabled Wiki: one-time user action
+## Current status (17 October 2026)
+
+**The Wiki is already initialized and published** for this repository:
+[the publishing workflow succeeded](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/39039617467).
+Its log confirms cloning the separate `.wiki.git` repository,
+writing `Home.md` and all other source pages, committing Wiki revision
+`61a4c7b`, and pushing to the Wiki's `master` branch. **No manual
+Home-page creation is needed in this repository.**
+
+## Initializing a newly enabled Wiki: one-time action in a fresh fork
 
 Enabling the GitHub Wiki feature is not the same as creating
 its separate `.wiki.git` repository. GitHub generally requires
@@ -42,7 +51,7 @@ matching the Milliken project, with preprocessing enabled:
 - Links to neighboring Wiki pages are rewritten appropriately;
   links outside `docs/wiki/` are rewritten to source-repository
   URLs at a documented revision.
-- The sync does not force-push the Wiki Git repository.
+- **Actual action behavior:** the 17 October publishing log shows `git push -f origin master` (although this particular update was a fast-forward). Direct edits in the Wiki tab can therefore be overwritten, and a divergent Wiki history may be rewritten; treat source-controlled `docs/wiki/` as authoritative.
 
 The **source-controlled docs**, rather than direct Wiki-tab
 edits, are authoritative. Correct mathematical statements via

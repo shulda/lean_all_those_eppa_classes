@@ -116,9 +116,9 @@ automorphism-preserving strong completion. The resulting
 automorphism lift transports ordinary and coherent EPPA.
 See [`StrongCompletionLocallyFiniteStep.lean`](../../AllThoseEPPA/StrongCompletionLocallyFiniteStep.lean)
 and [`StrongCompletionManuscriptSubclass.lean`](../../AllThoseEPPA/StrongCompletionManuscriptSubclass.lean).
-Here the **AP-only** theorem is the closer counterpart of the
-published transfer theorem; the facade also offers a convenient
-hereditary-SAP specialization.
+The public theorem assumes **hereditary SAP**, precisely as
+published Theorem 1.6 does. The separate AP-level result is
+a valid, proved **strengthening** with a weaker class interface.
 
 Proposition 11.3 is a **different** argument: an ordinary
 completion can be upgraded to a globally injective one under
@@ -139,6 +139,9 @@ extension selector and faithfulness.
 See [`RootedKOrientationDFinalEPPA.lean`](../../AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean)
 and [Applications](Applications.md).
 
-This implementation only covers input orientations satisfying
-`HasReachableRoots k`; it must not be used to certify the
-unqualified published Theorem 12.9.
+The input condition `HasReachableRoots k` matches the
+class `D_d^k` of published Definition 12.10, whose elements
+are `d(G)` for `s(G) ∈ D_{s+}^k`.
+Hence it is consistent with **Theorem 12.12**.
+The implementation does not assert EPPA for arbitrary
+rootless orientations equipped with a different d-language.

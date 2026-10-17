@@ -62,7 +62,9 @@ import AllThoseEPPA.KOrientationsEPPA
 
 These application statements are **not** replacements for
 the general EPPA API. The k-orientation theorems require reachable
-roots. The integer metric result preserves the maximum
+roots, exactly as does the paper's `D_d^k` class in
+Definition 12.10 (published Theorem 12.12).
+The integer metric result preserves the maximum
 distance-one clique and uses a fixed finite distance bound.
 
 ## How to select the appropriate theorem

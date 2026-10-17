@@ -1,6 +1,6 @@
 # EPPA for finite rooted k-orientations with d-closures
 
-**Article:** *All those EPPA classes*, Section 9.3, `thm:DF` (the oriented, rooted d-closure application).
+**Article:** *All those EPPA classes*, current internal manuscript Section 9.3 / `thm:DF`; **published arXiv v4 Section 12.5, Definition 12.10 and Theorem 12.12**. The paper defines `D_d^k` only for `s(G) ∈ D_{s+}^k`, so all vertices already have reachable roots.
 
 **Public Lean import:**
 
@@ -8,7 +8,7 @@
 import AllThoseEPPA.KOrientationsEPPA
 ```
 
-This application is **proved and Lean-checked**, not an axiom and not an application of the unary EPPA theorem directly to the higher-arity d-language. The complete original existence theorem was independently compiled on the [application draft commit `eeea61348615`](https://github.com/shulda/lean_all_those_eppa_classes/commit/eeea61348615e65f81457a5371d8262a48046c6c), [CI run 38926049553](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553) (full Lean build and permitted-axioms audit). The public facade and consumer regression must pass their own CI before being treated as integrated.
+This application is **proved and Lean-checked**, not an axiom and not an application of the unary EPPA theorem directly to the higher-arity d-language. The complete original existence theorem was independently compiled on the [application draft commit `eeea61348615`](https://github.com/shulda/lean_all_those_eppa_classes/commit/eeea61348615e65f81457a5371d8262a48046c6c), [CI run 38926049553](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553) (full Lean build and permitted-axioms audit). The public facade and consumer regression were subsequently integrated into `main` (PR #242), and the full main build and axiom audit succeeded in [run 38938495445](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38938495445).
 
 ## Exact theorem and assumptions
 
@@ -35,7 +35,7 @@ theorem rootedFaithfulCoherent
       Structure.IsIrreducibleStructureFaithful dTrivialAction ψ
 ```
 
-Here `Digraph` is oriented: its edge relation has no loops and no antiparallel pairs. `HasOutdegreeAtMost k` is the **actual** outdegree bound, and `HasReachableRoots k` requires every vertex to reach some vertex of outdegree **strictly less than** `k`, via a directed path of length at least zero. A root is not defined as an outdegree-zero vertex unless `k = 1`. The output `K : KOrientation W k` again has the actual bound, with rootedness stated separately. Both carrier types are finite, and `ψ` is a genuine exact embedding of the ORIGINAL `dStructure A k`, not an embedding of a surrogate induced chart.
+Here `Digraph` is oriented: its edge relation has no loops and no antiparallel pairs. `HasOutdegreeAtMost k` is the **actual** outdegree bound, and `HasReachableRoots k` requires every vertex to reach some vertex of outdegree **strictly less than** `k`, via a directed path of length at least zero. **This is precisely the definition of membership in the paper's `D_{s+}^k`, used to define `D_d^k`**; it is not an extra hypothesis relative to Theorem 12.12. A root is not defined as an outdegree-zero vertex unless `k = 1`. The output `K : KOrientation W k` again has the actual bound, with rootedness stated separately. Both carrier types are finite, and `ψ` is a genuine exact embedding of the ORIGINAL `dStructure A k`, not an embedding of a surrogate induced chart.
 
 The `dStructure` language has (i) a set-valued unary successor symbol encoding directed reachability and (ii) real set-valued symbols `Fₙ` for **every positive arity**. These include root-fibre closure information. `Structure.IsCoherentEPPAWitness` means there is a single extension selector for *every* original partial automorphism; it extends along `ψ`, respects equivalent partial maps and composes on coherent triples. `Structure.IsIrreducibleStructureFaithful` is about **the same original embedding `ψ`**.
 
@@ -68,8 +68,8 @@ The [import-only consumer smoke test](AllThoseEPPA/Examples/KOrientationsDFPubli
 
 ## Verification and scope
 
-The authoritative compiled application result is on the [dedicated draft PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242), which keeps the long k-orientation proof separate from the reusable general EPPA library until final integration. Its full theorem source is [`RootedKOrientationDFinalEPPA.lean`](AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean). The final clean draft source merged the independently checked selected-automorphism, source embedding, faithful, and existential-existence proof modules via PR #289.
+The authoritative compiled application result is now **merged into main** via [PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242). Its full theorem source is [`RootedKOrientationDFinalEPPA.lean`](AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean). The final clean draft had first merged selected-automorphism, source embedding, faithful, and existential-existence modules via PR #289; the subsequent main CI and axiom audit passed.
 
-**Not claimed:** EPPA for unrestricted unrooted k-orientations, EPPA for an unoriented reduct obtained by forgetting orientations, or a computation of optimal witness size. Nothing in this application changes the assumptions of the reusable main theorems or proves arbitrary relational/function-language EPPA beyond their stated scope.
+**Not claimed:** EPPA for a different class of rootless k-orientations equipped with a hypothetical `d`-closure and constants, EPPA for an unoriented reduct obtained by forgetting orientations, or a computation of optimal witness size. These are not requirements of the published Theorem 12.12, which is already scoped to `D_d^k`. Nothing in this application changes the assumptions of the reusable main theorems or proves arbitrary relational/function-language EPPA beyond their stated scope.
 
 For the generic EPPA theorems (unrestricted, locally tree-like, Herwig–Lascar, local-finiteness transfer), see [`MAIN_THEOREMS_API.md`](MAIN_THEOREMS_API.md). For the metric and clique-preserving regression, see [`INTEGER_METRIC_EPPA_API.md`](INTEGER_METRIC_EPPA_API.md).

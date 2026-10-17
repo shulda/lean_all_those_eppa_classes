@@ -29,7 +29,7 @@ If its statement numbers or hypotheses differ, this crosswalk must be updated.
 | Theorem 1.1, `thm:nreppa` | [`MainTheorems.unrestrictedFaithfulCoherentEPPA`](../../AllThoseEPPA/MainTheorems.lean) | **Scope consistent.** Finite Γ-structure with unary set-valued function symbols and finite relabelling orbit; finite coherent EPPA witness, irreducible-structure faithful |
 | Theorem 1.2, `thm:maintree` | [`MainTheorems.restrictedLocallyTreeLikeEPPA`](../../AllThoseEPPA/MainTheorems.lean) | **Verified stronger form.** An arbitrary finite starting EPPA witness, global homomorphism-embedding back, every closed n-small substructure maps to a tree amalgamation of full A-copies, faithfulness, conditional coherence. Lean allows n=0 and does not require A itself irreducible, unlike the printed version |
 | Theorem 1.5, `thm:main` (Herwig–Lascar generalization) | [`MainTheorems.herwigLascar`](../../AllThoseEPPA/MainTheorems.lean) | **Verified stronger form in ambient cardinality.** N is an arbitrary type in Lean rather than just finite/countable. Finite forbidden family means Γ-homomorphism-embedding avoidance, not induced-copy avoidance |
-| Theorem 1.6, `thm:mainstrong` (ordinary and coherent locally finite transfer) | [`MainTheorems.locallyFiniteEPPA`, `locallyFiniteCoherentEPPA`](../../AllThoseEPPA/MainTheorems.lean) | **Public facade narrower:** it asks for a hereditary *strong* amalgamation class. The printed theorem needs only AP. The AP-level results **are separately proved** as [`TreeLike.locallyFiniteSubclass_hasEPPA` and `...hasCoherentEPPA`](../../AllThoseEPPA/StrongCompletionManuscriptSubclass.lean). Use these for the literal AP strength |
+| Theorem 1.6, `thm:mainstrong` (ordinary and coherent locally finite transfer) | [`MainTheorems.locallyFiniteEPPA`, `locallyFiniteCoherentEPPA`](../../AllThoseEPPA/MainTheorems.lean) | **Scope consistent.** The printed Theorem 1.6 explicitly requires a hereditary subclass of irreducibles with the **strong amalgamation property (SAP)**, along with locally finite automorphism-preserving completion. The Lean facade expresses these. The independently verified [AP-level core theorem](../../AllThoseEPPA/StrongCompletionManuscriptSubclass.lean) is a strengthening, not a repair of the published theorem |
 | Proposition 11.3, `prop:strongcompletion` | [`MainTheorems.completionIffStrong`](../../AllThoseEPPA/MainTheorems.lean) | **Scope consistent.** For hereditary finite SAP classes, ordinary homomorphism-embedding completions exist iff injective ones exist; no automorphism-preserving lift is concluded |
 
 Theorem 1.2's projection is a **homomorphism-embedding**, not necessarily
@@ -54,23 +54,43 @@ silently dropped when Γ is infinite.
 | Faithfulness `prop:faithful` and sparsening `lem:sparsen` | [`FaithfulProposition.lean`](../../AllThoseEPPA/FaithfulProposition.lean), [`CycleSparseningTheorem.lean`](../../AllThoseEPPA/CycleSparseningTheorem.lean) | Constructive verified endpoints; see proof architecture |
 | Theorem 1.3 and Corollary 1.4 | — | No dedicated public endpoint verified in this crosswalk; distinguish a consequence of general results from an exported proof of the exact numbered statement |
 | Proposition 12.2, finite metric spaces with forbidden unit clique | [`IntegerMetric.Bridge.allFiniteBoundedMetricsHaveEPPAAndPreserveUnitClique`](../../AllThoseEPPA/Examples/IntegerMetricAllDMainTheorem.lean) | **Not the identical printed proposition.** Lean supplies *ordinary* EPPA with an arbitrary fixed finite integer distance bound D, preserving maximum unit-clique size; the printed application asserts coherent EPPA for the corresponding class without a prescribed global D |
-| Theorem 12.9, d-closures of k-orientations | [`KOrientationsEPPA.rootedFaithfulCoherent`](../../AllThoseEPPA/KOrientationsEPPA.lean) | **Verified narrower form.** Requires every input vertex to reach a root (`HasReachableRoots k`); the public printed theorem has no such input hypothesis. The output is an actual finite rooted k-orientation with genuine full all-arity d-structure and coherent faithful EPPA |
+| Theorem 12.12, d-closures of k-orientations (Section 12.5, Definition 12.10) | [`KOrientationsEPPA.rootedFaithfulCoherent`](../../AllThoseEPPA/KOrientationsEPPA.lean) | **Scope consistent, including rootedness.** The printed class `D_d^k` is defined **only** for `s(G) ∈ D_{s+}^k`, which means every vertex has a reachable root. Lean spells this out as `HasReachableRoots k`, and proves genuine full all-arity d-closure coherent irreducible-structure faithful EPPA. The paper states k ≥ 1; the Lean statement takes a natural k |
 | Other applications, including constants and other k-orientation formulations | — | Must not be described as formalized solely because the general machinery is available; check exact source-facing declarations first |
 
-## Why rootedness matters for Theorem 12.9
+## Checking the class definition before the theorem
 
-In [`Graph.lean`](../../AllThoseEPPA/Applications/KOrientations/Graph.lean),
-a root has out-degree strictly less than k; `HasReachableRoots k` says
-every vertex reaches such a root by an oriented path of length zero or
-more. It is not a consequence of having out-degree at most k:
-for k=1, a consistently oriented finite cycle has out-degree one at
-every vertex, hence no root. Thus the present hypothesis is mathematically
-substantive.
+The public [paper, arXiv:1902.03855v4, printed pp. 51–52](https://arxiv.org/pdf/1902.03855)
+contains three distinct objects:
 
-The genuine higher-arity conclusion **is** fully present in the Lean
-rooted theorem; the missing issue is its input class, not merely an
-unary surrogate representation. See the
-[application audit](Applications.md).
+1. **Definition 12.9:** `s(G)` is a unary-successor expansion
+   of an arbitrary finite k-orientation, with reachable vertices
+   (including the starting vertex) as the unary function values.
+2. The subclass `D_{s+}^k` is then defined by
+   `roots_G(x) ≠ ∅` **for every vertex x**. A root means
+   out-degree strictly smaller than k.
+3. **Definition 12.10:** `D_d^k := {d(G) : s(G) ∈ D_{s+}^k}`.
+   Higher-arity `F_n` return vertices whose reachable-root set
+   is precisely the given tuple of distinct roots.
+   **Theorem 12.12** establishes coherent, irreducible-structure
+   faithful EPPA for *that already restricted class*.
+
+The corresponding Lean source in
+[`Graph.lean`](../../AllThoseEPPA/Applications/KOrientations/Graph.lean)
+uses `HasReachableRoots k`; the exact root-fibre semantics
+are in [`Closures.lean`](../../AllThoseEPPA/Applications/KOrientations/Closures.lean)
+and [`Encoding.lean`](../../AllThoseEPPA/Applications/KOrientations/Encoding.lean).
+These are the paper's hypotheses, not a weakening of the result.
+
+For example, the oriented 3-cycle is a 1-orientation with no roots,
+so it belongs to `D^1` but **not** to the class `D_d^1`
+defined in the paper. The authors explicitly explain that
+rootless vertices would enter the closure of the empty set
+and would require constants, which they leave out.
+
+An earlier draft of this wiki incorrectly described the condition
+as an *extra Lean hypothesis*. The correction is recorded in
+[Adversarial audit](Adversarial-audit.md). No unrooted-case
+reduction is required to justify the published theorem.
 
 ## Reading the current state
 

@@ -88,10 +88,11 @@ The verified result is
 now integrated on `main` through [PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242),
 with [full main CI](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38938495445)
 and its [original application verification](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553).
-**Scope caveat:** the Lean theorem assumes every input vertex can reach a root
-(`HasReachableRoots k`). This is not automatic for all finite k-orientations;
-the public paper's Theorem 12.9 is broader. The discrepancy is tracked in
-the [wiki audit](docs/wiki/Adversarial-audit.md).
+**Published-paper scope:** Definition 12.10 in the public paper (Section 12.5)
+defines `D_d^k` using only `D_{s+}^k`: every vertex must reach a root.
+Thus the Lean hypothesis `HasReachableRoots k` is **part of the paper's
+class definition, not an extra assumption**. The published result is
+Theorem 12.12 (not 12.9). See the [corrected wiki crosswalk](docs/wiki/Published-statements.md).
 
 **Supported external import:** `import AllThoseEPPA.KOrientationsEPPA`.
 See [the exact assumptions, theorem statement and consumer

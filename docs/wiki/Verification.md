@@ -57,8 +57,11 @@ mathematical inspection and possibly formal bridge lemmas.
 **Application coverage.** A concrete model representation satisfies
 the prerequisites of a general theorem, and the resulting witness
 has the exact originally advertised type and class membership.
-The [rooted-orientation scope gap](Adversarial-audit.md)
-illustrates why this must be checked separately.
+The [initially alleged rooted-orientation gap](Adversarial-audit.md)
+was resolved by reading the *definition of the published class*:
+its rootedness condition was present all along.
+This illustrates why source equivalence must be checked against
+definitions, not theorem headlines alone.
 
 A successful build certifies the first, not the other two.
 Source-to-Lean findings belong in

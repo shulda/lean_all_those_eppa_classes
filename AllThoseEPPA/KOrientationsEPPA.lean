@@ -3,6 +3,14 @@ import AllThoseEPPA.Applications.KOrientations.RootedKOrientationDFinalEPPA
 /-!
 # Public API: coherent faithful EPPA for rooted k-orientations with d-closures
 
+Published source crosswalk: *All those EPPA classes*, arXiv:1902.03855v4,
+Section 12.5. Theorem 12.12 proves coherent faithful EPPA for
+`D_d^k`, **defined** in Definition 12.10 using `D_{s+}^k`,
+where every vertex has a reachable root. The Lean
+`HasReachableRoots k` hypothesis exactly expresses this class
+definition and is not an extra restriction on the published result.
+The paper's number 12.9 denotes a definition, not this theorem.
+
 The concrete Section 9.3 / `thm:DF` application of
 *All those EPPA classes* is now a verified theorem, not an
 axiom or an unchecked reduction.

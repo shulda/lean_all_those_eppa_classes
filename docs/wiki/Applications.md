@@ -57,8 +57,9 @@ import AllThoseEPPA.KOrientationsEPPA
 ```
 
 The theorem assumes an input finite digraph A with
-`A.HasOutdegreeAtMost k` and **additionally**
-`A.HasReachableRoots k`. It constructs an actual finite
+`A.HasOutdegreeAtMost k` and `A.HasReachableRoots k`.
+**Both are part of membership in the paper's class `D_d^k`**
+(Definition 12.10, following the definition of `D_{s+}^k`). It constructs an actual finite
 k-orientation K with the same outdegree bound and reachable
 roots, and a genuine embedding of the **full** original
 `dStructure A k` into `dStructure K.graph k`.
@@ -70,20 +71,24 @@ for **all positive arities**, not just a unary successor
 surrogate. The two-stage verified construction transports
 the actual original all-arity partial maps.
 
-**But this is not all of printed Theorem 12.9.**
-The [public paper](https://arxiv.org/abs/1902.03855)
-states the theorem for the whole class of finite
-k-orientations. Requiring every vertex to reach a root
-is a real additional hypothesis: a finite directed cycle
-with k=1 is a counterexample to the implication
-“outdegree ≤ k implies reachable roots”.
+**This covers the published Theorem 12.12's rootedness scope.**
+In the [public paper, pp. 51–52](https://arxiv.org/pdf/1902.03855),
+`D_{s+}^k` consists of successor-expansions in which every
+vertex has a reachable root, and
+`D_d^k = { d(G) : s(G) ∈ D_{s+}^k }`.
+Thus requiring `HasReachableRoots k` is **not** a hidden
+extra hypothesis. Definition 12.9 introduces `s(G)`;
+Theorem 12.12, not 12.9, proves EPPA for `D_d^k`.
+
+A finite directed cycle with k=1 lies among arbitrary
+k-orientations but lies **outside** `D_d^1` as defined.
+The paper deliberately omits vertices without reachable
+roots because treating them in the d-language would
+require constants.
 
 See [`RootedKOrientationDFinalEPPA.lean`](../../AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean),
-[`Graph.lean`](../../AllThoseEPPA/Applications/KOrientations/Graph.lean)
+[`Graph.lean`](../../AllThoseEPPA/Applications/KOrientations/Graph.lean),
 and the [k-orientation API guide](../../K_ORIENTATIONS_EPPA_API.md).
-A bridge removing rootedness, or an updated printed theorem
-with that hypothesis, is necessary before claiming exact
-Theorem 12.9 correspondence.
 
 ## Further published applications
 

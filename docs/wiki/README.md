@@ -51,17 +51,24 @@ injective one; it does not assert an automorphism lift.
 The primary [public API guide](../../MAIN_THEOREMS_API.md) and the
 [formalization status ledger](../../FORMALIZATION.md) remain available.
 
-## An important scope warning
+## Correct interpretation of the published k-orientation class
 
-The repository proves coherent, faithful EPPA for **finite rooted**
-k-orientations in their genuine all-arity d-closure language. The
-[publicly available paper](https://arxiv.org/abs/1902.03855)
-states its k-orientation application for all finite k-orientations
-(Theorem 12.9). The Lean endpoint presently requires
-`HasReachableRoots k`, a genuine extra hypothesis. **Do not cite the
-current Lean theorem as verification of the whole unrooted theorem.**
-See [Published statements](Published-statements.md) and
-[Adversarial audit](Adversarial-audit.md).
+**The rootedness condition in Lean matches the paper.** In the public
+paper (Section 12.5), Definition 12.10 sets
+`D_d^k = { d(G) : s(G) ∈ D_{s+}^k }`, where the preceding definition
+of `D_{s+}^k` requires **every vertex to have a reachable root**.
+Thus `HasReachableRoots k` in
+`KOrientationsEPPA.rootedFaithfulCoherent` is not an additional
+restriction on the class covered by the published result,
+**Theorem 12.12**. Theorem 12.9 was mistakenly cited in an earlier
+wiki draft; it is actually Definition 12.9.
+
+The paper explicitly excludes rootless components from its
+`d`-closure class, noting that they would require constants.
+A general theorem for `d`-closures allowing such components
+is a *different* target, not a missing case of Theorem 12.12.
+See the [source-to-Lean crosswalk](Published-statements.md) and
+[correction record](Adversarial-audit.md).
 
 ## Sources and changes
 

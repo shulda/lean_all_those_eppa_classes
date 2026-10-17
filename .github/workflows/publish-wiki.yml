@@ -1,0 +1,50 @@
+name: Publish EPPA wiki
+
+on:
+  gollum: # First Home-page creation and Wiki edits may trigger sync.
+  push:
+    branches: [main]
+    paths:
+      - 'docs/wiki/**'
+      - '.github/workflows/publish-wiki.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-eppa-wiki
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source-controlled wiki
+        uses: actions/checkout@v4
+
+      # GitHub stores Wiki pages in a separate .wiki.git repository.
+      # A new Wiki often needs its first Home page saved through
+      # the GitHub Wiki web UI before the remote exists.
+      - name: Check whether the Wiki Git repository exists
+        id: wiki
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          if git ls-remote "https://github.com/${GITHUB_REPOSITORY}.wiki.git" HEAD >/dev/null 2>&1; then
+            echo "initialized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "initialized=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Wiki not initialized. Create a Home page at https://github.com/${GITHUB_REPOSITORY}/wiki, then re-run this workflow."
+          fi
+
+      - name: Publish version-controlled Markdown to GitHub Wiki
+        if: steps.wiki.outputs.initialized == 'true'
+        uses: Andrew-Chen-Wang/github-wiki-action@v5
+        with:
+          path: docs/wiki
+          preprocess: true
+          strategy: clone
+          disable-empty-commits: true

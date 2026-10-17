@@ -1,5 +1,18 @@
 # All those EPPA classes — Lean formalization
 
+
+## Research wiki and semantic audit
+
+The [research wiki](https://github.com/shulda/lean_all_those_eppa_classes/wiki)
+([version-controlled source](docs/wiki/README.md)) explains the mathematical
+constructions, gives practical reuse instructions, and audits the correspondence
+between the paper and the exact Lean declarations.
+See especially the [published-statement crosswalk](docs/wiki/Published-statements.md)
+and [adversarial scope audit](docs/wiki/Adversarial-audit.md).
+A green Lean proof/axiom audit certifies the *formalized* theorem, not automatically
+the exact printed statement of every application.
+
+
 Formalization of the general constructions in
 
 > J. Hubička, M. Konečný, J. Nešetřil, *All those EPPA classes
@@ -72,11 +85,13 @@ EPPA and irreducible-structure faithfulness for its ORIGINAL
 full d(A), not merely the unary successor reduct.
 The verified result is
 [`Applications.KOrientations.exists_rootedKOrientation_faithfulCoherentDEPPa`](AllThoseEPPA/Applications/KOrientations/RootedKOrientationDFinalEPPA.lean)
-on the dedicated [application draft #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242),
-[full theorem CI 38926049553](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553).
-It is intentionally developed separately from the already stable
-general-theorem API; full application integration and a final
-paper-statement/interface audit are the remaining release tasks.
+now integrated on `main` through [PR #242](https://github.com/shulda/lean_all_those_eppa_classes/pull/242),
+with [full main CI](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38938495445)
+and its [original application verification](https://github.com/shulda/lean_all_those_eppa_classes/actions/runs/38926049553).
+**Scope caveat:** the Lean theorem assumes every input vertex can reach a root
+(`HasReachableRoots k`). This is not automatic for all finite k-orientations;
+the public paper's Theorem 12.9 is broader. The discrepancy is tracked in
+the [wiki audit](docs/wiki/Adversarial-audit.md).
 
 **Supported external import:** `import AllThoseEPPA.KOrientationsEPPA`.
 See [the exact assumptions, theorem statement and consumer

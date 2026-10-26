@@ -32,35 +32,17 @@ jobs:
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      # Keep the useful parts of Jan Hubička's cache strategy: the Lean
-      # toolchain is cached above and compiled Mathlib artifacts are fetched
-      # selectively below.  We intentionally do not cache the complete .lake
-      # workspace: measured archives were about 2.58 GB per commit and their
-      # restore/save time dominated this small project's CI.
-      - name: Download Mathlib cache
-        run: |
-          lake exe cache get \
-            Mathlib.Algebra.Ring.BooleanRing \
-            Mathlib.Algebra.BigOperators.Group.Finset.Basic \
-            Mathlib.Data.Fin.Tuple.Basic \
-            Mathlib.Data.Fintype.Sort \
-            Mathlib.Data.Fintype.Pi \
-            Mathlib.Data.Fintype.Prod \
-            Mathlib.Data.Fintype.Sigma \
-            Mathlib.Data.Nat.Bits \
-            Mathlib.Data.Set.Finite.Range \
-            Mathlib.Logic.Equiv.Fintype \
-            Mathlib.Logic.Equiv.PartialEquiv \
-            Mathlib.GroupTheory.Perm.Basic \
-            Mathlib.Combinatorics.SimpleGraph.Basic
-
+      # CI performance experiment: use the complete precompiled Mathlib cache.
+      # The previous selective 13-target cache still compiled hundreds of
+      # Mathlib modules. Keep GitHub .lake caching disabled: past restores
+      # and saves of ~2.58 GB artifacts proved expensive.
       - name: Build and audit Lean project
         uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1.6.1
         with:
           auto-config: false
           build: true
           use-github-cache: false
-          use-mathlib-cache: false
+          use-mathlib-cache: true
           axiom-audit: true
           axiom-audit-root: AllThoseEPPA
           axiom-audit-allow: propext,Classical.choice,Quot.sound
